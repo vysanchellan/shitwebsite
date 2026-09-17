@@ -152,7 +152,7 @@ function Stars({ count = 900 }: { count?: number }) {
 
   return (
     <points geometry={geometry} frustumCulled={false}>
-      <pointsMaterial size={1.1} color="#cfe9ff" transparent opacity={0.6} depthWrite={false} />
+      <pointsMaterial size={1.1} color="#efe0c2" transparent opacity={0.6} depthWrite={false} />
     </points>
   );
 }
@@ -813,7 +813,7 @@ function Lamps() {
 
       <instancedMesh ref={heads} args={[undefined, undefined, LAMPS.length]}>
         <boxGeometry args={[1.5, 0.22, 0.4]} />
-        <meshBasicMaterial color="#9beaf5" toneMapped={false} />
+        <meshBasicMaterial color="#ffd9a0" toneMapped={false} />
       </instancedMesh>
 
       <instancedMesh
@@ -825,7 +825,7 @@ function Lamps() {
         <planeGeometry args={[1, 1]} />
         <meshBasicMaterial
           map={glow}
-          color="#8fd8ea"
+          color="#e0bd84"
           transparent
           opacity={0.3}
           depthWrite={false}

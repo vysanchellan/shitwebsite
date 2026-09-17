@@ -37,7 +37,7 @@ function MapSvg({ full }: { full: boolean }) {
       role={full ? 'img' : 'presentation'}
       aria-label={full ? 'Map of the RiskSense District' : undefined}
     >
-      <rect x={-W} y={-H} width={W * 3} height={H * 3} fill="#060c18" />
+      <rect x={-W} y={-H} width={W * 3} height={H * 3} fill="#0d0b10" />
 
       {/* The generated city, so the corner map is not an empty field */}
       <g>
@@ -48,14 +48,14 @@ function MapSvg({ full }: { full: boolean }) {
             y={sy(b.pos[1] - b.size[2] / 2)}
             width={b.size[0]}
             height={b.size[2]}
-            fill="#162236"
+            fill="#282029"
             fillOpacity={0.9}
           />
         ))}
       </g>
 
       {/* Avenues */}
-      <g stroke="#45d7e8" strokeOpacity="0.14" strokeWidth="14" strokeLinecap="round">
+      <g stroke="#d8b878" strokeOpacity="0.14" strokeWidth="14" strokeLinecap="round">
         <line x1={sx(0)} y1={sy(78)} x2={sx(0)} y2={sy(-80)} />
         <line x1={sx(-56)} y1={sy(2)} x2={sx(56)} y2={sy(2)} />
         <line x1={sx(-52)} y1={sy(-44)} x2={sx(52)} y2={sy(-44)} />
@@ -97,7 +97,7 @@ function MapSvg({ full }: { full: boolean }) {
                 cx={sx(n.position[0])}
                 cy={sy(n.position[2])}
                 r={near ? 3 : 2.3}
-                fill={read ? '#0a1424' : c}
+                fill={read ? '#141019' : c}
                 stroke={c}
                 strokeWidth={read ? 1 : 0.6}
               />

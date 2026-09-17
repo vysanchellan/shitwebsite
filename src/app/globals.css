@@ -3,9 +3,9 @@
 /* ==========================================================================
    RiskSense AI — design tokens
 
-   The register is a marque, not a dashboard: near-black, warm bone, one
-   champagne metal and one deep red. A single cool "system" blue exists for the
-   district, used sparingly enough that it reads as light rather than as chrome.
+   The register is a marque, not a dashboard: near-black, warm bone, champagne
+   and bronze, and one deep red. There is no cool accent anywhere — the light in
+   the district is metal or fire, never a system blue.
    ========================================================================== */
 
 @theme {
@@ -24,8 +24,8 @@
 
   /* Signature */
   --color-ember: #b33a28;
-  --color-aether: #8fd3e6;
-  --color-plum: #8e7aa8;
+  --color-aether: #dcbd82;
+  --color-plum: #b08a6e;
 
   /* Status, muted to sit inside the palette rather than shout over it */
   --color-ok: #6f9268;
@@ -198,6 +198,11 @@ body {
   }
 }
 
+/*
+ * `both` would hold the hidden first frame through the delay, so a stalled
+ * animation leaves a blank headline. `backwards` is deliberately not used.
+ */
+
 @keyframes rs-scan {
   0%,
   100% {
@@ -232,11 +237,11 @@ body {
 }
 
 @utility animate-rise {
-  animation: rs-rise 1.2s var(--ease-cine) both;
+  animation: rs-rise 1.2s var(--ease-cine) forwards;
 }
 
 @utility animate-unmask {
-  animation: rs-unmask 1.4s var(--ease-cine) both;
+  animation: rs-unmask 1.4s var(--ease-cine) forwards;
 }
 
 @utility animate-blink {
@@ -262,13 +267,20 @@ body {
   pointer-events: none;
 }
 
-/* Reveal-on-scroll, driven by IntersectionObserver in Reveal.tsx. */
-[data-reveal] {
+/*
+ * Reveal-on-scroll. Only `out` hides anything, and that attribute is set by
+ * script after mount — so content with no script, no observer, or a starved
+ * rendering loop is simply visible.
+ */
+[data-reveal='out'] {
   opacity: 0;
-  transform: translate3d(0, 1.6rem, 0);
+  transform: translate3d(0, 1.4rem, 0);
+}
+
+[data-reveal] {
   transition:
-    opacity 1.3s var(--ease-cine),
-    transform 1.3s var(--ease-cine);
+    opacity 1.1s var(--ease-cine),
+    transform 1.1s var(--ease-cine);
   transition-delay: var(--reveal-delay, 0ms);
 }
 

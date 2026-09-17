@@ -25,7 +25,7 @@ const C = new THREE.Color();
  */
 
 /** Window tints, chosen so a block reads as mixed occupancy rather than one owner. */
-const TINTS = ['#9fe8f5', '#ffd6a1', '#bcd4ff'] as const;
+const TINTS = ['#e8cf9c', '#ffd6a1', '#cdbb96'] as const;
 
 function tintIndex(b: CityBuilding) {
   return Math.min(TINTS.length - 1, Math.floor(b.tint * TINTS.length));

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { DISTRICTS, NODES, STATISTICS, STATISTICS_NOTE } from '@/data/content';
 import { INSURERS } from '@/data/insurers';
-import { ACCENT_HEX } from '@/components/world/layout';
+import { ACCENT_HEX } from '@/components/world/accents';
 import { Nav } from '@/components/landing/Nav';
 import { Footer } from '@/components/landing/Footer';
 import { Reveal } from '@/components/ui/Reveal';

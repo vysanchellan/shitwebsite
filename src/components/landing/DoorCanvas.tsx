@@ -86,8 +86,8 @@ function Portal({ open }: { open: React.RefObject<number> }) {
     () => ({
       uTime: { value: 0 },
       uOpen: { value: 0 },
-      uCore: { value: new THREE.Color('#9fdcef') },
-      uEdge: { value: new THREE.Color('#12303f') },
+      uCore: { value: new THREE.Color('#f0dcb4') },
+      uEdge: { value: new THREE.Color('#33261a') },
     }),
     [],
   );
@@ -151,7 +151,7 @@ function Ring({ open }: { open: React.RefObject<number> }) {
       <group ref={inner}>
         <mesh>
           <torusGeometry args={[2.3, 0.02, 8, 100]} />
-          <meshBasicMaterial color="#8fd3e6" transparent opacity={0.55} toneMapped={false} />
+          <meshBasicMaterial color="#e8d3a4" transparent opacity={0.5} toneMapped={false} />
         </mesh>
       </group>
     </group>
@@ -220,7 +220,7 @@ function Arch() {
 /** Motes rising through the opening. */
 function Motes({ open }: { open: React.RefObject<number> }) {
   const ref = useRef<THREE.Points>(null);
-  const COUNT = 220;
+  const COUNT = 110;
 
   const geometry = useMemo(() => {
     const pos = new Float32Array(COUNT * 3);
@@ -254,7 +254,7 @@ function Motes({ open }: { open: React.RefObject<number> }) {
     <points ref={ref} geometry={geometry}>
       <pointsMaterial
         size={0.05}
-        color="#d8eef7"
+        color="#f2e2bd"
         transparent
         opacity={0.75}
         depthWrite={false}

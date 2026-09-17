@@ -78,7 +78,7 @@ export function MoleculeHologram({ position }: { position: [number, number, numb
         {ring.map((p, i) => (
           <mesh key={i} position={p}>
             <icosahedronGeometry args={[0.42, 0]} />
-            <meshBasicMaterial color={i % 3 === 0 ? '#45d7e8' : '#1fb8a6'} toneMapped={false} />
+            <meshBasicMaterial color={i % 3 === 0 ? '#d8b878' : '#1fb8a6'} toneMapped={false} />
           </mesh>
         ))}
         {ring.map((p, i) => {
@@ -95,7 +95,7 @@ export function MoleculeHologram({ position }: { position: [number, number, numb
         })}
         <mesh>
           <torusGeometry args={[2.9, 0.03, 6, 48]} />
-          <meshBasicMaterial color="#45d7e8" transparent opacity={0.5} toneMapped={false} />
+          <meshBasicMaterial color="#d8b878" transparent opacity={0.5} toneMapped={false} />
         </mesh>
       </group>
       <pointLight color="#1fb8a6" intensity={22} distance={28} decay={2} />
@@ -129,7 +129,7 @@ export function Helix({ position }: { position: [number, number, number] }) {
           <group key={i} position={[0, d.y, 0]} rotation={[0, d.a, 0]}>
             <mesh position={[1.5, 0, 0]}>
               <sphereGeometry args={[0.2, 10, 8]} />
-              <meshBasicMaterial color="#45d7e8" toneMapped={false} />
+              <meshBasicMaterial color="#d8b878" toneMapped={false} />
             </mesh>
             <mesh position={[-1.5, 0, 0]}>
               <sphereGeometry args={[0.2, 10, 8]} />
@@ -138,7 +138,7 @@ export function Helix({ position }: { position: [number, number, number] }) {
             <mesh rotation={[0, 0, Math.PI / 2]}>
               <cylinderGeometry args={[0.035, 0.035, 3, 5]} />
               <meshBasicMaterial
-                color={i % 2 ? '#2f6bff' : '#1fb8a6'}
+                color={i % 2 ? '#b08d4e' : '#1fb8a6'}
                 transparent
                 opacity={0.6}
                 toneMapped={false}
@@ -147,7 +147,7 @@ export function Helix({ position }: { position: [number, number, number] }) {
           </group>
         ))}
       </group>
-      <pointLight position={[0, 8, 0]} color="#45d7e8" intensity={20} distance={26} decay={2} />
+      <pointLight position={[0, 8, 0]} color="#d8b878" intensity={20} distance={26} decay={2} />
     </group>
   );
 }
@@ -173,7 +173,7 @@ export function PulseArches() {
         <group key={z} position={[0, 0, z]}>
           <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 1, 0]}>
             <torusGeometry args={[9.4, 0.09, 6, 40, Math.PI]} />
-            <meshBasicMaterial color="#2f6bff" transparent opacity={0.45} toneMapped={false} />
+            <meshBasicMaterial color="#b08d4e" transparent opacity={0.45} toneMapped={false} />
           </mesh>
           <mesh
             ref={(el) => {
@@ -181,7 +181,7 @@ export function PulseArches() {
             }}
           >
             <sphereGeometry args={[0.2, 10, 8]} />
-            <meshBasicMaterial color="#9ef0fa" toneMapped={false} />
+            <meshBasicMaterial color="#f0dcb0" toneMapped={false} />
           </mesh>
         </group>
       ))}
@@ -241,7 +241,7 @@ export function Drones({ count = 7 }: { count?: number }) {
           color="#0e1c30"
           roughness={0.4}
           metalness={0.8}
-          emissive="#45d7e8"
+          emissive="#d8b878"
           emissiveIntensity={0.5}
         />
       </instancedMesh>
@@ -251,7 +251,7 @@ export function Drones({ count = 7 }: { count?: number }) {
           <sprite key={i} scale={[3.4, 3.4, 1]}>
             <spriteMaterial
               map={glow}
-              color={i % 2 ? '#45d7e8' : '#ff9d6b'}
+              color={i % 2 ? '#d8b878' : '#ff9d6b'}
               transparent
               opacity={0.55}
               depthWrite={false}
@@ -372,7 +372,7 @@ export function Motes({ count = 500 }: { count?: number }) {
     <points ref={ref} geometry={geometry} frustumCulled={false}>
       <pointsMaterial
         size={0.14}
-        color="#9ef0fa"
+        color="#f0dcb0"
         transparent
         opacity={0.42}
         depthWrite={false}

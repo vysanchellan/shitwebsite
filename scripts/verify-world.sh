@@ -1,14 +1,28 @@
 #!/usr/bin/env bash
-# Compiles the world's pure modules and runs the collision/reachability checks.
-# The browser cannot be trusted for this: it throttles requestAnimationFrame
-# when its pane is hidden, which stalls the render loop and makes working
-# movement look broken.
+#
+# Compiles the world's pure modules and runs the collision / reachability
+# checks against them.
+#
+# These do not run in a browser on purpose. A browser throttles
+# requestAnimationFrame whenever its window is hidden or occluded, which stalls
+# the render loop, stops IntersectionObserver delivering, and makes perfectly
+# working movement look broken. The layout and collision modules are pure
+# functions of data, so they can be checked properly without any of that.
 set -e
+
 OUT="$(mktemp -d)"
-npx tsc src/components/world/layout.ts src/components/world/collision.ts \
+trap 'rm -rf "$OUT"' EXIT
+
+npx tsc \
+  src/components/world/layout.ts \
+  src/components/world/collision.ts \
   --outDir "$OUT" --module es2022 --target es2022 \
   --moduleResolution bundler --skipLibCheck
-sed -i "s|from './layout'|from './layout.js'|" "$OUT/collision.js"
+
+# tsc emits bare specifiers; Node's ESM loader needs the extension.
+sed -i "s|from './layout'|from './layout.js'|g" "$OUT/collision.js"
+sed -i "s|from './accents'|from './accents.js'|g" "$OUT/layout.js"
+
 printf '{"type":"module"}' > "$OUT/package.json"
 cp scripts/verify-world.mjs "$OUT/"
 node "$OUT/verify-world.mjs"

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import { useEffect, useRef, useState } from 'react';
 import { HERO } from '@/data/content';
 import { RevealWords } from '@/components/ui/Reveal';
 
@@ -19,18 +20,37 @@ const SPEC = [
 ];
 
 export function Hero() {
-  return (
-    <section className="relative isolate flex min-h-[100svh] flex-col justify-between overflow-hidden bg-ink pt-24 pb-0 sm:pt-28">
-      <div className="column-rules absolute inset-0 -z-30" aria-hidden="true" />
+  const section = useRef<HTMLElement>(null);
+  const [live, setLive] = useState(true);
 
+  // The vista stops rendering the moment it scrolls away. On a page this long
+  // that is most of the visit, and a paused canvas costs nothing.
+  useEffect(() => {
+    const el = section.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(([e]) => setLive(e.isIntersecting), {
+      threshold: 0,
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <section
+      ref={section}
+      className="relative isolate flex min-h-[100svh] flex-col justify-between overflow-hidden bg-ink pt-24 pb-0 sm:pt-28"
+    >
       <div className="absolute inset-0 -z-20" aria-hidden="true">
-        <HeroCanvas />
+        <HeroCanvas active={live} />
       </div>
 
-      {/* Vignette — the one gradient here, and it is doing real work: it keeps
-          the headline legible over a moving trace. */}
+      {/*
+        Two scrims, both load-bearing. A vertical one so the headline sits on
+        something solid, and a foot so the specification table reads against the
+        lit horizon. Nothing decorative is layered over the vista.
+      */}
       <div
-        className="absolute inset-0 -z-10 bg-[radial-gradient(120%_85%_at_50%_45%,transparent_0%,var(--color-ink)_78%)]"
+        className="absolute inset-0 -z-10 bg-[linear-gradient(to_bottom,rgba(8,7,10,0.86)_0%,rgba(8,7,10,0.42)_38%,rgba(8,7,10,0.28)_58%,rgba(8,7,10,0.94)_100%)]"
         aria-hidden="true"
       />
 
@@ -51,19 +71,19 @@ export function Hero() {
 
         <div className="mt-10 grid gap-10 sm:mt-14 lg:grid-cols-[minmax(0,36rem)_1fr] lg:items-end lg:gap-20">
           <p
-            className="animate-rise max-w-[46ch] text-[0.98rem] leading-[1.62] text-paper/62 sm:text-[1.08rem]"
+            className="animate-rise max-w-[46ch] text-[0.98rem] leading-[1.62] text-paper/72 sm:text-[1.08rem]"
             style={{ animationDelay: '620ms' }}
           >
             {HERO.standfirst}
           </p>
 
           <div
-            className="animate-rise flex flex-wrap items-center gap-px bg-paper/15"
+            className="animate-rise flex w-full flex-col gap-px bg-paper/15 lg:max-w-[26rem] lg:justify-self-end"
             style={{ animationDelay: '740ms' }}
           >
             <Link
               href="/world"
-              className="group flex flex-1 items-center justify-between gap-8 bg-brass px-6 py-4 micro text-ink transition-colors duration-400 hover:bg-paper"
+              className="group flex items-center justify-between gap-8 bg-brass px-6 py-4 micro whitespace-nowrap text-ink transition-colors duration-400 hover:bg-paper"
             >
               How RiskSense works
               <svg
@@ -84,7 +104,7 @@ export function Hero() {
 
             <Link
               href="/overview#analysis"
-              className="flex flex-1 items-center justify-between gap-8 bg-ink px-6 py-4 micro text-paper/80 transition-colors duration-400 hover:text-brass"
+              className="flex items-center justify-between gap-8 bg-ink px-6 py-4 micro whitespace-nowrap text-paper/80 transition-colors duration-400 hover:text-brass"
             >
               Risk analysis
               <span aria-hidden="true" className="text-paper/30">

@@ -34,7 +34,7 @@ function seeded(seed: number) {
  * A facade of lit and dark windows. Used as an emissive map so towers read as
  * occupied at dusk without a single external asset.
  */
-export function windowTexture(seed: number, cols = 14, rows = 26, tint = '#8fe6f5') {
+export function windowTexture(seed: number, cols = 14, rows = 26, tint = '#e8cf9c') {
   const key = `win-${seed}-${cols}-${rows}-${tint}`;
   const hit = cache.get(key);
   if (hit) return hit;
@@ -147,7 +147,7 @@ export function roadTexture() {
 export function signTexture(
   title: string,
   sub?: string,
-  color = '#45d7e8',
+  color = '#d8b878',
   width = 1024,
 ) {
   const key = `sign-${title}-${sub ?? ''}-${color}-${width}`;
@@ -216,7 +216,7 @@ export function signTexture(
 }
 
 /** Numerals for the six boulevard plinths. */
-export function numeralTexture(n: string, color = '#2f6bff') {
+export function numeralTexture(n: string, color = '#b08d4e') {
   const key = `num-${n}-${color}`;
   const hit = cache.get(key);
   if (hit) return hit;
@@ -248,7 +248,7 @@ export function insurerTexture(mark: string, name: string, hue: string) {
   const H = 256;
   const { c, ctx } = canvas(W, H);
 
-  ctx.fillStyle = 'rgba(6,12,24,0.92)';
+  ctx.fillStyle = 'rgba(14,11,16,0.93)';
   ctx.fillRect(0, 0, W, H);
 
   ctx.strokeStyle = `${hue}66`;
@@ -272,7 +272,7 @@ export function insurerTexture(mark: string, name: string, hue: string) {
   ctx.shadowBlur = 0;
 
   ctx.textAlign = 'left';
-  ctx.fillStyle = '#f5f4f0';
+  ctx.fillStyle = '#efebe3';
   ctx.font = '400 38px Jost, "Helvetica Neue", Arial, sans-serif';
   const words = name.split(' ');
   const line1 = words.slice(0, 2).join(' ');
@@ -280,7 +280,7 @@ export function insurerTexture(mark: string, name: string, hue: string) {
   ctx.fillText(line1, 176, line2 ? 100 : 118);
   if (line2) ctx.fillText(line2, 176, 146);
 
-  ctx.fillStyle = '#e9a63c';
+  ctx.fillStyle = '#c08a3e';
   ctx.font = '400 21px Jost, "Helvetica Neue", Arial, sans-serif';
   ctx.fillText('DEMO PROVIDER', 176, 196);
 

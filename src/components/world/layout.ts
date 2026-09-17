@@ -11,19 +11,8 @@
  * at the same time.
  */
 
-/**
- * District light. Aether is the system blue the world's interface is made of;
- * everything else is the light a building actually gives off.
- */
-export const ACCENT_HEX: Record<string, string> = {
-  aether: '#8fd3e6',
-  azure: '#6fa8dc',
-  verdant: '#7fbf8f',
-  jade: '#6fb28c',
-  amber: '#d9a441',
-  ember: '#c4553c',
-  plum: '#9a84b8',
-};
+export { ACCENT_HEX } from './accents';
+import { ACCENT_HEX } from './accents';
 
 export const BOUNDS = { minX: -206, maxX: 206, minZ: -266, maxZ: 206 };
 

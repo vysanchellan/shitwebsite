@@ -18,7 +18,7 @@ const COAT = '#f3f1ea';
 const COAT_DARK = '#dcd8ce';
 const TROUSER = '#16233b';
 const BOOT = '#0d1520';
-const ACCENT = '#45d7e8';
+const ACCENT = '#d8b878';
 
 /** Radians of knee bend at the top of the swing. */
 const KNEE = 1.15;

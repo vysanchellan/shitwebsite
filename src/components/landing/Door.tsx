@@ -128,7 +128,7 @@ export function Door() {
 
         {/* The gate's light taking the frame as the camera goes through */}
         <div
-          className="pointer-events-none absolute inset-0 z-30 bg-[#eaf7fb]"
+          className="pointer-events-none absolute inset-0 z-30 bg-[#f6ecd8]"
           style={{
             opacity: committed ? 1 : 0,
             transition: 'opacity 900ms cubic-bezier(0.83, 0, 0.17, 1) 520ms',

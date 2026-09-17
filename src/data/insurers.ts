@@ -22,14 +22,14 @@ export type Insurer = {
 };
 
 export const INSURERS: Insurer[] = [
-  { id: 'aurora',   name: 'Aurora Health Cover', mark: 'AH', plan: 'National · Tier 1–3', hue: '#4fd1e0', demo: true, enabled: true },
-  { id: 'meridian', name: 'Meridian Assurance',  mark: 'MA', plan: 'National · Family',   hue: '#7aa2ff', demo: true, enabled: true },
-  { id: 'northbay', name: 'Northbay Mutual',     mark: 'NB', plan: 'Regional · Standard', hue: '#5ee6b8', demo: true, enabled: true },
-  { id: 'caldera',  name: 'Caldera Care Group',  mark: 'CC', plan: 'Employer · Group',    hue: '#f3b95f', demo: true, enabled: true },
-  { id: 'veritas',  name: 'Veritas Health',      mark: 'VH', plan: 'National · Premium',  hue: '#c39cff', demo: true, enabled: true },
-  { id: 'saltway',  name: 'Saltway Benefit Co.', mark: 'SB', plan: 'Employer · Core',     hue: '#ff9c8a', demo: true, enabled: true },
-  { id: 'kestrel',  name: 'Kestrel Provident',   mark: 'KP', plan: 'Regional · Essential',hue: '#9fe870', demo: true, enabled: true },
-  { id: 'orbis',    name: 'Orbis Life & Health', mark: 'OL', plan: 'National · Plus',     hue: '#63b3ff', demo: true, enabled: false },
+  { id: 'aurora',   name: 'Aurora Health Cover', mark: 'AH', plan: 'National · Tier 1–3', hue: '#7f9aa6', demo: true, enabled: true },
+  { id: 'meridian', name: 'Meridian Assurance',  mark: 'MA', plan: 'National · Family',   hue: '#8a90ab', demo: true, enabled: true },
+  { id: 'northbay', name: 'Northbay Mutual',     mark: 'NB', plan: 'Regional · Standard', hue: '#79a08c', demo: true, enabled: true },
+  { id: 'caldera',  name: 'Caldera Care Group',  mark: 'CC', plan: 'Employer · Group',    hue: '#c79a5a', demo: true, enabled: true },
+  { id: 'veritas',  name: 'Veritas Health',      mark: 'VH', plan: 'National · Premium',  hue: '#9b8aa6', demo: true, enabled: true },
+  { id: 'saltway',  name: 'Saltway Benefit Co.', mark: 'SB', plan: 'Employer · Core',     hue: '#c0796a', demo: true, enabled: true },
+  { id: 'kestrel',  name: 'Kestrel Provident',   mark: 'KP', plan: 'Regional · Essential',hue: '#98a373', demo: true, enabled: true },
+  { id: 'orbis',    name: 'Orbis Life & Health', mark: 'OL', plan: 'National · Plus',     hue: '#7c8a9c', demo: true, enabled: false },
 ];
 
 export const INSURER_NOTE =

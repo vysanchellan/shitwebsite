@@ -112,7 +112,7 @@ export function FloatingIslands({ count = 9 }: { count?: number }) {
           {/* Light spilling from the underside, the way Aincrad's tiers do */}
           <pointLight
             position={[0, -isl.depth * 0.4, 0]}
-            color="#7fb0d8"
+            color="#c9a468"
             intensity={46}
             distance={isl.radius * 2.6}
             decay={2}
@@ -265,7 +265,7 @@ export function BlossomTrees({
 export function RuneCircle({
   position,
   radius = 8,
-  color = '#8fd3e6',
+  color = '#d8b878',
   speed = 0.08,
   ticks = 24,
 }: {
