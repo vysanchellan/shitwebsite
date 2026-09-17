@@ -5,9 +5,10 @@ import { Bloom, EffectComposer, Vignette } from '@react-three/postprocessing';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { Aincrad } from './Aincrad';
-import { City } from './City';
 import { CityBlocks } from './CityBlocks';
-import { Drones, HeartHologram, Helix, MoleculeHologram, Motes, Pedestrians, PulseArches } from './Life';
+import { Environment, InsurerBoards } from './Environment';
+import { Precinct } from './Precinct';
+import { Drones, Motes, Pedestrians } from './Life';
 import { Markers } from './Markers';
 import { Player } from './Player';
 import { useWorld } from './store';
@@ -68,7 +69,7 @@ function Sun({ shadows }: { shadows: boolean }) {
     <directionalLight
       ref={light}
       color="#ffb884"
-      intensity={0.62}
+      intensity={0.8}
       castShadow={shadows}
       shadow-mapSize={[1024, 1024]}
       shadow-camera-near={1}
@@ -102,16 +103,17 @@ function Contents({ quality }: { quality: Quality }) {
     <>
       <Atmosphere />
 
-      <ambientLight intensity={0.34} color="#6a7bab" />
-      <hemisphereLight args={['#4a5f92', '#100c14', 0.45]} />
+      <ambientLight intensity={0.52} color="#8a92b5" />
+      <hemisphereLight args={['#6076a8', '#1a1418', 0.7]} />
       <Sun shadows={quality.shadows} />
 
-      <City />
+      <Environment />
       <CityBlocks />
-      <PulseArches />
-      <HeartHologram position={[-40, 40, -44]} />
-      <MoleculeHologram position={[40, 34, -44]} />
-      <Helix position={[-24, 1, -14]} />
+
+      {/* The precinct itself, built from Park Square's floor plans. */}
+      <Precinct />
+      <InsurerBoards />
+
       <Drones count={quality.drones} />
       <Pedestrians count={quality.pedestrians} />
       <Motes count={quality.motes} />

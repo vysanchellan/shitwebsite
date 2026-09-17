@@ -37,7 +37,7 @@ export const useWorld = create<WorldState>((set, get) => ({
   paused: true,
   started: false,
   mode: 'idle',
-  player: [0, 72],
+  player: [-48, -6],
   heading: Math.PI,
 
   setNearby: (id) => {

@@ -4,7 +4,8 @@ import { useFrame } from '@react-three/fiber';
 import { useLayoutEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { NODES } from '@/data/content';
-import { ACCENT_HEX } from './layout';
+import { ACCENT_HEX } from './accents';
+import { ARCADE as ARC } from './parkSquare';
 import { glowTexture } from './textures';
 
 /**
@@ -140,8 +141,8 @@ export function Blossom({ count = 420 }: { count?: number }) {
   const petals = useMemo(() => {
     const r = seeded(5150);
     return Array.from({ length: count }, () => ({
-      x: (r() - 0.5) * 150,
-      z: (r() - 0.5) * 180 - 10,
+      x: (r() - 0.5) * 190,
+      z: (r() - 0.5) * 150,
       y: r() * 34,
       fall: 0.55 + r() * 0.85,
       sway: 0.5 + r() * 1.6,
@@ -428,10 +429,11 @@ export function Lanterns() {
   const lanterns = useMemo(() => {
     const out: { pos: [number, number, number]; phase: number; tint: string }[] = [];
     const r = seeded(30303);
-    for (let z = 62; z >= -70; z -= 7) {
-      for (const x of [-7.6, 7.6]) {
+    // Strung the length of the arcade, either side of the walkway.
+    for (let x = ARC.minX + 4; x <= ARC.maxX - 4; x += 7) {
+      for (const z of [ARC.z - 6.2, ARC.z + 6.2]) {
         out.push({
-          pos: [x + (r() - 0.5) * 0.8, 5.4 + r() * 0.5, z],
+          pos: [x + (r() - 0.5) * 0.8, 9.2 + r() * 0.4, z],
           phase: r() * Math.PI * 2,
           tint: r() > 0.72 ? '#ffd9a0' : r() > 0.4 ? '#ffb27a' : '#f7e0b8',
         });
@@ -576,17 +578,15 @@ export function Aincrad({ quality }: { quality: { petals: number; islands: numbe
         />
       ))}
 
-      {/* Banners on the approach to the plaza */}
-      {[-1, 1].map((s) =>
-        [22, 4, -14].map((z, i) => (
-          <Banner
-            key={`${s}-${z}`}
-            position={[s * 13.5, 7.5, z]}
-            color={i === 1 ? '#7a3b3b' : '#2f4a6b'}
-            seed={i * 2 + (s > 0 ? 1 : 0)}
-          />
-        )),
-      )}
+      {/* Banners on the piazza's west colonnade */}
+      {[-34, -12, 10, 32].map((z, i) => (
+        <Banner
+          key={z}
+          position={[-70, 8.5, z]}
+          color={i % 2 ? '#7a3b3b' : '#2f3b4a'}
+          seed={i * 2}
+        />
+      ))}
     </group>
   );
 }

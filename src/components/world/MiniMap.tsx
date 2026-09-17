@@ -1,7 +1,8 @@
 'use client';
 
 import { NODES } from '@/data/content';
-import { ACCENT_HEX, BOUNDS, CITY, STRUCTURES } from './layout';
+import { ACCENT_HEX, BOUNDS, CITY } from './layout';
+import { ARCADE, PIAZZA, UNITS } from './parkSquare';
 import { useWorld } from './store';
 
 const W = BOUNDS.maxX - BOUNDS.minX;
@@ -54,28 +55,39 @@ function MapSvg({ full }: { full: boolean }) {
         ))}
       </g>
 
-      {/* Avenues */}
-      <g stroke="#d8b878" strokeOpacity="0.14" strokeWidth="14" strokeLinecap="round">
-        <line x1={sx(0)} y1={sy(78)} x2={sx(0)} y2={sy(-80)} />
-        <line x1={sx(-56)} y1={sy(2)} x2={sx(56)} y2={sy(2)} />
-        <line x1={sx(-52)} y1={sy(-44)} x2={sx(52)} y2={sy(-44)} />
-      </g>
+      {/* The piazza and the arcade, the two spaces you navigate by */}
+      <rect
+        x={sx(PIAZZA.minX)}
+        y={sy(PIAZZA.minZ)}
+        width={PIAZZA.maxX - PIAZZA.minX}
+        height={PIAZZA.maxZ - PIAZZA.minZ}
+        fill="#6b6357"
+        fillOpacity={0.55}
+      />
+      <rect
+        x={sx(ARCADE.minX)}
+        y={sy(ARCADE.z - ARCADE.width / 2 - 1.7)}
+        width={ARCADE.maxX - ARCADE.minX}
+        height={ARCADE.width + 3.4}
+        fill="#6b6357"
+        fillOpacity={0.55}
+      />
 
-      {/* Structures */}
+      {/* Tenancies */}
       <g>
-        {STRUCTURES.map((s) => (
+        {UNITS.map((u) => (
           <rect
-            key={s.id}
-            x={sx(s.pos[0] - s.size[0] / 2)}
-            y={sy(s.pos[1] - s.size[2] / 2)}
-            width={s.size[0]}
-            height={s.size[2]}
-            rx={1.5}
-            fill={s.accent}
-            fillOpacity={0.16}
-            stroke={s.accent}
-            strokeOpacity={0.4}
-            strokeWidth={0.5}
+            key={u.tenant}
+            x={sx(u.x - u.w / 2)}
+            y={sy(u.z - u.d / 2)}
+            width={u.w}
+            height={u.d}
+            transform={u.rotY ? `rotate(${(-u.rotY * 180) / Math.PI} ${sx(u.x)} ${sy(u.z)})` : undefined}
+            fill={u.accent}
+            fillOpacity={0.24}
+            stroke={u.accent}
+            strokeOpacity={0.55}
+            strokeWidth={0.6}
           />
         ))}
       </g>

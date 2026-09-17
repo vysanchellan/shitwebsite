@@ -7,6 +7,7 @@ import { NODES } from '@/data/content';
 import { Avatar } from './Avatar';
 import { move, occupied } from './collision';
 import { input } from './input';
+import { SPAWN } from './parkSquare';
 import { useWorld } from './store';
 
 const WALK = 7.4;
@@ -26,7 +27,7 @@ export function Player() {
   const yaw = useRef(Math.PI);
   const pitch = useRef(0.04);
   const vel = useRef(new THREE.Vector3());
-  const pos = useRef(new THREE.Vector3(0, 0, 72));
+  const pos = useRef(new THREE.Vector3(SPAWN[0], 0, SPAWN[1]));
   const facing = useRef(Math.PI);
   const phase = useRef(0);
   const speed = useRef(0);
@@ -150,7 +151,7 @@ export function Player() {
   });
 
   return (
-    <group ref={group} position={[0, 0, 72]}>
+    <group ref={group} position={[SPAWN[0], 0, SPAWN[1]]}>
       <Avatar phase={phase} speed={speed} walk={WALK} sprint={SPRINT} />
     </group>
   );

@@ -25,10 +25,15 @@ system. Twenty-four readable markers across twelve districts cover the two risk
 models, the six-step patient journey, the insurance pavilion, the clinician link,
 the security vault and the activation terminal.
 
-The districts sit inside a generated city roughly 410 by 470 metres: 252
-buildings on a street grid, 656 pieces of street furniture, 161 vehicles, zebra
-crossings, traffic signals and a 380-tower horizon — under a sunset sky, floating
-islands, falling blossom, strung lanterns, turning rune circles and banners.
+The district **is Park Square, uMhlanga Ridge** — the real precinct on the
+corner of Centenary Boulevard and Park Avenue, rebuilt from its architects'
+floor plans, with every tenancy replaced by the part of RiskSense it now holds.
+Cappello is Arrival. Milk & Honey is Create Profile. The Spar, as the anchor,
+is the Insurance Pavilion. Richfield — the campus — is The Response.
+
+It sits inside a generated uMhlanga Ridge: 242 buildings on a street grid,
+680-odd pieces of street furniture, vehicles, crossings and a 380-tower
+horizon, under a sunset sky with falling blossom and strung lanterns.
 
 Everything in the world is also published as a plain document at `/overview`, so
 nothing is locked behind WebGL, a large screen or a mouse.
@@ -109,9 +114,39 @@ Each node is rendered twice — as an interactable in the 3D district and as a
 section of `/overview` — so the two can never drift apart. A node carries its
 world position, so moving a marker is a data change, not a scene change.
 
-### The district
+### Park Square
 
-`src/components/world/layout.ts` is the city plan. The scene renders from it and
+`src/components/world/parkSquare.ts` is the precinct, taken off Nedport
+Developments' own leasing brochure (architect MAP Group, engineer Arup,
+completed November 2018). What the drawings establish and the model rebuilds:
+
+- A rounded-corner site on a 8.4 m structural grid, 21 column lines by 16 row
+  lines, with the south-east corner chamfered.
+- Parking at ground level under the western half, with the public piazza over
+  it; retail on the eastern half anchored by a double-volume Spar in its
+  north-west corner.
+- A pedestrian arcade on grid row H tying the two together — double-height,
+  splayed concrete columns, dark steel soffit, radiating linear lights, a
+  first-floor gallery down both sides.
+- Restaurants ringing the piazza north, east and west, with an angled unit on
+  the south-west corner.
+- Office bars above with projecting floor slabs, glass balustrade balconies and
+  close-spaced vertical fins.
+
+Two departures, both deliberate:
+
+1. **The walkable plane is flat.** The real piazza is a level above the
+   parking; two walkable levels would need a height-aware controller. The deck
+   is modelled as an undercroft below the plane and the level change is read at
+   the retaining edge and amphitheatre steps, which is how it presents on
+   approach anyway.
+2. **Tenant positions are inferred, not copied.** The brochure's plans are
+   generic leasing drawings that label units "RETAIL TENANCY". Positions here
+   come from unit size, servicing and frontage.
+
+### The wider city
+
+`src/components/world/layout.ts` is the city plan around it. The scene renders from it and
 the collision system builds its boxes from the same list, so a building cannot
 look solid and be walk-through at the same time. Archways declare `parts` so the
 opening you are meant to walk through stays open.

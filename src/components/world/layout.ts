@@ -13,6 +13,7 @@
 
 export { ACCENT_HEX } from './accents';
 import { ACCENT_HEX } from './accents';
+import { PARK_SQUARE_COLLIDERS } from './parkSquare';
 
 export const BOUNDS = { minX: -206, maxX: 206, minZ: -266, maxZ: 206 };
 
@@ -50,73 +51,24 @@ export type Structure = {
   parts?: [number, number, number, number][];
 };
 
-export const STRUCTURES: Structure[] = [
-  /* Arrival */
-  // Only the two pylons collide — the span between them is the way in.
-  { id: 'gate', kind: 'gate', pos: [0, 70], size: [26, 13, 3], accent: ACCENT_HEX.aether, sign: 'RISKSENSE DISTRICT', subSign: 'DECISION SUPPORT · HEART & DIABETES', parts: [[-13, 0, 1.8, 1.8], [13, 0, 1.8, 1.8]] },
-
-  /* Journey Boulevard — six markers, six plinths */
-  { id: 'p1', kind: 'pillar', pos: [-11, 50], size: [3.2, 5.4, 3.2], accent: ACCENT_HEX.azure, sign: '01' },
-  { id: 'p2', kind: 'pillar', pos: [11, 40], size: [3.2, 5.4, 3.2], accent: ACCENT_HEX.azure, sign: '02' },
-  { id: 'p3', kind: 'pillar', pos: [-11, 30], size: [3.2, 5.4, 3.2], accent: ACCENT_HEX.azure, sign: '03' },
-  { id: 'p4', kind: 'pillar', pos: [11, 20], size: [3.2, 5.4, 3.2], accent: ACCENT_HEX.azure, sign: '04' },
-  { id: 'p5', kind: 'pillar', pos: [-11, 10], size: [3.2, 5.4, 3.2], accent: ACCENT_HEX.azure, sign: '05' },
-  { id: 'p6', kind: 'pillar', pos: [11, 0], size: [3.2, 5.4, 3.2], accent: ACCENT_HEX.azure, sign: '06' },
-
-  /* Awareness Park — statistic obelisks */
-  { id: 'ob1', kind: 'obelisk', pos: [-46, 54], size: [2.2, 11, 2.2], accent: ACCENT_HEX.amber },
-  { id: 'ob2', kind: 'obelisk', pos: [-34, 50], size: [2.2, 9, 2.2], accent: ACCENT_HEX.amber },
-  { id: 'ob3', kind: 'obelisk', pos: [-46, 40], size: [2.2, 13, 2.2], accent: ACCENT_HEX.amber },
-  { id: 'ob4', kind: 'obelisk', pos: [-34, 36], size: [2.2, 8, 2.2], accent: ACCENT_HEX.amber },
-  { id: 'park-plinth', kind: 'plinth', pos: [-40, 46], size: [5, 1.1, 5], accent: ACCENT_HEX.amber, sign: 'AWARENESS PARK' },
-
-  /* The Problem — three leaning monoliths */
-  { id: 'm1', kind: 'monolith', pos: [40, 50], size: [7, 12, 2.4], rotY: -0.22, accent: ACCENT_HEX.ember, sign: 'SILENT' },
-  { id: 'm2', kind: 'monolith', pos: [40, 38], size: [7, 10, 2.4], rotY: 0.16, accent: ACCENT_HEX.ember, sign: 'FRAGMENTED' },
-  { id: 'm3', kind: 'monolith', pos: [40, 26], size: [7, 14, 2.4], rotY: -0.1, accent: ACCENT_HEX.ember, sign: 'DELAYED' },
-
-  /* Clinician Link + Security Vault flank the plaza approach */
-  { id: 'clinic', kind: 'clinic', pos: [-40, 2], size: [18, 11, 16], accent: ACCENT_HEX.jade, sign: 'CLINICIAN LINK', subSign: 'VERIFY · CONFIRM · CONNECT' },
-  { id: 'vault', kind: 'vault', pos: [40, 2], size: [16, 14, 16], accent: ACCENT_HEX.verdant, sign: 'SECURITY VAULT', subSign: 'ZERO-TRUST · RBAC · AUDIT' },
-
-  /* Central Plaza */
-  { id: 'plaza-core', kind: 'monolith', pos: [0, -12], size: [4.6, 16, 4.6], accent: ACCENT_HEX.aether, sign: 'RESPONSE' },
-  { id: 'boundaries', kind: 'kiosk', pos: [-15, -18], size: [3.4, 4.4, 3.4], accent: ACCENT_HEX.azure, sign: 'SYSTEMS' },
-  { id: 'disclaimer-stone', kind: 'plinth', pos: [0, -24], size: [7, 1.5, 3.4], accent: ACCENT_HEX.amber, sign: 'DISCLAIMER' },
-
-  /* Information kiosks */
-  { id: 'faq-kiosk', kind: 'kiosk', pos: [-16, -34], size: [3.6, 4.6, 3.6], accent: ACCENT_HEX.aether, sign: 'FAQ' },
-  { id: 'contact-kiosk', kind: 'kiosk', pos: [16, -34], size: [3.6, 4.6, 3.6], accent: ACCENT_HEX.jade, sign: 'CONTACT' },
-
-  /* Model institutes */
-  { id: 'cardiac', kind: 'tower', pos: [-40, -44], size: [20, 34, 18], accent: ACCENT_HEX.ember, sign: 'CARDIAC INSTITUTE', subSign: 'HEART DISEASE MODEL' },
-  { id: 'metabolic', kind: 'lab', pos: [40, -44], size: [20, 28, 18], accent: ACCENT_HEX.verdant, sign: 'METABOLIC LAB', subSign: 'DIABETES V1 · ADULT' },
-
-  /* Insurance Pavilion */
-  { id: 'pavilion', kind: 'pavilion', pos: [0, -60], size: [42, 9, 20], accent: ACCENT_HEX.plum, sign: 'INSURANCE PAVILION', subSign: 'DEMONSTRATION PROVIDERS', solid: false },
-  { id: 'handoff-kiosk', kind: 'kiosk', pos: [-17, -50], size: [3.4, 4.4, 3.4], accent: ACCENT_HEX.plum, sign: 'HANDOFF' },
-  { id: 'recovery-kiosk', kind: 'kiosk', pos: [17, -50], size: [3.4, 4.4, 3.4], accent: ACCENT_HEX.amber, sign: 'RECOVERY' },
-
-  /* Activation Terminal */
-  { id: 'terminal', kind: 'terminal', pos: [0, -78], size: [24, 16, 8], accent: ACCENT_HEX.aether, sign: 'ACTIVATION TERMINAL', subSign: 'RETURN TO APP', parts: [[-12, 0, 2.15, 4.35], [12, 0, 2.15, 4.35]] },
-];
+/**
+ * The hand-placed district structures are gone: Park Square replaces them, and
+ * is declared in parkSquare.ts straight off the building's floor plans. This
+ * list is kept empty so the minimap and collision code have one shape to read.
+ */
+export const STRUCTURES: Structure[] = [];
 
 /** Road strips through the content districts. */
 export const ROADS: { pos: [number, number]; size: [number, number]; rot?: number }[] = [
-  { pos: [0, 30], size: [16, 96] }, // Journey Boulevard
-  { pos: [0, -46], size: [16, 76] }, // Plaza to terminal
-  { pos: [0, 2], size: [96, 14] }, // Clinic–vault cross street
-  { pos: [0, -44], size: [92, 12] }, // Institute cross street
-  { pos: [-40, 40], size: [12, 40] }, // Park lane
-  { pos: [40, 38], size: [12, 44] }, // Problem lane
+  // Centenary Boulevard along the eastern boundary, Park Avenue to the south.
+  { pos: [100, 0], size: [18, 200] },
+  { pos: [0, 80], size: [220, 16] },
 ];
 
 /** Planted areas — the park and the plaza verges. */
 export const GREENS: { pos: [number, number]; size: [number, number] }[] = [
-  { pos: [-42, 46], size: [30, 34] },
-  { pos: [-24, -14], size: [14, 20] },
-  { pos: [24, -14], size: [14, 20] },
-  { pos: [42, 62], size: [22, 18] },
+  // CJ Saunders Park, which the piazza is a natural extension of.
+  { pos: [-122, -10], size: [58, 120] },
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -158,19 +110,19 @@ function scatterIn(
 
 const rng = mulberry32(20260917);
 
-export const TREES: Scatter[] = [
-  ...scatterIn(rng, GREENS[0], 26, 0.9, 1.7),
-  ...scatterIn(rng, GREENS[1], 7, 0.8, 1.2),
-  ...scatterIn(rng, GREENS[2], 7, 0.8, 1.2),
-  ...scatterIn(rng, GREENS[3], 12, 0.9, 1.5),
-];
+/** CJ Saunders Park, west of the precinct. */
+export const TREES: Scatter[] = scatterIn(rng, GREENS[0], 54, 0.9, 1.8);
 
 /* -------------------------------------------------------------------------- */
 /* The wider city                                                              */
 /* -------------------------------------------------------------------------- */
 
-/** Nothing is generated inside this box; it belongs to the content districts. */
-const CORE = { minX: -58, maxX: 58, minZ: -94, maxZ: 80 };
+/**
+ * Nothing is generated inside this box: it is the Park Square site, which is
+ * built by hand from the real plans. The generated city is uMhlanga Ridge
+ * around it.
+ */
+const CORE = { minX: -92, maxX: 92, minZ: -72, maxZ: 72 };
 
 /** Block pitch, and the carriageway left between blocks. */
 const CELL = 40;
@@ -374,10 +326,9 @@ export const CROSSINGS: Crossing[] = generated.crossings;
 /** Street lamps down the district avenues and along the city grid. */
 export const LAMPS: [number, number][] = (() => {
   const out: [number, number][] = [];
-  for (let z = 68; z >= -80; z -= 12) out.push([-10.5, z], [10.5, z]);
-  for (let x = -54; x <= 54; x += 12) {
-    if (Math.abs(x) > 11) out.push([x, 9.5], [x, -37.5]);
-  }
+  // Centenary Boulevard and Park Avenue, both sides.
+  for (let z = -96; z <= 96; z += 14) out.push([92, z], [110, z]);
+  for (let x = -108; x <= 108; x += 14) out.push([x, 72], [x, 90]);
   // One pair per city block frontage, set back from the kerb.
   for (const b of CITY) {
     if (Math.abs(b.pos[0]) > 140 || b.pos[1] < -200) continue;
@@ -459,6 +410,9 @@ export const COLLIDERS: Collider[] = STRUCTURES.filter((s) => s.solid !== false)
     : [boxFor(s, 0.35)],
 );
 
+/** The precinct, built from the real plans. */
+for (const b of PARK_SQUARE_COLLIDERS) COLLIDERS.push(b);
+
 /** Every generated building is solid at its podium footprint. */
 for (const b of CITY) {
   COLLIDERS.push({
@@ -513,37 +467,5 @@ for (const v of VEHICLES) {
     minZ: v.pos[1] - halfD,
     maxZ: v.pos[1] + halfD,
     height: h,
-  });
-}
-
-/** Pavilion columns are solid even though the canopy is not. */
-export const PAVILION_COLUMNS: [number, number][] = [-19, -9.5, 9.5, 19].flatMap((x) => [
-  [x, -68] as [number, number],
-  [x, -52] as [number, number],
-]);
-
-for (const [x, z] of PAVILION_COLUMNS) {
-  COLLIDERS.push({ minX: x - 0.9, maxX: x + 0.9, minZ: z - 0.9, maxZ: z + 0.9, height: 9 });
-}
-
-/** The eight insurer kiosks, arranged in an arc inside the pavilion. */
-export const INSURER_SLOTS: { pos: [number, number]; rotY: number }[] = Array.from(
-  { length: 8 },
-  (_, i) => {
-    const t = (i / 7 - 0.5) * 1.5;
-    return {
-      pos: [Math.sin(t) * 17, -60 + Math.cos(t) * 5 - 3],
-      rotY: -t,
-    } as { pos: [number, number]; rotY: number };
-  },
-);
-
-for (const slot of INSURER_SLOTS) {
-  COLLIDERS.push({
-    minX: slot.pos[0] - 1.4,
-    maxX: slot.pos[0] + 1.4,
-    minZ: slot.pos[1] - 0.9,
-    maxZ: slot.pos[1] + 0.9,
-    height: 2.8,
   });
 }

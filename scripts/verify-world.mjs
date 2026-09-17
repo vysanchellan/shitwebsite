@@ -1,4 +1,5 @@
-import { COLLIDERS, CITY, STRUCTURES, BOUNDS, STREET_PROPS, VEHICLES } from './layout.js';
+import { COLLIDERS, CITY, BOUNDS, STREET_PROPS, VEHICLES } from './layout.js';
+import { SPAWN, UNITS } from './parkSquare.js';
 import { move, blocked, STEP_HEIGHT } from './collision.js';
 
 const R = 0.55, WALK = 7.4, SPRINT = 13.2, DT = 1 / 60;
@@ -18,11 +19,11 @@ function walk(yaw, fwd, right, from, frames, speed) {
 const pass = [], fail = [];
 const t = (name, ok, extra = '') => (ok ? pass : fail).push(name + (extra ? '  ' + extra : ''));
 
-const spawn = { x: 0, z: 72 }, YAW = Math.PI;
+const spawn = { x: SPAWN[0], z: SPAWN[1] }, YAW = Math.PI;
 
 // Direction
 t('spawn is clear', !blocked(spawn.x, spawn.z, R));
-t('W walks into the city', walk(YAW, 1, 0, spawn, 60).z < spawn.z - 3);
+t('W walks forward', walk(YAW, 1, 0, spawn, 60).z < spawn.z - 3);
 t('S retreats', walk(YAW, -1, 0, spawn, 60).z > spawn.z + 3);
 t('D strafes screen-right', walk(YAW, 0, 1, spawn, 60).x > spawn.x + 3);
 t('A strafes screen-left', walk(YAW, 0, -1, spawn, 60).x < spawn.x - 3);
@@ -71,8 +72,33 @@ for (let i = 0; i < 20000; i++) q = move(q.x, q.z, 0.02, -0.01, R);
 const us = ((performance.now() - t0) / 20000) * 1000;
 t('move() stays cheap', us < 40, `${us.toFixed(1)}us per call, ${COLLIDERS.length} colliders`);
 
+// Every unit's marker must have somewhere standable within reading range, or
+// a shopfront is unreadable and nobody finds out until they walk there.
+const RANGE = 5.2;
+const front = (u) => {
+  switch (u.facing) {
+    case 'n': return [u.x, u.z - u.d / 2 - 3.2];
+    case 's': return [u.x, u.z + u.d / 2 + 3.2];
+    case 'e': return [u.x + u.w / 2 + 3.2, u.z];
+    default:  return [u.x - u.w / 2 - 3.2, u.z];
+  }
+};
+const unreachable = UNITS.filter((u) => {
+  if (!u.node) return false;
+  const [nx, nz] = front(u);
+  for (let r = 0; r <= RANGE - 0.3; r += 0.3)
+    for (let a = 0; a < 32; a++) {
+      const x = nx + Math.cos((a / 32) * Math.PI * 2) * r;
+      const z = nz + Math.sin((a / 32) * Math.PI * 2) * r;
+      if (!blocked(x, z, R)) return false;
+    }
+  return true;
+}).map((u) => `${u.tenant} (${u.node})`);
+t('every shopfront can be reached', unreachable.length === 0,
+  unreachable.length ? unreachable.join(', ') : `${UNITS.filter(u=>u.node).length} units`);
+
 console.log('PASS');
 for (const p of pass) console.log('  ' + p);
 if (fail.length) { console.log('FAIL'); for (const f of fail) console.log('  ' + f); }
 console.log(`\n${pass.length} passed, ${fail.length} failed`);
-console.log(`colliders ${COLLIDERS.length}  (city ${CITY.length}, props ${STREET_PROPS.length}, vehicles ${VEHICLES.length})`);
+console.log(`colliders ${COLLIDERS.length}  (precinct units ${UNITS.length}, city ${CITY.length}, props ${STREET_PROPS.length}, vehicles ${VEHICLES.length})`);

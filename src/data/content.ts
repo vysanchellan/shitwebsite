@@ -109,7 +109,7 @@ export const NODES: InfoNode[] = [
     title: 'Welcome to the RiskSense District',
     kicker: 'Start here',
     accent: 'aether',
-    position: [0, 0, 62],
+    position: [-55.4, 0, -39.6],
     body: [
       'This district is the RiskSense AI service, laid out as a place you can walk through. Every building holds one part of the system: what it analyses, who reviews it, how access is granted, how the data is protected.',
       'The website is the public information and service-activation layer. The mobile application remains the primary patient health application: health profile, vitals, laboratory information and risk-analysis history all live there.',
@@ -133,7 +133,7 @@ export const NODES: InfoNode[] = [
     title: 'Create Profile',
     kicker: 'In the mobile application',
     accent: 'azure',
-    position: [-11, 0, 50],
+    position: [-32.8, 0, -39.6],
     body: [
       'The patient creates their RiskSense account and basic profile inside the mobile application. This establishes identity against the backend, but it does not yet grant access to risk analysis.',
     ],
@@ -146,7 +146,7 @@ export const NODES: InfoNode[] = [
     title: 'Connect Clinician',
     kicker: 'Mandatory for every patient',
     accent: 'azure',
-    position: [11, 0, 40],
+    position: [-17.6, 0, -39.6],
     body: [
       'The patient supplies the unique RiskSense Clinician ID given to them by their clinician. The backend verifies that the identifier belongs to an eligible, approved clinician before the relationship is confirmed.',
     ],
@@ -159,7 +159,7 @@ export const NODES: InfoNode[] = [
     title: 'Activate Access',
     kicker: 'Completed on this website',
     accent: 'azure',
-    position: [-11, 0, 30],
+    position: [-20, 0, -31.1],
     body: [
       'The patient chooses a RiskSense subscription or a supported insurance provider, completes verification and activates the service. Full patient access is granted only once the clinician connection and access activation are both complete.',
     ],
@@ -172,7 +172,7 @@ export const NODES: InfoNode[] = [
     title: 'Add Health Information',
     kicker: 'Back in the mobile application',
     accent: 'azure',
-    position: [11, 0, 20],
+    position: [-20, 0, -13.4],
     body: [
       'The patient records the health information the supported models require: demographics, vitals, and the relevant laboratory values.',
     ],
@@ -185,7 +185,7 @@ export const NODES: InfoNode[] = [
     title: 'Run Risk Analysis',
     kicker: 'Model inference on the backend',
     accent: 'azure',
-    position: [-11, 0, 10],
+    position: [-20, 0, 28.6],
     body: [
       'The FastAPI backend runs the supported risk-analysis model against the patient’s current information and returns an estimate. Inference is authoritative on the backend, never on the device or in the browser.',
     ],
@@ -198,7 +198,7 @@ export const NODES: InfoNode[] = [
     title: 'Review Results',
     kicker: 'With a clinician',
     accent: 'azure',
-    position: [11, 0, 0],
+    position: [-20, 0, 45.4],
     body: [
       'Results are presented in language the patient can understand, alongside the factors that contributed to them, so the estimate can support a conversation with their connected clinician.',
     ],
@@ -214,7 +214,7 @@ export const NODES: InfoNode[] = [
     title: 'Why earlier awareness matters',
     kicker: 'Awareness Park',
     accent: 'amber',
-    position: [-40, 0, 46],
+    position: [72.4, 0, -5],
     body: [
       'Heart disease and diabetes are both conditions where risk accumulates quietly and where earlier awareness changes what can be done about it. The obelisks in this park each carry one published figure, with its source and year.',
       'RiskSense does not generate these numbers and does not estimate late-detection rates of its own. They are quoted, attributed and dated so that anyone reading them can go and check them.',
@@ -230,7 +230,7 @@ export const NODES: InfoNode[] = [
     title: 'Risk factors go unnoticed',
     kicker: 'The problem · 01',
     accent: 'ember',
-    position: [40, 0, 50],
+    position: [-57.3, 0, 39.5],
     body: [
       'Raised blood pressure, raised cholesterol and impaired fasting glucose rarely announce themselves. A patient can carry several of them for years and feel entirely well.',
     ],
@@ -242,7 +242,7 @@ export const NODES: InfoNode[] = [
     title: 'Health information is fragmented',
     kicker: 'The problem · 02',
     accent: 'ember',
-    position: [40, 0, 38],
+    position: [17.6, 0, 17.8],
     body: [
       'A blood pressure reading sits in one place, a lipid panel in another, a weight measurement in a third. Nothing assembles them into a single picture at the moment a decision is being made.',
     ],
@@ -254,7 +254,7 @@ export const NODES: InfoNode[] = [
     title: 'Action arrives late',
     kicker: 'The problem · 03',
     accent: 'ember',
-    position: [40, 0, 26],
+    position: [35.3, 0, 17.8],
     body: [
       'Without a prompt, the conversation with a clinician happens after symptoms appear rather than during the window where risk can still be modified.',
     ],
@@ -266,7 +266,7 @@ export const NODES: InfoNode[] = [
     title: 'The RiskSense response',
     kicker: 'Central Plaza',
     accent: 'aether',
-    position: [0, 0, -10],
+    position: [-55.6, 0, -37],
     body: ['RiskSense answers those three problems with three deliberate moves.'],
     bullets: [
       { label: 'Consolidate', text: 'Bring the relevant health information into one structured profile.' },
@@ -283,7 +283,7 @@ export const NODES: InfoNode[] = [
     title: 'Heart Disease risk analysis',
     kicker: 'Supported model',
     accent: 'ember',
-    position: [-40, 0, -31],
+    position: [55.6, 0, -12.6],
     body: [
       'The heart disease model produces a decision-support estimate of cardiovascular risk from a small set of established clinical inputs. Each input is a value a clinician already recognises, which is what makes the output discussable.',
     ],
@@ -303,7 +303,7 @@ export const NODES: InfoNode[] = [
     title: 'Diabetes v1 risk analysis',
     kicker: 'Supported model · adults',
     accent: 'verdant',
-    position: [40, 0, -31],
+    position: [49.7, 0, 43.7],
     body: [
       'Diabetes v1 is an adult risk model. It reads anthropometric and blood-pressure measurements that can be captured without a laboratory, which makes it usable earlier in a patient’s journey.',
     ],
@@ -325,7 +325,7 @@ export const NODES: InfoNode[] = [
     title: 'Medical disclaimer',
     kicker: 'Read this one',
     accent: 'amber',
-    position: [0, 0, -24],
+    position: [55.6, 0, -28.6],
     body: [
       'RiskSense AI provides risk estimates for decision support and awareness. It does not provide a medical diagnosis and it does not replace professional medical advice.',
       'A risk estimate describes a probability across a population with similar characteristics. It does not tell a patient what will happen to them, and it must never be used to start, stop or change treatment without a clinician.',
@@ -341,7 +341,7 @@ export const NODES: InfoNode[] = [
     title: 'Use your supported insurance cover with RiskSense',
     kicker: 'Insurance Pavilion',
     accent: 'plum',
-    position: [0, 0, -58],
+    position: [25.2, 0, -1],
     body: [
       'Patients can activate RiskSense access through a supported insurance provider instead of a subscription. The kiosks around this pavilion show which providers can be selected during registration and access verification.',
       'The provider list is data-driven: providers can be added, disabled or reordered in the backend without redesigning anything. Selecting a provider explains how eligibility works. It never exposes member information.',
@@ -358,7 +358,7 @@ export const NODES: InfoNode[] = [
     title: 'RiskSense complements the clinician',
     kicker: 'Clinician Link',
     accent: 'jade',
-    position: [-40, 0, 13],
+    position: [-55.6, 0, -11.8],
     body: [
       'RiskSense is built to end in a conversation, not to replace one. Every patient supplies the unique RiskSense Clinician ID issued by their clinician during service activation.',
       'The backend verifies that the identifier belongs to an eligible, approved clinician before confirming the relationship. On success the patient sees only the minimum clinician detail needed to confirm they picked the right person. An invalid or unapproved ID produces a clear correction message and creates no relationship at all.',
@@ -373,7 +373,7 @@ export const NODES: InfoNode[] = [
     title: 'Zero-trust by default',
     kicker: 'Security Vault',
     accent: 'verdant',
-    position: [40, 0, 13],
+    position: [-55.6, 0, 13.4],
     body: [
       'Protected requests are never trusted on the strength of where they came from. Every one is authenticated and authorised at the backend.',
     ],
@@ -395,7 +395,7 @@ export const NODES: InfoNode[] = [
     title: 'Three systems, one source of truth',
     kicker: 'Architecture',
     accent: 'azure',
-    position: [-15, 0, -18],
+    position: [64.7, 0, 17.8],
     body: [
       'The website and the mobile application share one backend as the authoritative source for authentication, subscriptions, insurance verification, clinician relationships, entitlements and access state.',
     ],
@@ -424,7 +424,7 @@ export const NODES: InfoNode[] = [
     title: 'How the app hands over to the website',
     kicker: 'Activation flow',
     accent: 'plum',
-    position: [-17, 0, -50],
+    position: [48.7, 0, 17.8],
     body: [
       'Registration begins in the mobile application. After the account and basic profile stage, the app redirects the patient to this website to complete access setup.',
       'The handoff uses a short-lived secure registration token. Sensitive patient information is never placed in the URL. After activation the website returns the patient to the app through a deep link, and the app re-checks entitlement with the backend rather than trusting the browser screen.',
@@ -445,7 +445,7 @@ export const NODES: InfoNode[] = [
     title: 'Failure and recovery',
     kicker: 'Error handling',
     accent: 'amber',
-    position: [17, 0, -50],
+    position: [58, 0, -36.3],
     body: [
       'Activation can fail for ordinary reasons. Each one gets plain user-facing language and a way forward, Try Again or Return to App, never a raw API error.',
     ],
@@ -467,7 +467,7 @@ export const NODES: InfoNode[] = [
     title: 'Frequently asked',
     kicker: 'Information Kiosk',
     accent: 'aether',
-    position: [-16, 0, -34],
+    position: [-50.4, 0, 40.5],
     body: ['The questions patients actually ask, answered without hedging.'],
     bullets: [
       { label: 'Does it diagnose?', text: 'No. RiskSense produces decision-support risk estimates, not diagnoses.' },
@@ -498,7 +498,7 @@ export const NODES: InfoNode[] = [
     title: 'Talk to the team',
     kicker: 'Support',
     accent: 'jade',
-    position: [16, 0, -34],
+    position: [-36.1, 0, 34.6],
     body: [
       'Support opens in your own email application with the subject already filled in.',
       'Please do not include medical details, identifiers or test results in a support email. RiskSense never asks for them there.',
@@ -520,7 +520,7 @@ export const NODES: InfoNode[] = [
     title: 'Complete your access setup',
     kicker: 'Activation Terminal',
     accent: 'aether',
-    position: [0, 0, -76],
+    position: [-8.0, 0, -28.0],
     body: [
       'This is where a patient arriving from the mobile application finishes registration: choose subscription or insurance, verify the clinician, review and activate.',
       'The demonstration runs the whole flow end to end with a clearly-labelled demo payment gateway. No real payment is processed and no card data is stored.',
