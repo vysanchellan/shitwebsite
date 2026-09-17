@@ -30,7 +30,7 @@ function hasWebGL() {
 function NoWebGL() {
   return (
     <div className="flex min-h-[100svh] flex-col items-center justify-center gap-6 bg-ink px-6 text-center">
-      <Mark className="h-10 w-10 text-cyan" />
+      <Mark className="h-10 w-10 text-brass" />
       <h1 className="display-m max-w-xl text-paper text-balance">
         This browser can&rsquo;t render the district.
       </h1>
@@ -39,12 +39,12 @@ function NoWebGL() {
         lost by reading it that way.
       </p>
       <div className="flex flex-wrap items-center justify-center gap-3">
-        <Link href="/overview" className="rounded-full bg-cyan px-6 py-3.5 micro text-ink">
+        <Link href="/overview" className="rounded-full bg-brass px-6 py-3.5 micro text-ink">
           Read the text version
         </Link>
         <Link
           href="/"
-          className="rounded-full border border-white/16 px-6 py-3.5 micro text-paper/75 transition-colors hover:border-cyan/60 hover:text-cyan"
+          className="rounded-full border border-white/16 px-6 py-3.5 micro text-paper/75 transition-colors hover:border-brass/60 hover:text-brass"
         >
           Back to home
         </Link>
@@ -57,16 +57,16 @@ function NoWebGL() {
 function StartCard({ onStart, touch }: { onStart: () => void; touch: boolean }) {
   return (
     <div className="pointer-events-auto absolute inset-0 z-50 flex items-center justify-center bg-ink/78 p-4 backdrop-blur-md">
-      <div className="animate-rise relative w-full max-w-2xl overflow-hidden border border-white/12 bg-navy/90 p-7 sm:p-10">
-        <span className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-cyan to-transparent" aria-hidden="true" />
+      <div className="animate-rise relative w-full max-w-2xl overflow-hidden border border-white/12 bg-graphite/90 p-7 sm:p-10">
+        <span className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brass to-transparent" aria-hidden="true" />
 
         <div className="flex items-center gap-3">
-          <Mark className="h-6 w-6 text-cyan" />
-          <p className="micro text-cyan">RiskSense District</p>
+          <Mark className="h-6 w-6 text-brass" />
+          <p className="micro text-brass">RiskSense District</p>
         </div>
 
         <h1 className="mt-6 display-l text-paper text-balance">
-          Walk it, don&rsquo;t <span className="editorial text-cyan">scroll</span> it.
+          Walk it, don&rsquo;t <span className="editorial text-brass">scroll</span> it.
         </h1>
 
         <p className="mt-5 max-w-[56ch] text-[0.98rem] leading-[1.68] text-paper/62">
@@ -91,8 +91,8 @@ function StartCard({ onStart, touch }: { onStart: () => void; touch: boolean }) 
                 { k: 'Map', v: 'M · Esc releases the cursor' },
               ]
           ).map((row) => (
-            <div key={row.k} className="flex items-baseline gap-4 bg-navy p-4">
-              <dt className="micro-sm w-12 shrink-0 text-cyan/60">{row.k}</dt>
+            <div key={row.k} className="flex items-baseline gap-4 bg-graphite p-4">
+              <dt className="micro-sm w-12 shrink-0 text-brass/60">{row.k}</dt>
               <dd className="text-[0.88rem] text-paper/72">{row.v}</dd>
             </div>
           ))}
@@ -102,7 +102,7 @@ function StartCard({ onStart, touch }: { onStart: () => void; touch: boolean }) 
           <button
             type="button"
             onClick={onStart}
-            className="group inline-flex items-center gap-3 rounded-full bg-cyan px-7 py-4 micro text-ink transition-transform duration-500 ease-[var(--ease-out-expo)] hover:scale-[1.02]"
+            className="group inline-flex items-center gap-3 rounded-full bg-brass px-7 py-4 micro text-ink transition-transform duration-500 ease-[var(--ease-out-expo)] hover:scale-[1.02]"
           >
             Enter the district
             <svg viewBox="0 0 14 14" className="h-3 w-3 transition-transform duration-500 group-hover:translate-x-1" fill="none" aria-hidden="true">
@@ -112,7 +112,7 @@ function StartCard({ onStart, touch }: { onStart: () => void; touch: boolean }) 
 
           <Link
             href="/overview"
-            className="rounded-full border border-white/16 px-7 py-4 micro text-paper/70 transition-colors hover:border-cyan/60 hover:text-cyan"
+            className="rounded-full border border-white/16 px-7 py-4 micro text-paper/70 transition-colors hover:border-brass/60 hover:text-brass"
           >
             Read it as a document
           </Link>
@@ -131,8 +131,8 @@ function StartCard({ onStart, touch }: { onStart: () => void; touch: boolean }) 
 function PausedCard({ onResume }: { onResume: () => void }) {
   return (
     <div className="pointer-events-auto absolute inset-0 z-40 flex items-center justify-center bg-ink/70 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-sm border border-white/12 bg-navy/90 p-7 text-center">
-        <p className="micro text-cyan">Paused</p>
+      <div className="w-full max-w-sm border border-white/12 bg-graphite/90 p-7 text-center">
+        <p className="micro text-brass">Paused</p>
         <h2 className="mt-4 display-m text-paper">Take your time.</h2>
         <p className="mt-4 text-[0.9rem] leading-[1.65] text-paper/55">
           The district is still there. Click to pick the cursor back up and keep walking.
@@ -140,13 +140,13 @@ function PausedCard({ onResume }: { onResume: () => void }) {
         <button
           type="button"
           onClick={onResume}
-          className="mt-7 w-full rounded-full bg-cyan px-6 py-3.5 micro text-ink"
+          className="mt-7 w-full rounded-full bg-brass px-6 py-3.5 micro text-ink"
         >
           Resume
         </button>
         <Link
           href="/"
-          className="mt-3 block w-full rounded-full border border-white/14 px-6 py-3.5 micro text-paper/65 transition-colors hover:border-cyan/50 hover:text-cyan"
+          className="mt-3 block w-full rounded-full border border-white/14 px-6 py-3.5 micro text-paper/65 transition-colors hover:border-brass/50 hover:text-brass"
         >
           Exit to the website
         </Link>
@@ -368,7 +368,7 @@ export function WorldShell() {
 
       {/* Click-to-look hint when the lock could not be taken */}
       {started && !paused && !locked && !touch && (
-        <p className="pointer-events-none absolute top-1/2 left-1/2 mt-10 hidden -translate-x-1/2 rounded-full border border-white/12 bg-ink/70 px-4 py-2 micro-sm text-paper/45 backdrop-blur-md sm:block">
+        <p className="pointer-events-none absolute bottom-28 left-1/2 hidden -translate-x-1/2 border border-paper/12 bg-ink/75 px-4 py-2 micro-sm text-paper/45 backdrop-blur-md sm:block">
           Click to capture the cursor · or drag to look
         </p>
       )}

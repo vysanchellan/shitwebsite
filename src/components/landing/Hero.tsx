@@ -35,7 +35,7 @@ export function Hero() {
       />
 
       <div className="mx-auto w-full max-w-[1800px] px-5 sm:px-8 lg:px-12">
-        <p className="micro text-cyan">{HERO.eyebrow}</p>
+        <p className="micro text-brass">{HERO.eyebrow}</p>
 
         <h1 className="mt-8 display-xl text-paper sm:mt-12">
           {HERO.headline.map((line, i) => (
@@ -43,7 +43,7 @@ export function Hero() {
               <RevealWords
                 text={line}
                 delay={180 + i * 130}
-                className={i === 2 ? 'editorial font-normal text-cyan' : ''}
+                className={i === 2 ? 'editorial font-normal text-brass' : ''}
               />
             </span>
           ))}
@@ -63,7 +63,7 @@ export function Hero() {
           >
             <Link
               href="/world"
-              className="group flex flex-1 items-center justify-between gap-8 bg-cyan px-6 py-4 micro text-ink transition-colors duration-400 hover:bg-paper"
+              className="group flex flex-1 items-center justify-between gap-8 bg-brass px-6 py-4 micro text-ink transition-colors duration-400 hover:bg-paper"
             >
               How RiskSense works
               <svg
@@ -84,7 +84,7 @@ export function Hero() {
 
             <Link
               href="/overview#analysis"
-              className="flex flex-1 items-center justify-between gap-8 bg-ink px-6 py-4 micro text-paper/80 transition-colors duration-400 hover:text-cyan"
+              className="flex flex-1 items-center justify-between gap-8 bg-ink px-6 py-4 micro text-paper/80 transition-colors duration-400 hover:text-brass"
             >
               Risk analysis
               <span aria-hidden="true" className="text-paper/30">

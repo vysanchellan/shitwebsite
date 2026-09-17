@@ -21,7 +21,7 @@ function InsurerRoster() {
             }`}
           >
             <span
-              className="grid h-8 w-8 place-items-center rounded-lg font-display text-[0.7rem] font-semibold"
+              className="grid h-8 w-8 place-items-center rounded-lg font-display text-[0.7rem] font-normal"
               style={{ background: `${ins.hue}22`, color: ins.hue, boxShadow: `inset 0 0 0 1px ${ins.hue}44` }}
             >
               {ins.mark}
@@ -74,7 +74,7 @@ export function Panel() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="rs-panel-title"
-        className="animate-rise relative flex max-h-[86svh] w-full max-w-3xl flex-col overflow-hidden border border-white/12 bg-navy/92 shadow-[0_50px_140px_-40px_rgba(0,0,0,0.95)] backdrop-blur-xl"
+        className="animate-rise relative flex max-h-[86svh] w-full max-w-3xl flex-col overflow-hidden border border-white/12 bg-graphite/92 shadow-[0_50px_140px_-40px_rgba(0,0,0,0.95)] backdrop-blur-xl"
       >
         {/* Accent rail */}
         <span
@@ -94,10 +94,10 @@ export function Panel() {
 
             <h2
               id="rs-panel-title"
-              className="mt-3.5 font-display text-[1.5rem] leading-[1.08] font-semibold tracking-[-0.03em] text-paper text-balance sm:text-[2.1rem]"
+              className="mt-3.5 font-display text-[1.5rem] leading-[1.08] font-normal tracking-[-0.03em] text-paper text-balance sm:text-[2.1rem]"
             >
               {node.step && (
-                <span className="mr-3 font-mono text-[0.85em] opacity-40">
+                <span className="mr-3 font-sans text-[0.85em] opacity-40">
                   {String(node.step).padStart(2, '0')}
                 </span>
               )}
@@ -129,7 +129,7 @@ export function Panel() {
             <dl className="mt-7 border-t border-white/10">
               {node.bullets.map((b) => (
                 <div key={b.label} className="flex flex-col gap-1 border-b border-white/10 py-3.5 sm:flex-row sm:gap-6">
-                  <dt className="shrink-0 font-display text-[0.9rem] font-semibold tracking-[-0.01em] text-paper sm:w-52">
+                  <dt className="shrink-0 font-display text-[0.9rem] font-normal tracking-[-0.01em] text-paper sm:w-52">
                     {b.label}
                   </dt>
                   <dd className="text-[0.88rem] leading-[1.6] text-paper/58">{b.text}</dd>

@@ -34,7 +34,7 @@ export function Nav() {
     <>
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-cyan focus:px-5 focus:py-2.5 focus:text-ink focus:micro"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-brass focus:px-5 focus:py-2.5 focus:text-ink focus:micro"
       >
         Skip to content
       </a>
@@ -76,8 +76,8 @@ export function Nav() {
             aria-label="RiskSense AI — home"
             className="flex items-center gap-2.5 justify-self-center text-paper transition-opacity hover:opacity-60"
           >
-            <Mark className="h-4 w-4 text-cyan" />
-            <span className="font-display text-[0.95rem] font-semibold tracking-[0.34em] uppercase">
+            <Mark className="h-4 w-4 text-brass" />
+            <span className="font-display text-[0.95rem] font-normal tracking-[0.34em] uppercase">
               RiskSense
             </span>
           </Link>
@@ -85,7 +85,7 @@ export function Nav() {
           {/* Action */}
           <Link
             href="/world"
-            className="justify-self-end border border-paper/25 px-4 py-2.5 micro text-paper transition-colors duration-400 hover:border-cyan hover:bg-cyan hover:text-ink sm:px-6"
+            className="justify-self-end border border-paper/25 px-4 py-2.5 micro text-paper transition-colors duration-400 hover:border-brass hover:bg-brass hover:text-ink sm:px-6"
           >
             <span className="hidden sm:inline">Enter the district</span>
             <span className="sm:hidden">Enter</span>
@@ -108,13 +108,13 @@ export function Nav() {
                 <Link
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="group flex items-baseline gap-5 py-3 transition-colors hover:text-cyan sm:py-4"
+                  className="group flex items-baseline gap-5 py-3 transition-colors hover:text-brass sm:py-4"
                   style={{
                     transform: open ? 'none' : 'translateY(105%)',
                     transition: `transform 0.75s var(--ease-out-expo) ${i * 40}ms, color 0.3s`,
                   }}
                 >
-                  <span className="micro-sm w-7 shrink-0 text-cyan/50">
+                  <span className="micro-sm w-7 shrink-0 text-brass/50">
                     {String(i + 1).padStart(2, '0')}
                   </span>
                   <span className="display-m">{item.label}</span>
@@ -128,7 +128,7 @@ export function Nav() {
             <Link
               href="/world"
               onClick={() => setOpen(false)}
-              className="flex items-center justify-between bg-cyan px-6 py-5 text-ink"
+              className="flex items-center justify-between bg-brass px-6 py-5 text-ink"
             >
               <span className="micro">Enter the district</span>
               <span className="micro-sm opacity-60">3D · Interactive</span>

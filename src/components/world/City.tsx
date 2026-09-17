@@ -38,49 +38,90 @@ const SKY_VERT = /* glsl */ `
   }
 `;
 
+/**
+ * A late-evening sky over a floating city: indigo overhead, a long amber band
+ * at the horizon where the sun is going down, and slow cloud sheets drawn with
+ * value noise so the vault is never a flat gradient.
+ */
 const SKY_FRAG = /* glsl */ `
   varying vec3 vWorld;
-  uniform vec3 uTop;
+  uniform float uTime;
+  uniform vec3 uZenith;
   uniform vec3 uMid;
   uniform vec3 uHorizon;
   uniform vec3 uGround;
   uniform vec3 uSunDir;
   uniform vec3 uSun;
 
+  float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+
+  float noise(vec2 p) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    f = f * f * (3.0 - 2.0 * f);
+    return mix(
+      mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+      mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x),
+      f.y);
+  }
+
+  float fbm(vec2 p) {
+    float v = 0.0, a = 0.5;
+    for (int i = 0; i < 5; i++) { v += a * noise(p); p *= 2.05; a *= 0.5; }
+    return v;
+  }
+
   void main() {
     vec3 dir = normalize(vWorld);
     float h = dir.y;
 
-    vec3 col = mix(uHorizon, uMid, smoothstep(0.0, 0.34, h));
-    col = mix(col, uTop, smoothstep(0.24, 0.85, h));
-    col = mix(uGround, col, smoothstep(-0.14, 0.02, h));
+    vec3 col = mix(uHorizon, uMid, smoothstep(0.0, 0.30, h));
+    col = mix(col, uZenith, smoothstep(0.18, 0.78, h));
+    col = mix(uGround, col, smoothstep(-0.12, 0.015, h));
 
-    // A low dusk sun behind the institutes.
-    float sun = pow(max(dot(dir, normalize(uSunDir)), 0.0), 34.0);
-    float bloom = pow(max(dot(dir, normalize(uSunDir)), 0.0), 3.5) * 0.3;
-    col += uSun * (sun + bloom) * smoothstep(-0.08, 0.16, h);
+    // The sun, low and large, with a wide falloff along the horizon band.
+    float sd = max(dot(dir, normalize(uSunDir)), 0.0);
+    col += uSun * pow(sd, 220.0) * 2.4;
+    col += uSun * pow(sd, 7.0) * 0.5;
+    col += uSun * pow(sd, 2.0) * 0.14;
+
+    // Cloud sheets: flattened in y so they lie down like real stratus.
+    vec2 cp = vec2(atan(dir.z, dir.x) * 1.6, h * 5.2);
+    float cloud = fbm(cp * 1.5 + vec2(uTime * 0.006, 0.0));
+    cloud = smoothstep(0.48, 0.92, cloud) * smoothstep(-0.02, 0.22, h) * smoothstep(0.85, 0.3, h);
+
+    vec3 cloudLit = mix(vec3(0.16, 0.18, 0.28), uSun * 1.25, pow(sd, 1.6) * 0.8 + 0.18);
+    col = mix(col, cloudLit, cloud * 0.72);
 
     gl_FragColor = vec4(col, 1.0);
   }
 `;
 
 function Sky() {
+  const mat = useRef<THREE.ShaderMaterial>(null);
+
   const uniforms = useMemo(
     () => ({
-      uTop: { value: new THREE.Color('#050a1a') },
-      uMid: { value: new THREE.Color('#102144') },
-      uHorizon: { value: new THREE.Color('#5d3c6e') },
-      uGround: { value: new THREE.Color('#050810') },
-      uSunDir: { value: new THREE.Vector3(-0.35, 0.09, -1).normalize() },
-      uSun: { value: new THREE.Color('#ff9d6b') },
+      uTime: { value: 0 },
+      uZenith: { value: new THREE.Color('#121a38') },
+      uMid: { value: new THREE.Color('#33507e') },
+      uHorizon: { value: new THREE.Color('#c9764a') },
+      uGround: { value: new THREE.Color('#0a0a12') },
+      uSunDir: { value: new THREE.Vector3(-0.42, 0.055, -1).normalize() },
+      uSun: { value: new THREE.Color('#ffb168') },
     }),
     [],
   );
 
+  useFrame((_, dt) => {
+    uniforms.uTime.value += dt;
+  });
+
   return (
     <mesh scale={[-1, 1, 1]} frustumCulled={false}>
-      <sphereGeometry args={[1200, 32, 24]} />
+      <sphereGeometry args={[1200, 48, 32]} />
       <shaderMaterial
+        ref={mat}
         vertexShader={SKY_VERT}
         fragmentShader={SKY_FRAG}
         uniforms={uniforms}
@@ -124,7 +165,7 @@ function Ground() {
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, -24]} receiveShadow>
         <planeGeometry args={[1100, 1100]} />
-        <meshStandardMaterial map={ground} roughness={0.78} metalness={0.28} color="#131c31" />
+        <meshStandardMaterial map={ground} roughness={0.78} metalness={0.22} color="#3a3038" />
       </mesh>
 
       {ROADS.map((r, i) => (
@@ -144,7 +185,7 @@ function Ground() {
             map-repeat={[1, (r.size[0] > r.size[1] ? r.size[0] : r.size[1]) / 14]}
             roughness={0.38}
             metalness={0.55}
-            color="#33486e"
+            color="#5a4a52"
           />
         </mesh>
       ))}
@@ -152,7 +193,7 @@ function Ground() {
       {GREENS.map((g, i) => (
         <mesh key={i} rotation={[-Math.PI / 2, 0, 0]} position={[g.pos[0], 0.01, g.pos[1]]} receiveShadow>
           <planeGeometry args={[g.size[0], g.size[1]]} />
-          <meshStandardMaterial color="#0e3326" roughness={0.95} metalness={0} />
+          <meshStandardMaterial color="#27502f" roughness={0.95} metalness={0} />
         </mesh>
       ))}
     </group>

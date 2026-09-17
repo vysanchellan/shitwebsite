@@ -2,41 +2,44 @@
 
 /* ==========================================================================
    RiskSense AI — design tokens
-   Deep navy for trust and structure, medical blue and teal/cyan accents, a
-   warm off-white paper, and status colours reserved strictly for status.
+
+   The register is a marque, not a dashboard: near-black, warm bone, one
+   champagne metal and one deep red. A single cool "system" blue exists for the
+   district, used sparingly enough that it reads as light rather than as chrome.
    ========================================================================== */
 
 @theme {
   /* Surfaces */
-  --color-ink: #04070f;
-  --color-void: #02040a;
-  --color-navy: #071226;
-  --color-navy-2: #0c1e3a;
-  --color-navy-3: #14314f;
-  --color-paper: #f5f4f0;
-  --color-paper-2: #ebe9e3;
-  --color-line: #d9d6cd;
+  --color-ink: #08070a;
+  --color-void: #030204;
+  --color-graphite: #14131a;
+  --color-graphite-2: #1f1d26;
+  --color-paper: #efebe3;
+  --color-paper-2: #e2ddd2;
+  --color-line: #cdc7ba;
 
-  /* Brand */
-  --color-cyan: #45d7e8;
-  --color-teal: #1fb8a6;
-  --color-medical: #2f6bff;
+  /* Metals */
+  --color-brass: #c2a36b;
+  --color-bronze: #8c6e45;
 
-  /* Status */
-  --color-ok: #2fc27a;
-  --color-warn: #e9a63c;
-  --color-risk: #ff6a55;
-  --color-violet: #9a7cff;
+  /* Signature */
+  --color-ember: #b33a28;
+  --color-aether: #8fd3e6;
+  --color-plum: #8e7aa8;
+
+  /* Status, muted to sit inside the palette rather than shout over it */
+  --color-ok: #6f9268;
+  --color-warn: #c08a3e;
+  --color-risk: #b33a28;
 
   /* Type */
-  --font-display: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
-  --font-editorial: var(--font-instrument), ui-serif, Georgia, serif;
-  --font-mono: var(--font-mono-face), ui-monospace, SFMono-Regular, monospace;
+  --font-display: var(--font-bodoni), ui-serif, Georgia, 'Times New Roman', serif;
+  --font-sans: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
 
-  /* Motion */
+  /* Motion — long, eased, cinematic */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+  --ease-cine: cubic-bezier(0.22, 0.61, 0.24, 1);
 }
 
 /* ==========================================================================
@@ -56,6 +59,7 @@ body {
   background: var(--color-ink);
   color: var(--color-paper);
   font-family: var(--font-sans);
+  font-weight: 300;
   font-synthesis-weight: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -63,101 +67,107 @@ body {
 }
 
 ::selection {
-  background: var(--color-cyan);
+  background: var(--color-brass);
   color: var(--color-ink);
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-cyan);
-  outline-offset: 3px;
-  border-radius: 2px;
+  outline: 1px solid var(--color-brass);
+  outline-offset: 4px;
 }
 
-/* A thin, restrained scrollbar so long legal pages stay editorial. */
 @supports selector(::-webkit-scrollbar) {
   ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 9px;
+    height: 9px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: color-mix(in oklab, var(--color-cyan) 35%, transparent);
-    border-radius: 99px;
+    background: color-mix(in oklab, var(--color-brass) 40%, transparent);
     border: 3px solid transparent;
     background-clip: content-box;
   }
 }
 
 /* ==========================================================================
-   Type utilities — the luxury register: scale, tight tracking, hairlines
+   Type
+
+   Bodoni for the marque voice, Jost for everything that has a job to do. The
+   labels are wide-tracked caps in the sans, never a monospace — monospace is
+   what made the old pass read as a console.
    ========================================================================== */
 
 @utility display-xl {
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(2.75rem, 11vw, 11rem);
-  line-height: 0.86;
-  letter-spacing: -0.045em;
+  font-weight: 400;
+  font-size: clamp(2.9rem, 11.5vw, 12rem);
+  line-height: 0.88;
+  letter-spacing: -0.028em;
 }
 
 @utility display-l {
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(2.1rem, 6.4vw, 5.25rem);
-  line-height: 0.92;
-  letter-spacing: -0.04em;
+  font-weight: 400;
+  font-size: clamp(2.2rem, 6.6vw, 5.5rem);
+  line-height: 0.96;
+  letter-spacing: -0.022em;
 }
 
 @utility display-m {
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(1.6rem, 3.4vw, 2.75rem);
-  line-height: 1.02;
-  letter-spacing: -0.03em;
+  font-weight: 400;
+  font-size: clamp(1.7rem, 3.6vw, 2.9rem);
+  line-height: 1.06;
+  letter-spacing: -0.016em;
 }
 
+/** The marque's italic voice — used for one phrase per composition, no more. */
 @utility editorial {
-  font-family: var(--font-editorial);
+  font-family: var(--font-display);
   font-weight: 400;
   font-style: italic;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 @utility micro {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.6875rem;
+  font-weight: 400;
   line-height: 1;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  font-weight: 500;
 }
 
 @utility micro-sm {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.625rem;
+  font-weight: 400;
   line-height: 1;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
+}
+
+/** Long-form reading size, a touch larger and looser than the old grotesk. */
+@utility prose-body {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: 1.02rem;
+  line-height: 1.78;
+  letter-spacing: 0.002em;
 }
 
 @utility rule {
   height: 1px;
   width: 100%;
   background: currentColor;
-  opacity: 0.18;
+  opacity: 0.16;
 }
 
 /* ==========================================================================
    Motion
    ========================================================================== */
-
-@keyframes rs-ecg {
-  to {
-    stroke-dashoffset: -1000;
-  }
-}
 
 @keyframes rs-marquee {
   to {
@@ -165,24 +175,25 @@ body {
   }
 }
 
-@keyframes rs-pulse-ring {
-  0% {
-    transform: scale(0.85);
-    opacity: 0.7;
-  }
-  100% {
-    transform: scale(2.1);
-    opacity: 0;
-  }
-}
-
 @keyframes rs-rise {
   from {
     opacity: 0;
-    transform: translate3d(0, 1.6rem, 0);
+    transform: translate3d(0, 1.4rem, 0);
   }
   to {
     opacity: 1;
+    transform: none;
+  }
+}
+
+/** Type arriving from behind a mask, the way a title card resolves. */
+@keyframes rs-unmask {
+  from {
+    clip-path: inset(0 0 100% 0);
+    transform: translate3d(0, 0.6em, 0);
+  }
+  to {
+    clip-path: inset(-0.25em -0.25em -0.25em -0.25em);
     transform: none;
   }
 }
@@ -207,50 +218,57 @@ body {
   }
 }
 
+@keyframes rs-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -0.5rem, 0);
+  }
+}
+
 @utility animate-marquee {
-  animation: rs-marquee 38s linear infinite;
+  animation: rs-marquee 48s linear infinite;
 }
 
 @utility animate-rise {
-  animation: rs-rise 0.9s var(--ease-out-expo) both;
+  animation: rs-rise 1.2s var(--ease-cine) both;
+}
+
+@utility animate-unmask {
+  animation: rs-unmask 1.4s var(--ease-cine) both;
 }
 
 @utility animate-blink {
-  animation: rs-blink 1.6s steps(2, end) infinite;
+  animation: rs-blink 2.4s steps(2, end) infinite;
 }
 
 /* ==========================================================================
-   Components
+   Cinema
    ========================================================================== */
 
-/*
- * The layout grid, made visible. Vertical hairlines on the same twelve-column
- * rhythm the content sits on — an editorial device, not a sci-fi mesh.
- */
-@utility column-rules {
-  background-image: repeating-linear-gradient(
-    to right,
-    color-mix(in oklab, var(--color-paper) 7%, transparent) 0 1px,
-    transparent 1px calc(100% / 6)
-  );
-  background-position: 0 0;
+/** Letterbox bars. Used on the threshold so it reads as a sequence, not a UI. */
+@utility letterbox {
+  position: relative;
 }
 
-@utility column-rules-ink {
-  background-image: repeating-linear-gradient(
-    to right,
-    color-mix(in oklab, var(--color-navy) 9%, transparent) 0 1px,
-    transparent 1px calc(100% / 6)
-  );
+@utility letterbox-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: clamp(2rem, 7vh, 5rem);
+  background: var(--color-void);
+  z-index: 20;
+  pointer-events: none;
 }
 
 /* Reveal-on-scroll, driven by IntersectionObserver in Reveal.tsx. */
 [data-reveal] {
   opacity: 0;
-  transform: translate3d(0, 2rem, 0);
+  transform: translate3d(0, 1.6rem, 0);
   transition:
-    opacity 1s var(--ease-out-expo),
-    transform 1s var(--ease-out-expo);
+    opacity 1.3s var(--ease-cine),
+    transform 1.3s var(--ease-cine);
   transition-delay: var(--reveal-delay, 0ms);
 }
 

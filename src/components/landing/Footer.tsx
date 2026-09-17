@@ -45,9 +45,9 @@ export function Footer() {
         <div className="grid gap-12 lg:grid-cols-[1.4fr_2fr] lg:gap-20">
           <div>
             <Link href="/" className="inline-flex items-center gap-3 text-paper" aria-label="RiskSense AI — home">
-              <Mark className="h-8 w-8 text-cyan" />
-              <span className="font-display text-xl font-semibold tracking-[-0.03em]">
-                RiskSense<span className="text-cyan"> AI</span>
+              <Mark className="h-8 w-8 text-brass" />
+              <span className="font-display text-xl font-normal tracking-[-0.03em]">
+                RiskSense<span className="text-brass"> AI</span>
               </span>
             </Link>
 
@@ -60,7 +60,7 @@ export function Footer() {
           <nav aria-label="Footer" className="grid grid-cols-2 gap-8 sm:grid-cols-4">
             {COLUMNS.map((col) => (
               <div key={col.title}>
-                <h2 className="micro-sm text-cyan/70">{col.title}</h2>
+                <h2 className="micro-sm text-brass/70">{col.title}</h2>
                 <ul className="mt-5 space-y-3">
                   {col.links.map((link) => (
                     <li key={link.label}>

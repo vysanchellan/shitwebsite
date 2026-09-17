@@ -4,8 +4,8 @@ import { SectionHead } from '@/components/ui/SectionHead';
 
 export function Analysis() {
   const models = [
-    { node: NODES.find((n) => n.id === 'heart-model')!, tint: 'var(--color-risk)' },
-    { node: NODES.find((n) => n.id === 'diabetes-model')!, tint: 'var(--color-teal)' },
+    { node: NODES.find((n) => n.id === 'heart-model')!, tint: 'var(--color-ember)' },
+    { node: NODES.find((n) => n.id === 'diabetes-model')!, tint: 'var(--color-brass)' },
   ];
   const disclaimer = NODES.find((n) => n.id === 'disclaimer')!;
 
@@ -23,7 +23,7 @@ export function Analysis() {
           title={
             <>
               Two models. Inputs a clinician already{' '}
-              <span className="editorial text-cyan">recognises</span>.
+              <span className="editorial text-brass">recognises</span>.
             </>
           }
           lede="Every input below is a value that appears in ordinary clinical practice. That is deliberate: an estimate built from familiar numbers is an estimate a clinician can interrogate."
@@ -34,7 +34,7 @@ export function Analysis() {
             <Reveal
               key={m.node.id}
               delay={i * 130}
-              className="group relative overflow-hidden border border-white/10 bg-gradient-to-b from-navy/55 to-ink p-7 transition-colors duration-600 hover:border-white/20 sm:p-10"
+              className="group relative overflow-hidden border border-white/10 bg-gradient-to-b from-graphite/55 to-ink p-7 transition-colors duration-600 hover:border-white/20 sm:p-10"
             >
               <div
                 className="pointer-events-none absolute -top-28 -right-28 h-64 w-64 rounded-full opacity-20 transition-opacity duration-700 group-hover:opacity-40"
@@ -45,7 +45,7 @@ export function Analysis() {
               <div className="relative flex items-start justify-between gap-6">
                 <div>
                   <p className="micro-sm text-paper/38">{m.node.kicker}</p>
-                  <h3 className="mt-3 font-display text-[1.8rem] leading-[1.05] font-semibold tracking-[-0.035em] text-paper sm:text-[2.3rem]">
+                  <h3 className="mt-3 font-display text-[1.8rem] leading-[1.05] font-normal tracking-[-0.035em] text-paper sm:text-[2.3rem]">
                     {m.node.title}
                   </h3>
                 </div>
@@ -68,7 +68,7 @@ export function Analysis() {
                     className="flex items-baseline justify-between gap-5 border-b border-white/10 py-3.5"
                   >
                     <dt className="text-[0.92rem] text-paper/82">{b.label}</dt>
-                    <dd className="shrink-0 font-mono text-[0.68rem] tracking-[0.1em] text-paper/42 uppercase">
+                    <dd className="shrink-0 font-sans text-[0.68rem] tracking-[0.1em] text-paper/42 uppercase">
                       {b.text}
                     </dd>
                   </div>

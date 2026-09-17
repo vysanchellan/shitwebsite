@@ -4,6 +4,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Bloom, EffectComposer, Vignette } from '@react-three/postprocessing';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import { Aincrad } from './Aincrad';
 import { City } from './City';
 import { CityBlocks } from './CityBlocks';
 import { Drones, HeartHologram, Helix, MoleculeHologram, Motes, Pedestrians, PulseArches } from './Life';
@@ -18,11 +19,15 @@ export type Quality = {
   drones: number;
   motes: number;
   multisampling: number;
+  /** Falling blossom, the heaviest per-frame cost in the decorative layer. */
+  petals: number;
+  /** Floating islands, which also sets the size of the bird flock. */
+  islands: number;
 };
 
 export function detectQuality(): Quality {
   if (typeof window === 'undefined') {
-    return { shadows: false, dpr: [1, 1.5], pedestrians: 16, drones: 7, motes: 500, multisampling: 0 };
+    return { shadows: false, dpr: [1, 1.5], pedestrians: 16, drones: 7, motes: 500, multisampling: 0, petals: 420, islands: 9 };
   }
   const touch = window.matchMedia('(pointer: coarse)').matches;
   const cores = navigator.hardwareConcurrency ?? 4;
@@ -30,8 +35,8 @@ export function detectQuality(): Quality {
   const low = touch || small || cores <= 4;
 
   return low
-    ? { shadows: false, dpr: [1, 1.4], pedestrians: 8, drones: 4, motes: 220, multisampling: 0 }
-    : { shadows: true, dpr: [1, 1.7], pedestrians: 16, drones: 7, motes: 500, multisampling: 2 };
+    ? { shadows: false, dpr: [1, 1.4], pedestrians: 8, drones: 4, motes: 220, multisampling: 0, petals: 150, islands: 5 }
+    : { shadows: true, dpr: [1, 1.7], pedestrians: 16, drones: 7, motes: 500, multisampling: 2, petals: 420, islands: 9 };
 }
 
 /**
@@ -55,15 +60,15 @@ function Sun({ shadows }: { shadows: boolean }) {
     if (!light.current) return;
     const [px, pz] = useWorld.getState().player;
     target.current.position.set(px, 0, pz);
-    light.current.position.set(px - 34, 46, pz - 40);
+    light.current.position.set(px - 52, 40, pz - 64);
     light.current.target = target.current;
   });
 
   return (
     <directionalLight
       ref={light}
-      color="#89a9e0"
-      intensity={0.55}
+      color="#ffb884"
+      intensity={0.62}
       castShadow={shadows}
       shadow-mapSize={[1024, 1024]}
       shadow-camera-near={1}
@@ -83,7 +88,7 @@ function Atmosphere() {
 
   useEffect(() => {
     const prev = scene.fog;
-    scene.fog = new THREE.FogExp2('#0b1228', 0.0042);
+    scene.fog = new THREE.FogExp2('#2a2740', 0.0034);
     return () => {
       scene.fog = prev;
     };
@@ -97,8 +102,8 @@ function Contents({ quality }: { quality: Quality }) {
     <>
       <Atmosphere />
 
-      <ambientLight intensity={0.3} color="#5d84c4" />
-      <hemisphereLight args={['#2e4d80', '#05080f', 0.35]} />
+      <ambientLight intensity={0.34} color="#6a7bab" />
+      <hemisphereLight args={['#4a5f92', '#100c14', 0.45]} />
       <Sun shadows={quality.shadows} />
 
       <City />
@@ -110,6 +115,8 @@ function Contents({ quality }: { quality: Quality }) {
       <Drones count={quality.drones} />
       <Pedestrians count={quality.pedestrians} />
       <Motes count={quality.motes} />
+
+      <Aincrad quality={quality} />
 
       <Markers />
       <Player />
@@ -129,7 +136,7 @@ export function Scene({ quality }: { quality: Quality }) {
         gl.toneMappingExposure = 1.05;
       }}
     >
-      <color attach="background" args={['#070c1a']} />
+      <color attach="background" args={['#121a30']} />
       <Contents quality={quality} />
 
       <EffectComposer multisampling={quality.multisampling}>

@@ -10,7 +10,7 @@ const FACTORS = [
 ];
 
 const TONE: Record<string, string> = {
-  risk: 'var(--color-risk)',
+  risk: 'var(--color-ember)',
   warn: 'var(--color-warn)',
   ok: 'var(--color-ok)',
 };
@@ -45,8 +45,8 @@ export function PhoneMock() {
     <div ref={ref} className="relative mx-auto w-full max-w-[19rem]">
       {/* Halo */}
 
-      <div className="relative border border-white/12 bg-gradient-to-b from-navy-3/80 to-ink p-2.5 shadow-[0_40px_90px_-30px_rgba(0,0,0,0.9)]">
-        <div className="relative aspect-[9/19.2] overflow-hidden bg-gradient-to-b from-navy-2 via-navy to-ink">
+      <div className="relative border border-white/12 bg-gradient-to-b from-graphite-2/80 to-ink p-2.5 shadow-[0_40px_90px_-30px_rgba(0,0,0,0.9)]">
+        <div className="relative aspect-[9/19.2] overflow-hidden bg-gradient-to-b from-graphite-2 via-graphite to-ink">
           {/* Status bar + island */}
           <div className="flex items-center justify-between px-5 pt-3.5">
             <span className="micro-sm text-paper/55">9:41</span>
@@ -59,8 +59,8 @@ export function PhoneMock() {
 
           {/* Header */}
           <div className="mt-5 px-5">
-            <p className="micro-sm text-cyan/70">Risk Analysis</p>
-            <h3 className="mt-1.5 font-display text-lg leading-tight font-semibold text-paper">
+            <p className="micro-sm text-brass/70">Risk Analysis</p>
+            <h3 className="mt-1.5 font-display text-lg leading-tight font-normal text-paper">
               Heart Disease
             </h3>
           </div>
@@ -91,15 +91,15 @@ export function PhoneMock() {
               />
               <defs>
                 <linearGradient id="rs-gauge" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="var(--color-cyan)" />
+                  <stop offset="0%" stopColor="var(--color-brass)" />
                   <stop offset="55%" stopColor="var(--color-warn)" />
-                  <stop offset="100%" stopColor="var(--color-risk)" />
+                  <stop offset="100%" stopColor="var(--color-ember)" />
                 </linearGradient>
               </defs>
             </svg>
 
             <div className="absolute inset-0 flex flex-col items-center justify-center pt-1">
-              <span className="font-display text-[2.4rem] leading-none font-semibold tracking-[-0.04em] text-paper">
+              <span className="font-display text-[2.4rem] leading-none font-normal tracking-[-0.04em] text-paper">
                 Mod
               </span>
               <span className="mt-1.5 micro-sm text-warn">Elevated band</span>
@@ -114,7 +114,7 @@ export function PhoneMock() {
                 <li key={f.label}>
                   <div className="flex items-baseline justify-between gap-2">
                     <span className="truncate text-[0.66rem] text-paper/72">{f.label}</span>
-                    <span className="shrink-0 font-mono text-[0.6rem] text-paper/45">
+                    <span className="shrink-0 font-sans text-[0.6rem] text-paper/45">
                       {f.value}
                     </span>
                   </div>
@@ -134,8 +134,8 @@ export function PhoneMock() {
           </div>
 
           {/* Clinician row */}
-          <div className="mx-5 mt-4 flex items-center gap-2.5 border border-cyan/18 bg-cyan/8 px-3 py-2.5">
-            <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-cyan/20 font-mono text-[0.55rem] text-cyan">
+          <div className="mx-5 mt-4 flex items-center gap-2.5 border border-brass/18 bg-brass/8 px-3 py-2.5">
+            <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-brass/20 font-sans text-[0.55rem] text-brass">
               RS
             </span>
             <span className="text-[0.62rem] leading-tight text-paper/70">
@@ -148,7 +148,7 @@ export function PhoneMock() {
             {['Home', 'Vitals', 'Risk', 'Profile'].map((t, i) => (
               <span
                 key={t}
-                className={`micro-sm ${i === 2 ? 'text-cyan' : 'text-paper/30'}`}
+                className={`micro-sm ${i === 2 ? 'text-brass' : 'text-paper/30'}`}
               >
                 {t}
               </span>
@@ -157,7 +157,7 @@ export function PhoneMock() {
 
           {/* Monitor sweep */}
           <div
-            className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,transparent,color-mix(in_oklab,var(--color-cyan)_7%,transparent),transparent)]"
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,transparent,color-mix(in_oklab,var(--color-brass)_7%,transparent),transparent)]"
             style={{ animation: 'rs-scan 7s var(--ease-in-out-quint) infinite' }}
             aria-hidden="true"
           />

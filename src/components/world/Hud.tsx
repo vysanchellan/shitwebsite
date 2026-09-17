@@ -82,9 +82,9 @@ export function Hud() {
         <div className="pointer-events-auto flex items-center gap-2.5">
           <Link
             href="/"
-            className="flex items-center gap-2.5 rounded-full border border-white/12 bg-ink/70 py-2.5 pr-4 pl-3 text-paper backdrop-blur-md transition-colors hover:border-cyan/50 hover:text-cyan"
+            className="flex items-center gap-2.5 rounded-full border border-white/12 bg-ink/70 py-2.5 pr-4 pl-3 text-paper backdrop-blur-md transition-colors hover:border-brass/50 hover:text-brass"
           >
-            <Mark className="h-4 w-4 text-cyan" />
+            <Mark className="h-4 w-4 text-brass" />
             <span className="micro-sm">Exit district</span>
           </Link>
 
@@ -99,13 +99,13 @@ export function Hud() {
           <div className="flex flex-col items-end gap-2">
             <div className="flex items-center gap-3 rounded-full border border-white/12 bg-ink/70 px-4 py-2.5 backdrop-blur-md">
               <span className="micro-sm text-paper/45">Recorded</span>
-              <span className="font-mono text-[0.8rem] text-paper tabular-nums">
+              <span className="font-sans text-[0.8rem] text-paper tabular-nums">
                 {String(discovered.length).padStart(2, '0')}
                 <span className="text-paper/35">/{NODE_COUNT}</span>
               </span>
               <span className="h-1 w-14 overflow-hidden rounded-full bg-white/12">
                 <span
-                  className="block h-full rounded-full bg-cyan transition-[width] duration-700 ease-[var(--ease-out-expo)]"
+                  className="block h-full rounded-full bg-brass transition-[width] duration-700 ease-[var(--ease-out-expo)]"
                   style={{ width: `${pct}%` }}
                 />
               </span>
@@ -114,7 +114,7 @@ export function Hud() {
             <button
               type="button"
               onClick={toggleMap}
-              className="rounded-full border border-white/12 bg-ink/70 px-4 py-2 micro-sm text-paper/65 backdrop-blur-md transition-colors hover:border-cyan/50 hover:text-cyan"
+              className="rounded-full border border-white/12 bg-ink/70 px-4 py-2 micro-sm text-paper/65 backdrop-blur-md transition-colors hover:border-brass/50 hover:text-brass"
             >
               Map · M
             </button>
@@ -131,7 +131,7 @@ export function Hud() {
         <span
           className={`block rounded-full border transition-all duration-300 ${
             node
-              ? 'h-3.5 w-3.5 border-cyan bg-cyan/25'
+              ? 'h-3.5 w-3.5 border-brass bg-brass/25'
               : 'h-1.5 w-1.5 border-white/35 bg-white/25'
           }`}
         />
@@ -152,7 +152,7 @@ export function Hud() {
               style={{ borderColor: `${ACCENT_HEX[node.accent]}66` }}
             >
               <span
-                className="grid h-8 w-8 place-items-center rounded-full font-mono text-[0.75rem] font-semibold text-ink"
+                className="grid h-8 w-8 place-items-center rounded-full font-sans text-[0.75rem] font-semibold text-ink"
                 style={{ background: ACCENT_HEX[node.accent] }}
               >
                 E
@@ -161,7 +161,7 @@ export function Hud() {
                 <span className="block micro-sm text-paper/40">
                   {discovered.includes(node.id) ? 'Read again' : 'Read'}
                 </span>
-                <span className="mt-0.5 block font-display text-[0.95rem] font-semibold tracking-[-0.02em] text-paper">
+                <span className="mt-0.5 block font-display text-[0.95rem] font-normal tracking-[-0.02em] text-paper">
                   {node.label}
                 </span>
               </span>

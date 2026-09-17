@@ -103,7 +103,7 @@ export function TouchControls() {
         <span className="absolute inset-0 rounded-full border border-white/15 bg-ink/45 backdrop-blur-sm" />
         <span className="absolute inset-[30%] rounded-full border border-white/10" />
         <span
-          className="absolute top-1/2 left-1/2 h-14 w-14 rounded-full border border-cyan/50 bg-cyan/22 backdrop-blur-sm transition-transform duration-75"
+          className="absolute top-1/2 left-1/2 h-14 w-14 rounded-full border border-brass/50 bg-brass/22 backdrop-blur-sm transition-transform duration-75"
           style={{
             transform: `translate(-50%, -50%) translate(${knob?.x ?? 0}px, ${knob?.y ?? 0}px)`,
           }}
@@ -116,7 +116,7 @@ export function TouchControls() {
           type="button"
           disabled={!node}
           onClick={() => node && open(node.id)}
-          className="grid h-20 w-20 place-items-center rounded-full border-2 font-mono text-[0.7rem] tracking-[0.18em] uppercase backdrop-blur-sm transition-all duration-300 disabled:opacity-25"
+          className="grid h-20 w-20 place-items-center rounded-full border-2 font-sans text-[0.7rem] tracking-[0.18em] uppercase backdrop-blur-sm transition-all duration-300 disabled:opacity-25"
           style={{
             borderColor: node ? ACCENT_HEX[node.accent] : 'rgba(255,255,255,0.2)',
             background: node ? `${ACCENT_HEX[node.accent]}2e` : 'rgba(255,255,255,0.05)',

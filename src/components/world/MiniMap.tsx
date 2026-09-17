@@ -137,13 +137,13 @@ export function FullMap() {
     <div className="pointer-events-auto fixed inset-0 z-40 flex flex-col bg-ink/92 p-4 backdrop-blur-lg sm:p-8">
       <header className="flex items-center justify-between gap-4">
         <div>
-          <p className="micro text-cyan">District map</p>
+          <p className="micro text-brass">District map</p>
           <h2 className="mt-2 display-m text-paper">RiskSense District</h2>
         </div>
         <button
           type="button"
           onClick={toggleMap}
-          className="rounded-full border border-white/15 px-5 py-2.5 micro text-paper/70 transition-colors hover:border-cyan hover:text-cyan"
+          className="rounded-full border border-white/15 px-5 py-2.5 micro text-paper/70 transition-colors hover:border-brass hover:text-brass"
         >
           Close · M
         </button>
@@ -163,10 +163,10 @@ export function FullMap() {
               return (
                 <li key={d}>
                   <div className="flex items-baseline justify-between gap-3">
-                    <h3 className="font-display text-[0.95rem] font-semibold tracking-[-0.02em] text-paper">
+                    <h3 className="font-display text-[0.95rem] font-normal tracking-[-0.02em] text-paper">
                       {d}
                     </h3>
-                    <span className="shrink-0 font-mono text-[0.65rem] text-paper/40 tabular-nums">
+                    <span className="shrink-0 font-sans text-[0.65rem] text-paper/40 tabular-nums">
                       {found}/{nodes.length}
                     </span>
                   </div>

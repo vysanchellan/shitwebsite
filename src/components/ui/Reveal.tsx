@@ -83,10 +83,16 @@ export function RevealWords({
   return (
     <span className={className}>
       {words.map((word, i) => (
-        <span key={`${word}-${i}`} className="inline-block overflow-hidden align-bottom">
+        // The mask needs slack below the baseline or a Didone's descenders get
+        // sheared off; the negative margin gives it back to the line box.
+        <span
+          key={`${word}-${i}`}
+          className="inline-block overflow-hidden pb-[0.22em] align-bottom"
+          style={{ marginBottom: '-0.22em' }}
+        >
           <span
-            className="inline-block animate-rise"
-            style={{ animationDelay: `${delay + i * 70}ms` }}
+            className="inline-block animate-unmask"
+            style={{ animationDelay: `${delay + i * 80}ms` }}
           >
             {word}
             {i < words.length - 1 ? ' ' : ''}

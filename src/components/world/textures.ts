@@ -71,7 +71,7 @@ export function windowTexture(seed: number, cols = 14, rows = 26, tint = '#8fe6f
   return tex;
 }
 
-/** Ground: dark asphalt with a faint technical grid and a slow tonal drift. */
+/** Ground: worn flagstone, warm and mottled, with a faint joint pattern. */
 export function groundTexture() {
   const key = 'ground';
   const hit = cache.get(key);
@@ -81,20 +81,20 @@ export function groundTexture() {
   const { c, ctx } = canvas(S, S);
   const rng = seeded(7);
 
-  ctx.fillStyle = '#0a1020';
+  ctx.fillStyle = '#241d22';
   ctx.fillRect(0, 0, S, S);
 
   // Mottling
   for (let i = 0; i < 2600; i++) {
     const r = 1 + rng() * 14;
-    ctx.fillStyle = rng() > 0.5 ? 'rgba(255,255,255,0.012)' : 'rgba(0,0,0,0.05)';
+    ctx.fillStyle = rng() > 0.5 ? 'rgba(255,226,190,0.02)' : 'rgba(0,0,0,0.055)';
     ctx.beginPath();
     ctx.arc(rng() * S, rng() * S, r, 0, Math.PI * 2);
     ctx.fill();
   }
 
-  // Grid
-  ctx.strokeStyle = 'rgba(69,215,232,0.07)';
+  // Paving joints
+  ctx.strokeStyle = 'rgba(0,0,0,0.22)';
   ctx.lineWidth = 1;
   for (let i = 0; i <= 8; i++) {
     const p = (i / 8) * S;
@@ -122,16 +122,16 @@ export function roadTexture() {
   const H = 256;
   const { c, ctx } = canvas(W, H);
 
-  ctx.fillStyle = '#0d1526';
+  ctx.fillStyle = '#1d1a24';
   ctx.fillRect(0, 0, W, H);
 
-  ctx.fillStyle = 'rgba(69,215,232,0.32)';
+  ctx.fillStyle = 'rgba(194,163,107,0.30)';
   const dash = 34;
   for (let y = 0; y < H; y += dash * 2) {
     ctx.fillRect(W / 2 - 2, y, 4, dash);
   }
 
-  ctx.fillStyle = 'rgba(255,255,255,0.09)';
+  ctx.fillStyle = 'rgba(232,214,184,0.10)';
   ctx.fillRect(6, 0, 2, H);
   ctx.fillRect(W - 8, 0, 2, H);
 
@@ -161,8 +161,10 @@ export function signTexture(
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  const stack = '"Inter Tight", "Helvetica Neue", Arial, sans-serif';
-  const monoStack = '"JetBrains Mono", "SF Mono", Menlo, monospace';
+  // The district's signage speaks the site's language: a Didone for the name,
+  // wide-tracked geometric caps for the qualifier.
+  const stack = '"Bodoni Moda", Didot, Georgia, serif';
+  const subStack = 'Jost, "Helvetica Neue", Arial, sans-serif';
 
   // Tracking: use native letterSpacing where available, else space the string.
   const supportsSpacing = 'letterSpacing' in ctx;
@@ -201,7 +203,7 @@ export function signTexture(
     const subText = space(sub.toUpperCase(), 1);
     ctx.save();
     if (supportsSpacing) ctx.letterSpacing = '9px';
-    fit(subText, 34, 500, monoStack, maxWidth);
+    fit(subText, 32, 400, subStack, maxWidth);
     ctx.fillStyle = color;
     ctx.globalAlpha = 0.85;
     ctx.shadowColor = color;
@@ -224,7 +226,7 @@ export function numeralTexture(n: string, color = '#2f6bff') {
   ctx.clearRect(0, 0, S, S);
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = `600 150px "Inter Tight", Arial, sans-serif`;
+  ctx.font = '400 168px "Bodoni Moda", Didot, Georgia, serif';
   ctx.shadowColor = color;
   ctx.shadowBlur = 40;
   ctx.fillStyle = '#ffffff';
@@ -263,7 +265,7 @@ export function insurerTexture(mark: string, name: string, hue: string) {
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'center';
   ctx.fillStyle = hue;
-  ctx.font = '600 52px "Inter Tight", Arial, sans-serif';
+  ctx.font = '400 54px "Bodoni Moda", Didot, Georgia, serif';
   ctx.shadowColor = hue;
   ctx.shadowBlur = 22;
   ctx.fillText(mark, 93, 119);
@@ -271,7 +273,7 @@ export function insurerTexture(mark: string, name: string, hue: string) {
 
   ctx.textAlign = 'left';
   ctx.fillStyle = '#f5f4f0';
-  ctx.font = '600 40px "Inter Tight", Arial, sans-serif';
+  ctx.font = '400 38px Jost, "Helvetica Neue", Arial, sans-serif';
   const words = name.split(' ');
   const line1 = words.slice(0, 2).join(' ');
   const line2 = words.slice(2).join(' ');
@@ -279,7 +281,7 @@ export function insurerTexture(mark: string, name: string, hue: string) {
   if (line2) ctx.fillText(line2, 176, 146);
 
   ctx.fillStyle = '#e9a63c';
-  ctx.font = '500 22px "JetBrains Mono", monospace';
+  ctx.font = '400 21px Jost, "Helvetica Neue", Arial, sans-serif';
   ctx.fillText('DEMO PROVIDER', 176, 196);
 
   return finish(key, c);

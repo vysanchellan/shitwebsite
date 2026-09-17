@@ -24,8 +24,8 @@ export function Wordmark({ className = '', compact = false }: Props) {
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
       <Mark className="h-[1.35em] w-[1.35em] shrink-0" />
       {!compact && (
-        <span className="font-display text-[0.95em] font-semibold tracking-[-0.03em]">
-          RiskSense<span className="text-cyan"> AI</span>
+        <span className="font-display text-[0.95em] font-normal tracking-[-0.03em]">
+          RiskSense<span className="text-brass"> AI</span>
         </span>
       )}
     </span>

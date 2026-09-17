@@ -31,13 +31,13 @@ export function LegalPage({ kicker, title, standfirst, updated, sections }: Prop
           <div className="column-rules absolute inset-0" aria-hidden="true" />
 
           <div className="relative mx-auto max-w-4xl">
-            <p className="micro text-cyan">{kicker}</p>
+            <p className="micro text-brass">{kicker}</p>
             <h1 className="mt-7 display-l text-paper text-balance">{title}</h1>
             <p className="mt-7 text-[1rem] leading-[1.7] text-paper/60 sm:text-[1.08rem]">
               {standfirst}
             </p>
             <p className="mt-7 inline-flex items-center gap-2.5 rounded-full border border-white/12 px-4 py-2 micro-sm text-paper/40">
-              <span className="h-1 w-1 rounded-full bg-cyan" />
+              <span className="h-1 w-1 rounded-full bg-brass" />
               Last updated {updated}
             </p>
           </div>
@@ -53,8 +53,8 @@ export function LegalPage({ kicker, title, standfirst, updated, sections }: Prop
               delay={i * 40}
               className="mb-12 last:mb-0"
             >
-              <h2 className="flex items-baseline gap-4 font-display text-[1.3rem] leading-tight font-semibold tracking-[-0.03em] text-paper sm:text-[1.55rem]">
-                <span className="micro-sm shrink-0 text-cyan/60">
+              <h2 className="flex items-baseline gap-4 font-display text-[1.3rem] leading-tight font-normal tracking-[-0.03em] text-paper sm:text-[1.55rem]">
+                <span className="micro-sm shrink-0 text-brass/60">
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 {section.heading}
@@ -77,7 +77,7 @@ export function LegalPage({ kicker, title, standfirst, updated, sections }: Prop
                         key={item}
                         className="flex gap-3.5 text-[0.92rem] leading-[1.65] text-paper/62"
                       >
-                        <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-cyan/50" />
+                        <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-brass/50" />
                         {item}
                       </li>
                     ))}
@@ -96,7 +96,7 @@ export function LegalPage({ kicker, title, standfirst, updated, sections }: Prop
               <Link
                 key={l.href}
                 href={l.href}
-                className="rounded-full border border-white/14 px-5 py-2.5 micro-sm text-paper/55 transition-colors hover:border-cyan/50 hover:text-cyan"
+                className="rounded-full border border-white/14 px-5 py-2.5 micro-sm text-paper/55 transition-colors hover:border-brass/50 hover:text-brass"
               >
                 {l.label}
               </Link>

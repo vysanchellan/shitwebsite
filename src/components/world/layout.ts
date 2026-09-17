@@ -11,14 +11,18 @@
  * at the same time.
  */
 
+/**
+ * District light. Aether is the system blue the world's interface is made of;
+ * everything else is the light a building actually gives off.
+ */
 export const ACCENT_HEX: Record<string, string> = {
-  cyan: '#45d7e8',
-  teal: '#1fb8a6',
-  blue: '#2f6bff',
-  amber: '#e9a63c',
-  coral: '#ff6a55',
-  green: '#2fc27a',
-  violet: '#9a7cff',
+  aether: '#8fd3e6',
+  azure: '#6fa8dc',
+  verdant: '#7fbf8f',
+  jade: '#6fb28c',
+  amber: '#d9a441',
+  ember: '#c4553c',
+  plum: '#9a84b8',
 };
 
 export const BOUNDS = { minX: -206, maxX: 206, minZ: -266, maxZ: 206 };
@@ -60,15 +64,15 @@ export type Structure = {
 export const STRUCTURES: Structure[] = [
   /* Arrival */
   // Only the two pylons collide — the span between them is the way in.
-  { id: 'gate', kind: 'gate', pos: [0, 70], size: [26, 13, 3], accent: ACCENT_HEX.cyan, sign: 'RISKSENSE DISTRICT', subSign: 'DECISION SUPPORT · HEART & DIABETES', parts: [[-13, 0, 1.8, 1.8], [13, 0, 1.8, 1.8]] },
+  { id: 'gate', kind: 'gate', pos: [0, 70], size: [26, 13, 3], accent: ACCENT_HEX.aether, sign: 'RISKSENSE DISTRICT', subSign: 'DECISION SUPPORT · HEART & DIABETES', parts: [[-13, 0, 1.8, 1.8], [13, 0, 1.8, 1.8]] },
 
   /* Journey Boulevard — six markers, six plinths */
-  { id: 'p1', kind: 'pillar', pos: [-11, 50], size: [3.2, 5.4, 3.2], accent: ACCENT_HEX.blue, sign: '01' },
-  { id: 'p2', kind: 'pillar', pos: [11, 40], size: [3.2, 5.4, 3.2], accent: ACCENT_HEX.blue, sign: '02' },
-  { id: 'p3', kind: 'pillar', pos: [-11, 30], size: [3.2, 5.4, 3.2], accent: ACCENT_HEX.blue, sign: '03' },
-  { id: 'p4', kind: 'pillar', pos: [11, 20], size: [3.2, 5.4, 3.2], accent: ACCENT_HEX.blue, sign: '04' },
-  { id: 'p5', kind: 'pillar', pos: [-11, 10], size: [3.2, 5.4, 3.2], accent: ACCENT_HEX.blue, sign: '05' },
-  { id: 'p6', kind: 'pillar', pos: [11, 0], size: [3.2, 5.4, 3.2], accent: ACCENT_HEX.blue, sign: '06' },
+  { id: 'p1', kind: 'pillar', pos: [-11, 50], size: [3.2, 5.4, 3.2], accent: ACCENT_HEX.azure, sign: '01' },
+  { id: 'p2', kind: 'pillar', pos: [11, 40], size: [3.2, 5.4, 3.2], accent: ACCENT_HEX.azure, sign: '02' },
+  { id: 'p3', kind: 'pillar', pos: [-11, 30], size: [3.2, 5.4, 3.2], accent: ACCENT_HEX.azure, sign: '03' },
+  { id: 'p4', kind: 'pillar', pos: [11, 20], size: [3.2, 5.4, 3.2], accent: ACCENT_HEX.azure, sign: '04' },
+  { id: 'p5', kind: 'pillar', pos: [-11, 10], size: [3.2, 5.4, 3.2], accent: ACCENT_HEX.azure, sign: '05' },
+  { id: 'p6', kind: 'pillar', pos: [11, 0], size: [3.2, 5.4, 3.2], accent: ACCENT_HEX.azure, sign: '06' },
 
   /* Awareness Park — statistic obelisks */
   { id: 'ob1', kind: 'obelisk', pos: [-46, 54], size: [2.2, 11, 2.2], accent: ACCENT_HEX.amber },
@@ -78,34 +82,34 @@ export const STRUCTURES: Structure[] = [
   { id: 'park-plinth', kind: 'plinth', pos: [-40, 46], size: [5, 1.1, 5], accent: ACCENT_HEX.amber, sign: 'AWARENESS PARK' },
 
   /* The Problem — three leaning monoliths */
-  { id: 'm1', kind: 'monolith', pos: [40, 50], size: [7, 12, 2.4], rotY: -0.22, accent: ACCENT_HEX.coral, sign: 'SILENT' },
-  { id: 'm2', kind: 'monolith', pos: [40, 38], size: [7, 10, 2.4], rotY: 0.16, accent: ACCENT_HEX.coral, sign: 'FRAGMENTED' },
-  { id: 'm3', kind: 'monolith', pos: [40, 26], size: [7, 14, 2.4], rotY: -0.1, accent: ACCENT_HEX.coral, sign: 'DELAYED' },
+  { id: 'm1', kind: 'monolith', pos: [40, 50], size: [7, 12, 2.4], rotY: -0.22, accent: ACCENT_HEX.ember, sign: 'SILENT' },
+  { id: 'm2', kind: 'monolith', pos: [40, 38], size: [7, 10, 2.4], rotY: 0.16, accent: ACCENT_HEX.ember, sign: 'FRAGMENTED' },
+  { id: 'm3', kind: 'monolith', pos: [40, 26], size: [7, 14, 2.4], rotY: -0.1, accent: ACCENT_HEX.ember, sign: 'DELAYED' },
 
   /* Clinician Link + Security Vault flank the plaza approach */
-  { id: 'clinic', kind: 'clinic', pos: [-40, 2], size: [18, 11, 16], accent: ACCENT_HEX.green, sign: 'CLINICIAN LINK', subSign: 'VERIFY · CONFIRM · CONNECT' },
-  { id: 'vault', kind: 'vault', pos: [40, 2], size: [16, 14, 16], accent: ACCENT_HEX.teal, sign: 'SECURITY VAULT', subSign: 'ZERO-TRUST · RBAC · AUDIT' },
+  { id: 'clinic', kind: 'clinic', pos: [-40, 2], size: [18, 11, 16], accent: ACCENT_HEX.jade, sign: 'CLINICIAN LINK', subSign: 'VERIFY · CONFIRM · CONNECT' },
+  { id: 'vault', kind: 'vault', pos: [40, 2], size: [16, 14, 16], accent: ACCENT_HEX.verdant, sign: 'SECURITY VAULT', subSign: 'ZERO-TRUST · RBAC · AUDIT' },
 
   /* Central Plaza */
-  { id: 'plaza-core', kind: 'monolith', pos: [0, -12], size: [4.6, 16, 4.6], accent: ACCENT_HEX.cyan, sign: 'RESPONSE' },
-  { id: 'boundaries', kind: 'kiosk', pos: [-15, -18], size: [3.4, 4.4, 3.4], accent: ACCENT_HEX.blue, sign: 'SYSTEMS' },
+  { id: 'plaza-core', kind: 'monolith', pos: [0, -12], size: [4.6, 16, 4.6], accent: ACCENT_HEX.aether, sign: 'RESPONSE' },
+  { id: 'boundaries', kind: 'kiosk', pos: [-15, -18], size: [3.4, 4.4, 3.4], accent: ACCENT_HEX.azure, sign: 'SYSTEMS' },
   { id: 'disclaimer-stone', kind: 'plinth', pos: [0, -24], size: [7, 1.5, 3.4], accent: ACCENT_HEX.amber, sign: 'DISCLAIMER' },
 
   /* Information kiosks */
-  { id: 'faq-kiosk', kind: 'kiosk', pos: [-16, -34], size: [3.6, 4.6, 3.6], accent: ACCENT_HEX.cyan, sign: 'FAQ' },
-  { id: 'contact-kiosk', kind: 'kiosk', pos: [16, -34], size: [3.6, 4.6, 3.6], accent: ACCENT_HEX.green, sign: 'CONTACT' },
+  { id: 'faq-kiosk', kind: 'kiosk', pos: [-16, -34], size: [3.6, 4.6, 3.6], accent: ACCENT_HEX.aether, sign: 'FAQ' },
+  { id: 'contact-kiosk', kind: 'kiosk', pos: [16, -34], size: [3.6, 4.6, 3.6], accent: ACCENT_HEX.jade, sign: 'CONTACT' },
 
   /* Model institutes */
-  { id: 'cardiac', kind: 'tower', pos: [-40, -44], size: [20, 34, 18], accent: ACCENT_HEX.coral, sign: 'CARDIAC INSTITUTE', subSign: 'HEART DISEASE MODEL' },
-  { id: 'metabolic', kind: 'lab', pos: [40, -44], size: [20, 28, 18], accent: ACCENT_HEX.teal, sign: 'METABOLIC LAB', subSign: 'DIABETES V1 · ADULT' },
+  { id: 'cardiac', kind: 'tower', pos: [-40, -44], size: [20, 34, 18], accent: ACCENT_HEX.ember, sign: 'CARDIAC INSTITUTE', subSign: 'HEART DISEASE MODEL' },
+  { id: 'metabolic', kind: 'lab', pos: [40, -44], size: [20, 28, 18], accent: ACCENT_HEX.verdant, sign: 'METABOLIC LAB', subSign: 'DIABETES V1 · ADULT' },
 
   /* Insurance Pavilion */
-  { id: 'pavilion', kind: 'pavilion', pos: [0, -60], size: [42, 9, 20], accent: ACCENT_HEX.violet, sign: 'INSURANCE PAVILION', subSign: 'DEMONSTRATION PROVIDERS', solid: false },
-  { id: 'handoff-kiosk', kind: 'kiosk', pos: [-17, -50], size: [3.4, 4.4, 3.4], accent: ACCENT_HEX.violet, sign: 'HANDOFF' },
+  { id: 'pavilion', kind: 'pavilion', pos: [0, -60], size: [42, 9, 20], accent: ACCENT_HEX.plum, sign: 'INSURANCE PAVILION', subSign: 'DEMONSTRATION PROVIDERS', solid: false },
+  { id: 'handoff-kiosk', kind: 'kiosk', pos: [-17, -50], size: [3.4, 4.4, 3.4], accent: ACCENT_HEX.plum, sign: 'HANDOFF' },
   { id: 'recovery-kiosk', kind: 'kiosk', pos: [17, -50], size: [3.4, 4.4, 3.4], accent: ACCENT_HEX.amber, sign: 'RECOVERY' },
 
   /* Activation Terminal */
-  { id: 'terminal', kind: 'terminal', pos: [0, -78], size: [24, 16, 8], accent: ACCENT_HEX.cyan, sign: 'ACTIVATION TERMINAL', subSign: 'RETURN TO APP', parts: [[-12, 0, 2.15, 4.35], [12, 0, 2.15, 4.35]] },
+  { id: 'terminal', kind: 'terminal', pos: [0, -78], size: [24, 16, 8], accent: ACCENT_HEX.aether, sign: 'ACTIVATION TERMINAL', subSign: 'RETURN TO APP', parts: [[-12, 0, 2.15, 4.35], [12, 0, 2.15, 4.35]] },
 ];
 
 /** Road strips through the content districts. */
@@ -423,7 +427,17 @@ export const SKYLINE: SkylineTower[] = (() => {
 /* Collision                                                                   */
 /* -------------------------------------------------------------------------- */
 
-export type Collider = { minX: number; maxX: number; minZ: number; maxZ: number };
+/**
+ * Obstacles are boxes with a height, so the collision system can tell a kerb
+ * from a wall and let you step over the first without opening the second.
+ */
+export type Collider = {
+  minX: number;
+  maxX: number;
+  minZ: number;
+  maxZ: number;
+  height: number;
+};
 
 /** The institutes are drawn with a podium wider than their nominal footprint. */
 const EXTRA_PAD: Partial<Record<StructureKind, number>> = { tower: 1.4, lab: 1.4 };
@@ -440,6 +454,7 @@ function boxFor(s: Structure, pad: number): Collider {
     maxX: s.pos[0] + w,
     minZ: s.pos[1] - d,
     maxZ: s.pos[1] + d,
+    height: s.size[1],
   };
 }
 
@@ -450,6 +465,7 @@ export const COLLIDERS: Collider[] = STRUCTURES.filter((s) => s.solid !== false)
         maxX: s.pos[0] + dx + hw,
         minZ: s.pos[1] + dz - hd,
         maxZ: s.pos[1] + dz + hd,
+        height: s.size[1],
       }))
     : [boxFor(s, 0.35)],
 );
@@ -461,6 +477,53 @@ for (const b of CITY) {
     maxX: b.pos[0] + b.size[0] / 2 + 0.35,
     minZ: b.pos[1] - b.size[2] / 2 - 0.35,
     maxZ: b.pos[1] + b.size[2] / 2 + 0.35,
+    height: b.size[1] + b.tower[1],
+  });
+}
+
+/** Street furniture. Low pieces are left steppable by their height alone. */
+const PROP_SIZE: Record<StreetProp['kind'], [number, number, number]> = {
+  bollard: [0.4, 1.1, 0.4],
+  bench: [2.2, 0.45, 0.6],
+  planter: [2.4, 0.8, 1.1],
+  hydrant: [0.5, 0.95, 0.5],
+  bin: [0.8, 1.05, 0.8],
+  signal: [0.5, 4.4, 0.5],
+  vent: [1.5, 1.0, 1.2],
+  barrier: [2.6, 1.0, 0.35],
+};
+
+for (const p of STREET_PROPS) {
+  const [w, h, d] = PROP_SIZE[p.kind];
+  // Props are only ever rotated a quarter turn, so swap rather than rotate.
+  const halfW = (p.rotY === 0 ? w : d) / 2 + 0.15;
+  const halfD = (p.rotY === 0 ? d : w) / 2 + 0.15;
+  COLLIDERS.push({
+    minX: p.pos[0] - halfW,
+    maxX: p.pos[0] + halfW,
+    minZ: p.pos[1] - halfD,
+    maxZ: p.pos[1] + halfD,
+    height: h,
+  });
+}
+
+/** Parked vehicles are solid; you walk round them, not through them. */
+const VEHICLE_FOOTPRINT: Record<Vehicle['kind'], [number, number, number]> = {
+  car: [2.0, 1.5, 4.4],
+  van: [2.3, 2.1, 5.4],
+  ambulance: [2.4, 2.5, 6.0],
+};
+
+for (const v of VEHICLES) {
+  const [w, h, d] = VEHICLE_FOOTPRINT[v.kind];
+  const halfW = (v.rotY === 0 ? w : d) / 2 + 0.2;
+  const halfD = (v.rotY === 0 ? d : w) / 2 + 0.2;
+  COLLIDERS.push({
+    minX: v.pos[0] - halfW,
+    maxX: v.pos[0] + halfW,
+    minZ: v.pos[1] - halfD,
+    maxZ: v.pos[1] + halfD,
+    height: h,
   });
 }
 
@@ -471,7 +534,7 @@ export const PAVILION_COLUMNS: [number, number][] = [-19, -9.5, 9.5, 19].flatMap
 ]);
 
 for (const [x, z] of PAVILION_COLUMNS) {
-  COLLIDERS.push({ minX: x - 0.9, maxX: x + 0.9, minZ: z - 0.9, maxZ: z + 0.9 });
+  COLLIDERS.push({ minX: x - 0.9, maxX: x + 0.9, minZ: z - 0.9, maxZ: z + 0.9, height: 9 });
 }
 
 /** The eight insurer kiosks, arranged in an arc inside the pavilion. */
@@ -492,5 +555,6 @@ for (const slot of INSURER_SLOTS) {
     maxX: slot.pos[0] + 1.4,
     minZ: slot.pos[1] - 0.9,
     maxZ: slot.pos[1] + 0.9,
+    height: 2.8,
   });
 }

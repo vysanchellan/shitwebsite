@@ -1,24 +1,19 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter_Tight, Instrument_Serif, JetBrains_Mono } from 'next/font/google';
+import { Bodoni_Moda, Jost } from 'next/font/google';
 import './globals.css';
 
-const interTight = Inter_Tight({
+/** The marque voice: a Didone, for headlines and one italic phrase per view. */
+const bodoni = Bodoni_Moda({
   subsets: ['latin'],
-  variable: '--font-inter-tight',
-  display: 'swap',
-});
-
-const instrument = Instrument_Serif({
-  subsets: ['latin'],
-  weight: '400',
   style: ['normal', 'italic'],
-  variable: '--font-instrument',
+  variable: '--font-bodoni',
   display: 'swap',
 });
 
-const mono = JetBrains_Mono({
+/** Everything with a job: geometric, light, and wide-tracked in its caps. */
+const jost = Jost({
   subsets: ['latin'],
-  variable: '--font-mono-face',
+  variable: '--font-jost',
   display: 'swap',
 });
 
@@ -48,7 +43,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#04070f',
+  themeColor: '#08070a',
   colorScheme: 'dark',
   width: 'device-width',
   initialScale: 1,
@@ -59,7 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${interTight.variable} ${instrument.variable} ${mono.variable}`}
+      className={`${bodoni.variable} ${jost.variable}`}
     >
       <body className="antialiased">{children}</body>
     </html>

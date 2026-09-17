@@ -26,7 +26,7 @@ export function Trust() {
 
         <div className="grid gap-5 lg:grid-cols-[1.15fr_1fr] lg:gap-6">
           {/* Clinician */}
-          <Reveal className="relative overflow-hidden border border-white/10 bg-gradient-to-br from-navy/60 via-navy/25 to-ink p-7 sm:p-10">
+          <Reveal className="relative overflow-hidden border border-white/10 bg-gradient-to-br from-graphite/60 via-graphite/25 to-ink p-7 sm:p-10">
             <p className="micro-sm text-ok/80">{clinician.kicker}</p>
             <h3 className="mt-4 display-m text-paper">{clinician.title}</h3>
 
@@ -45,8 +45,8 @@ export function Trust() {
 
               <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center">
                 <div className="flex flex-1 items-center gap-3 border border-white/12 bg-white/[0.03] px-4 py-3">
-                  <span className="micro-sm text-cyan/60">RS</span>
-                  <span className="font-mono text-[0.92rem] tracking-[0.18em] text-paper/85">
+                  <span className="micro-sm text-brass/60">RS</span>
+                  <span className="font-sans text-[0.92rem] tracking-[0.18em] text-paper/85">
                     ••••-••••-4471
                   </span>
                 </div>
@@ -76,7 +76,7 @@ export function Trust() {
             <div className="column-rules absolute inset-0" aria-hidden="true" />
 
             <div className="relative">
-              <p className="micro-sm text-teal/80">{security.kicker}</p>
+              <p className="micro-sm text-brass/80">{security.kicker}</p>
               <h3 className="mt-4 display-m text-paper">{security.title}</h3>
               <p className="mt-5 max-w-[46ch] text-[0.95rem] leading-[1.68] text-paper/58">
                 {security.body[0]}
@@ -86,13 +86,13 @@ export function Trust() {
                 {security.bullets?.map((b, i) => (
                   <li
                     key={b.label}
-                    className="group flex items-start gap-4 bg-white/[0.02] px-5 py-4 transition-colors duration-500 hover:bg-teal/10"
+                    className="group flex items-start gap-4 bg-white/[0.02] px-5 py-4 transition-colors duration-500 hover:bg-brass/10"
                   >
-                    <span className="micro-sm mt-1 w-5 shrink-0 text-teal/55">
+                    <span className="micro-sm mt-1 w-5 shrink-0 text-brass/55">
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <div>
-                      <h4 className="font-display text-[0.98rem] font-semibold tracking-[-0.015em] text-paper">
+                      <h4 className="font-display text-[0.98rem] font-normal tracking-[-0.015em] text-paper">
                         {b.label}
                       </h4>
                       <p className="mt-1 text-[0.85rem] leading-[1.55] text-paper/48">{b.text}</p>

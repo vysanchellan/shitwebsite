@@ -5,7 +5,7 @@ import { useRef } from 'react';
 import * as THREE from 'three';
 import { NODES } from '@/data/content';
 import { Avatar } from './Avatar';
-import { occupied, resolve } from './collision';
+import { move, occupied } from './collision';
 import { input } from './input';
 import { useWorld } from './store';
 
@@ -24,7 +24,7 @@ const PITCH_MAX = 0.78;
 export function Player() {
   const group = useRef<THREE.Group>(null);
   const yaw = useRef(Math.PI);
-  const pitch = useRef(0.12);
+  const pitch = useRef(0.04);
   const vel = useRef(new THREE.Vector3());
   const pos = useRef(new THREE.Vector3(0, 0, 72));
   const facing = useRef(Math.PI);
@@ -69,15 +69,19 @@ export function Player() {
     vel.current.x = THREE.MathUtils.damp(vel.current.x, target.x, target.lengthSq() > 0 ? ACCEL : DAMP, dt);
     vel.current.z = THREE.MathUtils.damp(vel.current.z, target.z, target.lengthSq() > 0 ? ACCEL : DAMP, dt);
 
-    pos.current.x += vel.current.x * dt;
-    pos.current.z += vel.current.z * dt;
-
-    const [cx, cz] = resolve(pos.current.x, pos.current.z, RADIUS);
-    // If we were pushed out, kill the velocity component that drove us in.
-    if (cx !== pos.current.x) vel.current.x = 0;
-    if (cz !== pos.current.z) vel.current.z = 0;
-    pos.current.x = cx;
-    pos.current.z = cz;
+    // Collision slides rather than stops, and reports which axis it refused so
+    // the velocity that drove into a wall can be shed instead of accumulating.
+    const step = move(
+      pos.current.x,
+      pos.current.z,
+      vel.current.x * dt,
+      vel.current.z * dt,
+      RADIUS,
+    );
+    if (step.hitX) vel.current.x = 0;
+    if (step.hitZ) vel.current.z = 0;
+    pos.current.x = step.x;
+    pos.current.z = step.z;
 
     speed.current = Math.hypot(vel.current.x, vel.current.z);
     phase.current += speed.current * dt * 1.55;

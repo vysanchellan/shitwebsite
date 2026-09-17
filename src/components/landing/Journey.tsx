@@ -47,7 +47,7 @@ export function Journey() {
   return (
     <section
       id="journey"
-      className="relative bg-paper px-5 py-24 text-navy sm:px-8 sm:py-32 lg:px-12 lg:py-40"
+      className="relative bg-paper px-5 py-24 text-graphite sm:px-8 sm:py-32 lg:px-12 lg:py-40"
     >
       <div className="mx-auto max-w-[1800px]">
         <SectionHead
@@ -56,13 +56,13 @@ export function Journey() {
           kicker="How RiskSense works"
           title={
             <>
-              Six steps, and two of them are <span className="editorial text-teal">gates</span>.
+              Six steps, and two of them are <span className="editorial text-brass">gates</span>.
             </>
           }
           lede="Clinician connection and access activation are both completed before full patient access is granted. Nothing about that is optional."
         />
 
-        <ol className="grid gap-px overflow-hidden border border-navy/12 bg-navy/12 sm:grid-cols-2 xl:grid-cols-3">
+        <ol className="grid gap-px overflow-hidden border border-graphite/12 bg-graphite/12 sm:grid-cols-2 xl:grid-cols-3">
           {steps.map((step, i) => {
             const gate = step.step === 2 || step.step === 3;
             return (
@@ -73,13 +73,13 @@ export function Journey() {
                 className="group relative flex min-h-[15.5rem] flex-col justify-between bg-paper p-7 transition-colors duration-500 hover:bg-white sm:p-9"
               >
                 <div className="flex items-start justify-between gap-4">
-                  <span className="font-mono text-[0.7rem] tracking-[0.2em] text-teal">
+                  <span className="font-sans text-[0.7rem] tracking-[0.2em] text-brass">
                     {String(step.step).padStart(2, '0')}
                   </span>
 
                   <svg
                     viewBox="0 0 24 24"
-                    className="h-9 w-9 text-navy/28 transition-colors duration-500 group-hover:text-teal"
+                    className="h-9 w-9 text-graphite/28 transition-colors duration-500 group-hover:text-brass"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="1.3"
@@ -93,22 +93,22 @@ export function Journey() {
 
                 <div>
                   {gate && (
-                    <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-navy/6 px-2.5 py-1 micro-sm text-navy/55">
+                    <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-graphite/6 px-2.5 py-1 micro-sm text-graphite/55">
                       <span className="h-1 w-1 rounded-full bg-warn" />
                       Required gate
                     </span>
                   )}
-                  <h3 className="font-display text-[1.35rem] leading-[1.12] font-semibold tracking-[-0.03em] text-navy sm:text-[1.5rem]">
+                  <h3 className="font-display text-[1.35rem] leading-[1.12] font-normal tracking-[-0.03em] text-graphite sm:text-[1.5rem]">
                     {step.title}
                   </h3>
-                  <p className="mt-1.5 micro-sm text-navy/40">{step.kicker}</p>
-                  <p className="mt-3.5 text-[0.9rem] leading-[1.62] text-navy/62">
+                  <p className="mt-1.5 micro-sm text-graphite/40">{step.kicker}</p>
+                  <p className="mt-3.5 text-[0.9rem] leading-[1.62] text-graphite/62">
                     {step.body[0]}
                   </p>
                 </div>
 
                 <div
-                  className="absolute bottom-0 left-0 h-[2px] w-0 bg-teal transition-[width] duration-700 ease-[var(--ease-out-expo)] group-hover:w-full"
+                  className="absolute bottom-0 left-0 h-[2px] w-0 bg-brass transition-[width] duration-700 ease-[var(--ease-out-expo)] group-hover:w-full"
                   aria-hidden="true"
                 />
               </Reveal>

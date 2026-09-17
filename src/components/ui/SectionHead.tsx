@@ -24,9 +24,9 @@ export function SectionHead({
   tone = 'dark',
   aside,
 }: Props) {
-  const muted = tone === 'dark' ? 'text-paper/45' : 'text-navy/50';
-  const strong = tone === 'dark' ? 'text-paper' : 'text-navy';
-  const accent = tone === 'dark' ? 'text-cyan' : 'text-teal';
+  const muted = tone === 'dark' ? 'text-paper/45' : 'text-graphite/50';
+  const strong = tone === 'dark' ? 'text-paper' : 'text-graphite';
+  const accent = tone === 'dark' ? 'text-brass' : 'text-brass';
 
   return (
     <header className="mb-12 sm:mb-16 lg:mb-20">

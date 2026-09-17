@@ -16,7 +16,7 @@ export function Marquee() {
             {items.map((item, i) => (
               <span key={`${copy}-${item}-${i}`} className="flex items-center">
                 <span className="micro px-7 text-paper/38">{item}</span>
-                <Mark className="h-3 w-3 shrink-0 text-cyan/45" />
+                <Mark className="h-3 w-3 shrink-0 text-brass/45" />
               </span>
             ))}
           </div>

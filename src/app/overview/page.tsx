@@ -33,10 +33,10 @@ export default function OverviewPage() {
           <div className="column-rules absolute inset-0" aria-hidden="true" />
 
           <div className="relative mx-auto max-w-[1800px]">
-            <p className="micro text-cyan">The district, written down</p>
+            <p className="micro text-brass">The district, written down</p>
 
             <h1 className="mt-7 display-xl text-paper text-balance">
-              Everything the world <span className="editorial text-cyan">holds</span>.
+              Everything the world <span className="editorial text-brass">holds</span>.
             </h1>
 
             <div className="mt-10 grid gap-8 lg:grid-cols-[1.3fr_1fr] lg:gap-20">
@@ -49,13 +49,13 @@ export default function OverviewPage() {
               <div className="flex flex-wrap items-start gap-3 lg:justify-end">
                 <Link
                   href="/world"
-                  className="rounded-full bg-cyan px-6 py-3.5 micro text-ink transition-opacity hover:opacity-85"
+                  className="rounded-full bg-brass px-6 py-3.5 micro text-ink transition-opacity hover:opacity-85"
                 >
                   Walk it instead
                 </Link>
                 <Link
                   href="/register/complete"
-                  className="rounded-full border border-white/16 px-6 py-3.5 micro text-paper/75 transition-colors hover:border-cyan/60 hover:text-cyan"
+                  className="rounded-full border border-white/16 px-6 py-3.5 micro text-paper/75 transition-colors hover:border-brass/60 hover:text-brass"
                 >
                   Complete registration
                 </Link>
@@ -67,16 +67,16 @@ export default function OverviewPage() {
         {/* Statistics */}
         <section className="border-t border-white/8 px-5 py-16 sm:px-8 sm:py-24 lg:px-12">
           <div className="mx-auto max-w-[1800px]">
-            <h2 className="micro text-cyan">Health awareness</h2>
+            <h2 className="micro text-brass">Health awareness</h2>
 
             <ul className="mt-10 grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-2 xl:grid-cols-4">
               {STATISTICS.map((s) => (
                 <li key={s.source + s.value} className="flex flex-col justify-between gap-6 bg-ink p-6 sm:p-7">
                   <div>
-                    <p className="font-display text-[2.6rem] leading-none font-semibold tracking-[-0.05em] text-paper">
+                    <p className="font-display text-[2.6rem] leading-none font-normal tracking-[-0.05em] text-paper">
                       {s.value}
                     </p>
-                    <p className="mt-2 micro-sm text-cyan/70">{s.unit}</p>
+                    <p className="mt-2 micro-sm text-brass/70">{s.unit}</p>
                     <p className="mt-4 text-[0.9rem] leading-[1.6] text-paper/65">{s.claim}</p>
                   </div>
                   <p className="micro-sm leading-[1.8] text-paper/32">
@@ -105,7 +105,7 @@ export default function OverviewPage() {
             >
               <div className="mx-auto max-w-[1800px]">
                 <Reveal className="flex items-center gap-4">
-                  <span className="micro text-cyan">{String(di + 1).padStart(2, '0')}</span>
+                  <span className="micro text-brass">{String(di + 1).padStart(2, '0')}</span>
                   <h2 className="micro text-paper/50">{district}</h2>
                   <span className="rule flex-1 text-paper" />
                 </Reveal>
@@ -132,9 +132,9 @@ export default function OverviewPage() {
                           {node.kicker}
                         </p>
 
-                        <h3 className="mt-3 font-display text-[1.35rem] leading-[1.12] font-semibold tracking-[-0.03em] text-paper sm:text-[1.7rem]">
+                        <h3 className="mt-3 font-display text-[1.35rem] leading-[1.12] font-normal tracking-[-0.03em] text-paper sm:text-[1.7rem]">
                           {node.step && (
-                            <span className="mr-2.5 font-mono text-[0.8em] opacity-40">
+                            <span className="mr-2.5 font-sans text-[0.8em] opacity-40">
                               {String(node.step).padStart(2, '0')}
                             </span>
                           )}
@@ -157,7 +157,7 @@ export default function OverviewPage() {
                                 key={b.label}
                                 className="flex flex-col gap-1 border-b border-white/10 py-3 sm:flex-row sm:gap-6"
                               >
-                                <dt className="shrink-0 font-display text-[0.88rem] font-semibold text-paper sm:w-48">
+                                <dt className="shrink-0 font-display text-[0.88rem] font-normal text-paper sm:w-48">
                                   {b.label}
                                 </dt>
                                 <dd className="text-[0.86rem] leading-[1.58] text-paper/55">
@@ -204,7 +204,7 @@ export default function OverviewPage() {
                           className={`bg-ink p-5 ${ins.enabled ? '' : 'opacity-45'}`}
                         >
                           <span
-                            className="grid h-10 w-10 place-items-center font-display text-[0.8rem] font-semibold"
+                            className="grid h-10 w-10 place-items-center font-display text-[0.8rem] font-normal"
                             style={{
                               background: `${ins.hue}22`,
                               color: ins.hue,
@@ -213,7 +213,7 @@ export default function OverviewPage() {
                           >
                             {ins.mark}
                           </span>
-                          <p className="mt-3 font-display text-[0.95rem] font-semibold tracking-[-0.02em] text-paper">
+                          <p className="mt-3 font-display text-[0.95rem] font-normal tracking-[-0.02em] text-paper">
                             {ins.name}
                           </p>
                           <p className="mt-1 micro-sm text-paper/38">{ins.plan}</p>
@@ -234,19 +234,19 @@ export default function OverviewPage() {
         <section id="contact" className="border-t border-white/8 px-5 py-20 sm:px-8 sm:py-28 lg:px-12">
           <div className="mx-auto flex max-w-[1800px] flex-col items-start gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <p className="micro text-cyan">Still have a question?</p>
+              <p className="micro text-brass">Still have a question?</p>
               <h2 className="mt-5 display-l text-paper">
-                Walk it, or <span className="editorial text-cyan">ask us</span>.
+                Walk it, or <span className="editorial text-brass">ask us</span>.
               </h2>
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <Link href="/world" className="rounded-full bg-cyan px-6 py-3.5 micro text-ink">
+              <Link href="/world" className="rounded-full bg-brass px-6 py-3.5 micro text-ink">
                 Enter the district
               </Link>
               <Link
                 href="/#faq"
-                className="rounded-full border border-white/16 px-6 py-3.5 micro text-paper/75 transition-colors hover:border-cyan/60 hover:text-cyan"
+                className="rounded-full border border-white/16 px-6 py-3.5 micro text-paper/75 transition-colors hover:border-brass/60 hover:text-brass"
               >
                 Contact the team
               </Link>

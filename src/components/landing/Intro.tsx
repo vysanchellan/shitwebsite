@@ -70,7 +70,7 @@ export function Intro() {
       <div className="column-rules absolute inset-0" />
 
       <div className="relative flex items-center gap-3 text-paper">
-        <Mark className="h-7 w-7 text-cyan" />
+        <Mark className="h-7 w-7 text-brass" />
         <span className="micro text-paper/50">RiskSense AI</span>
       </div>
 
@@ -78,14 +78,14 @@ export function Intro() {
         <p className="max-w-md micro-sm leading-[1.9] text-paper/35">
           Loading the district — decision-support risk intelligence for heart disease and diabetes.
         </p>
-        <span className="font-display text-[clamp(4rem,16vw,12rem)] leading-[0.8] font-semibold tracking-[-0.06em] text-paper tabular-nums">
+        <span className="font-display text-[clamp(4rem,16vw,12rem)] leading-[0.8] font-normal tracking-[-0.06em] text-paper tabular-nums">
           {String(pct).padStart(3, '0')}
         </span>
       </div>
 
       <div className="relative mt-6 h-px w-full bg-white/10">
         <span
-          className="absolute inset-y-0 left-0 bg-cyan"
+          className="absolute inset-y-0 left-0 bg-brass"
           style={{ width: `${pct}%` }}
         />
       </div>

@@ -126,7 +126,7 @@ function Field({
 }
 
 const inputClass =
-  'mt-2 w-full border border-white/12 bg-white/[0.03] px-4 py-3.5 font-sans text-[0.95rem] text-paper placeholder:text-paper/22 transition-colors focus:border-cyan/60 focus:outline-none';
+  'mt-2 w-full border border-white/12 bg-white/[0.03] px-4 py-3.5 font-sans text-[0.95rem] text-paper placeholder:text-paper/22 transition-colors focus:border-brass/60 focus:outline-none';
 
 function Busy({ label }: { label: string }) {
   return (
@@ -280,9 +280,9 @@ export function RegisterFlow() {
       <header className="sticky top-0 z-30 border-b border-white/8 bg-ink/85">
         <div className="mx-auto flex h-16 max-w-[1500px] items-center justify-between gap-4 px-5 sm:px-8">
           <Link href="/" className="flex items-center gap-2.5 text-paper" aria-label="RiskSense AI — home">
-            <Mark className="h-5 w-5 text-cyan" />
-            <span className="font-display text-[0.95rem] font-semibold tracking-[-0.03em]">
-              RiskSense<span className="text-cyan"> AI</span>
+            <Mark className="h-5 w-5 text-brass" />
+            <span className="font-display text-[0.95rem] font-normal tracking-[-0.03em]">
+              RiskSense<span className="text-brass"> AI</span>
             </span>
           </Link>
 
@@ -295,7 +295,7 @@ export function RegisterFlow() {
 
         <div className="h-px w-full bg-white/8">
           <div
-            className="h-full bg-cyan transition-[width] duration-700 ease-[var(--ease-out-expo)]"
+            className="h-full bg-brass transition-[width] duration-700 ease-[var(--ease-out-expo)]"
             style={{ width: `${((stepIndex + 1) / STEPS.length) * 100}%` }}
           />
         </div>
@@ -311,11 +311,11 @@ export function RegisterFlow() {
                 <li key={s.id} className="shrink-0">
                   <div className="flex items-center gap-3 py-1.5">
                     <span
-                      className={`grid h-6 w-6 shrink-0 place-items-center rounded-full font-mono text-[0.6rem] transition-colors ${
+                      className={`grid h-6 w-6 shrink-0 place-items-center rounded-full font-sans text-[0.6rem] transition-colors ${
                         state === 'done'
-                          ? 'bg-cyan/20 text-cyan'
+                          ? 'bg-brass/20 text-brass'
                           : state === 'now'
-                            ? 'bg-cyan text-ink'
+                            ? 'bg-brass text-ink'
                             : 'border border-white/15 text-paper/30'
                       }`}
                     >
@@ -345,9 +345,9 @@ export function RegisterFlow() {
           {/* --- Welcome ---------------------------------------------------- */}
           {step === 'welcome' && (
             <section className="animate-rise">
-              <p className="micro text-cyan">Step 01 · Welcome</p>
+              <p className="micro text-brass">Step 01 · Welcome</p>
               <h1 className="mt-6 display-l text-paper text-balance">
-                Your account exists. <span className="editorial text-cyan">Access doesn’t yet.</span>
+                Your account exists. <span className="editorial text-brass">Access doesn’t yet.</span>
               </h1>
               <p className="mt-6 max-w-[58ch] text-[1rem] leading-[1.68] text-paper/62">
                 You started registration in the RiskSense app and it handed you here over a secure,
@@ -364,7 +364,7 @@ export function RegisterFlow() {
                   <li key={row.k} className="bg-ink p-5">
                     <p className="micro-sm text-paper/35">{row.k}</p>
                     <p
-                      className={`mt-2.5 font-display text-[1.05rem] font-semibold tracking-[-0.02em] ${
+                      className={`mt-2.5 font-display text-[1.05rem] font-normal tracking-[-0.02em] ${
                         row.tone === 'ok' ? 'text-ok' : 'text-warn'
                       }`}
                     >
@@ -377,7 +377,7 @@ export function RegisterFlow() {
               <button
                 type="button"
                 onClick={() => setStep('method')}
-                className="mt-10 rounded-full bg-cyan px-7 py-4 micro text-ink transition-opacity hover:opacity-85"
+                className="mt-10 rounded-full bg-brass px-7 py-4 micro text-ink transition-opacity hover:opacity-85"
               >
                 Continue
               </button>
@@ -387,7 +387,7 @@ export function RegisterFlow() {
           {/* --- Access method ---------------------------------------------- */}
           {step === 'method' && (
             <section className="animate-rise">
-              <p className="micro text-cyan">Step 02 · Access method</p>
+              <p className="micro text-brass">Step 02 · Access method</p>
               <h1 className="mt-6 display-l text-paper text-balance">
                 How would you like to activate?
               </h1>
@@ -420,17 +420,17 @@ export function RegisterFlow() {
                       aria-pressed={selected}
                       className={`border p-6 text-left transition-colors duration-400 sm:p-7 ${
                         selected
-                          ? 'border-cyan bg-cyan/8'
+                          ? 'border-brass bg-brass/8'
                           : 'border-white/12 bg-white/[0.02] hover:border-white/28'
                       }`}
                     >
                       <span className="flex items-start justify-between gap-4">
-                        <span className="font-display text-[1.3rem] leading-tight font-semibold tracking-[-0.03em] text-paper">
+                        <span className="font-display text-[1.3rem] leading-tight font-normal tracking-[-0.03em] text-paper">
                           {opt.title}
                         </span>
                         <span
                           className={`mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full border ${
-                            selected ? 'border-cyan bg-cyan' : 'border-white/25'
+                            selected ? 'border-brass bg-brass' : 'border-white/25'
                           }`}
                         >
                           {selected && (
@@ -446,7 +446,7 @@ export function RegisterFlow() {
                       <span className="mt-5 block space-y-1.5">
                         {opt.points.map((p) => (
                           <span key={p} className="flex items-center gap-2.5 micro-sm text-paper/45">
-                            <span className="h-1 w-1 rounded-full bg-cyan/60" />
+                            <span className="h-1 w-1 rounded-full bg-brass/60" />
                             {p}
                           </span>
                         ))}
@@ -461,7 +461,7 @@ export function RegisterFlow() {
                   type="button"
                   disabled={!method}
                   onClick={() => setStep('details')}
-                  className="rounded-full bg-cyan px-7 py-4 micro text-ink transition-opacity hover:opacity-85 disabled:opacity-25"
+                  className="rounded-full bg-brass px-7 py-4 micro text-ink transition-opacity hover:opacity-85 disabled:opacity-25"
                 >
                   Continue
                 </button>
@@ -479,18 +479,18 @@ export function RegisterFlow() {
           {/* --- Subscription ------------------------------------------------ */}
           {step === 'details' && method === 'subscription' && (
             <section className="animate-rise">
-              <p className="micro text-cyan">Step 03 · Subscription</p>
+              <p className="micro text-brass">Step 03 · Subscription</p>
               <h1 className="mt-6 display-l text-paper text-balance">RiskSense access</h1>
 
               <div className="mt-9 border border-white/10 bg-white/[0.02] p-6 sm:p-8">
                 <div className="flex flex-wrap items-baseline justify-between gap-4">
                   <div>
-                    <p className="micro-sm text-cyan/70">Access package</p>
-                    <p className="mt-2 font-display text-[1.6rem] font-semibold tracking-[-0.03em] text-paper">
+                    <p className="micro-sm text-brass/70">Access package</p>
+                    <p className="mt-2 font-display text-[1.6rem] font-normal tracking-[-0.03em] text-paper">
                       RiskSense Patient Access
                     </p>
                   </div>
-                  <p className="font-display text-[2rem] leading-none font-semibold tracking-[-0.04em] text-paper">
+                  <p className="font-display text-[2rem] leading-none font-normal tracking-[-0.04em] text-paper">
                     Demo
                     <span className="ml-2 align-middle micro-sm text-paper/35">no charge</span>
                   </p>
@@ -561,7 +561,7 @@ export function RegisterFlow() {
                   <div className="sm:col-span-2">
                     <Field label="Card number" hint="Test card only — never stored.">
                       <input
-                        className={`${inputClass} font-mono tracking-[0.12em]`}
+                        className={`${inputClass} font-sans tracking-[0.12em]`}
                         value={card.number}
                         onChange={(e) => setCard({ ...card, number: e.target.value })}
                         placeholder="4242 4242 4242 4242"
@@ -573,7 +573,7 @@ export function RegisterFlow() {
 
                   <Field label="Expiry">
                     <input
-                      className={`${inputClass} font-mono`}
+                      className={`${inputClass} font-sans`}
                       value={card.expiry}
                       onChange={(e) => setCard({ ...card, expiry: e.target.value })}
                       placeholder="MM/YY"
@@ -583,7 +583,7 @@ export function RegisterFlow() {
 
                   <Field label="CVV" hint="Never stored.">
                     <input
-                      className={`${inputClass} font-mono`}
+                      className={`${inputClass} font-sans`}
                       value={card.cvv}
                       onChange={(e) => setCard({ ...card, cvv: e.target.value })}
                       placeholder="123"
@@ -598,7 +598,7 @@ export function RegisterFlow() {
                   type="button"
                   onClick={runDemoPayment}
                   disabled={busy !== null}
-                  className="rounded-full bg-cyan px-7 py-4 micro text-ink transition-opacity hover:opacity-85 disabled:opacity-40"
+                  className="rounded-full bg-brass px-7 py-4 micro text-ink transition-opacity hover:opacity-85 disabled:opacity-40"
                 >
                   {busy === 'payment' ? <Busy label="Processing demo payment" /> : 'Run demo payment'}
                 </button>
@@ -616,7 +616,7 @@ export function RegisterFlow() {
           {/* --- Insurance --------------------------------------------------- */}
           {step === 'details' && method === 'insurance' && (
             <section className="animate-rise">
-              <p className="micro text-cyan">Step 03 · Insurance</p>
+              <p className="micro text-brass">Step 03 · Insurance</p>
               <h1 className="mt-6 display-l text-paper text-balance">Choose your provider</h1>
 
               <p className="mt-5 border border-warn/30 bg-warn/[0.06] px-5 py-4 text-[0.88rem] leading-[1.6] text-paper/70">
@@ -637,7 +637,7 @@ export function RegisterFlow() {
                         aria-pressed={selected}
                         className={`flex h-full w-full flex-col items-start gap-3 border p-4 text-left transition-colors duration-300 ${
                           selected
-                            ? 'border-cyan bg-cyan/8'
+                            ? 'border-brass bg-brass/8'
                             : ins.enabled
                               ? 'border-white/12 bg-white/[0.02] hover:border-white/28'
                               : 'cursor-not-allowed border-white/8 opacity-40'
@@ -661,7 +661,7 @@ export function RegisterFlow() {
                   <div className="flex items-center gap-4">
                     <InsurerLogo insurer={insurer} size={44} />
                     <div>
-                      <p className="font-display text-[1.1rem] font-semibold tracking-[-0.02em] text-paper">
+                      <p className="font-display text-[1.1rem] font-normal tracking-[-0.02em] text-paper">
                         {insurer.name}
                       </p>
                       <p className="mt-0.5 micro-sm text-paper/40">{insurer.plan}</p>
@@ -671,7 +671,7 @@ export function RegisterFlow() {
                   <div className="mt-7 grid gap-5 sm:grid-cols-2">
                     <Field label="Policy or membership number">
                       <input
-                        className={`${inputClass} font-mono tracking-[0.1em]`}
+                        className={`${inputClass} font-sans tracking-[0.1em]`}
                         value={policy.number}
                         onChange={(e) => setPolicy({ ...policy, number: e.target.value })}
                         placeholder="e.g. AH-9920-4471"
@@ -681,7 +681,7 @@ export function RegisterFlow() {
 
                     <Field label="Member ID" hint="Optional, where your provider issues one.">
                       <input
-                        className={`${inputClass} font-mono tracking-[0.1em]`}
+                        className={`${inputClass} font-sans tracking-[0.1em]`}
                         value={policy.memberId}
                         onChange={(e) => setPolicy({ ...policy, memberId: e.target.value })}
                         placeholder="e.g. 88213004"
@@ -706,7 +706,7 @@ export function RegisterFlow() {
                         onChange={(e) => setPolicy({ ...policy, relationship: e.target.value })}
                       >
                         {['Self', 'Spouse or partner', 'Child', 'Dependant', 'Other'].map((r) => (
-                          <option key={r} value={r} className="bg-navy">
+                          <option key={r} value={r} className="bg-graphite">
                             {r}
                           </option>
                         ))}
@@ -721,7 +721,7 @@ export function RegisterFlow() {
                   type="button"
                   onClick={runInsuranceCheck}
                   disabled={!insurer || busy !== null}
-                  className="rounded-full bg-cyan px-7 py-4 micro text-ink transition-opacity hover:opacity-85 disabled:opacity-25"
+                  className="rounded-full bg-brass px-7 py-4 micro text-ink transition-opacity hover:opacity-85 disabled:opacity-25"
                 >
                   {busy === 'insurance' ? <Busy label="Verifying cover" /> : 'Verify cover (simulated)'}
                 </button>
@@ -739,7 +739,7 @@ export function RegisterFlow() {
           {/* --- Clinician ---------------------------------------------------- */}
           {step === 'clinician' && (
             <section className="animate-rise">
-              <p className="micro text-cyan">Step 04 · Clinician ID</p>
+              <p className="micro text-brass">Step 04 · Clinician ID</p>
               <h1 className="mt-6 display-l text-paper text-balance">
                 Connect the clinician who will <span className="editorial text-ok">read</span> this.
               </h1>
@@ -753,7 +753,7 @@ export function RegisterFlow() {
                 <Field label="RiskSense Clinician ID" hint="Format: RS-0000-0000">
                   <div className="mt-2 flex flex-col gap-3 sm:flex-row">
                     <input
-                      className={`${inputClass} mt-0 flex-1 font-mono tracking-[0.18em] uppercase`}
+                      className={`${inputClass} mt-0 flex-1 font-sans tracking-[0.18em] uppercase`}
                       value={clinicianId}
                       onChange={(e) => {
                         setClinicianId(e.target.value);
@@ -785,7 +785,7 @@ export function RegisterFlow() {
                         setClinician(null);
                         setClinicianError(null);
                       }}
-                      className="text-cyan/70 underline underline-offset-4 transition-colors hover:text-cyan"
+                      className="text-brass/70 underline underline-offset-4 transition-colors hover:text-brass"
                     >
                       {id}
                       {i === 0 ? ' · ' : ''}
@@ -801,7 +801,7 @@ export function RegisterFlow() {
                       </svg>
                       Clinician verified
                     </p>
-                    <p className="mt-3 font-display text-[1.15rem] font-semibold tracking-[-0.02em] text-paper">
+                    <p className="mt-3 font-display text-[1.15rem] font-normal tracking-[-0.02em] text-paper">
                       {clinician.name}
                     </p>
                     <p className="mt-1 text-[0.88rem] text-paper/58">
@@ -814,8 +814,8 @@ export function RegisterFlow() {
                 )}
 
                 {clinicianError && (
-                  <div className="animate-rise mt-6 border border-risk/30 bg-risk/[0.08] p-5">
-                    <p className="micro-sm text-risk">Not connected</p>
+                  <div className="animate-rise mt-6 border border-ember/30 bg-ember/[0.08] p-5">
+                    <p className="micro-sm text-ember">Not connected</p>
                     <p className="mt-2.5 text-[0.9rem] leading-[1.6] text-paper/72">
                       {clinicianError}
                     </p>
@@ -828,7 +828,7 @@ export function RegisterFlow() {
                   type="button"
                   disabled={!clinician || !detailsComplete}
                   onClick={() => setStep('review')}
-                  className="rounded-full bg-cyan px-7 py-4 micro text-ink transition-opacity hover:opacity-85 disabled:opacity-25"
+                  className="rounded-full bg-brass px-7 py-4 micro text-ink transition-opacity hover:opacity-85 disabled:opacity-25"
                 >
                   Continue to review
                 </button>
@@ -846,7 +846,7 @@ export function RegisterFlow() {
           {/* --- Review -------------------------------------------------------- */}
           {step === 'review' && (
             <section className="animate-rise">
-              <p className="micro text-cyan">Step 05 · Review</p>
+              <p className="micro text-brass">Step 05 · Review</p>
               <h1 className="mt-6 display-l text-paper text-balance">Check this over.</h1>
 
               <dl className="mt-9 overflow-hidden border border-white/10">
@@ -872,15 +872,15 @@ export function RegisterFlow() {
                   type="checkbox"
                   checked={accepted}
                   onChange={(e) => setAccepted(e.target.checked)}
-                  className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--color-cyan)]"
+                  className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--color-brass)]"
                 />
                 <span className="text-[0.88rem] leading-[1.6] text-paper/70">
                   I accept the{' '}
-                  <Link href="/terms" className="text-cyan underline underline-offset-4">
+                  <Link href="/terms" className="text-brass underline underline-offset-4">
                     Terms of Service
                   </Link>{' '}
                   and the{' '}
-                  <Link href="/privacy" className="text-cyan underline underline-offset-4">
+                  <Link href="/privacy" className="text-brass underline underline-offset-4">
                     Privacy Notice
                   </Link>
                   , and I understand that RiskSense provides decision-support risk estimates and does
@@ -893,7 +893,7 @@ export function RegisterFlow() {
                   type="button"
                   disabled={!accepted || busy !== null}
                   onClick={activate}
-                  className="rounded-full bg-cyan px-7 py-4 micro text-ink transition-opacity hover:opacity-85 disabled:opacity-25"
+                  className="rounded-full bg-brass px-7 py-4 micro text-ink transition-opacity hover:opacity-85 disabled:opacity-25"
                 >
                   {busy === 'activate' ? <Busy label="Activating access" /> : 'Activate access'}
                 </button>
@@ -938,7 +938,7 @@ export function RegisterFlow() {
                 ].map((row) => (
                   <div key={row.k} className="bg-ink p-5">
                     <p className="micro-sm text-paper/35">{row.k}</p>
-                    <p className="mt-2.5 font-display text-[1rem] font-semibold tracking-[-0.02em] text-ok">
+                    <p className="mt-2.5 font-display text-[1rem] font-normal tracking-[-0.02em] text-ok">
                       {row.v}
                     </p>
                   </div>
@@ -948,13 +948,13 @@ export function RegisterFlow() {
               <div className="mt-9 flex flex-wrap gap-3">
                 <a
                   href="risksense://return?status=activated"
-                  className="rounded-full bg-cyan px-7 py-4 micro text-ink transition-opacity hover:opacity-85"
+                  className="rounded-full bg-brass px-7 py-4 micro text-ink transition-opacity hover:opacity-85"
                 >
                   Return to RiskSense
                 </a>
                 <Link
                   href="/world"
-                  className="rounded-full border border-white/14 px-7 py-4 micro text-paper/65 transition-colors hover:border-cyan/50 hover:text-cyan"
+                  className="rounded-full border border-white/14 px-7 py-4 micro text-paper/65 transition-colors hover:border-brass/50 hover:text-brass"
                 >
                   Explore the district
                 </Link>
@@ -1014,13 +1014,13 @@ export function RegisterFlow() {
             className="absolute inset-0 cursor-default bg-ink/80"
           />
 
-          <div className="animate-rise relative w-full max-w-lg overflow-hidden border border-warn/25 bg-navy p-7 sm:p-9">
+          <div className="animate-rise relative w-full max-w-lg overflow-hidden border border-warn/25 bg-graphite p-7 sm:p-9">
             <span className="absolute inset-x-0 top-0 h-[3px] bg-warn" aria-hidden="true" />
 
             <p className="micro text-warn">Something needs your attention</p>
             <h2
               id="rs-failure-title"
-              className="mt-4 font-display text-[1.45rem] leading-[1.15] font-semibold tracking-[-0.03em] text-paper"
+              className="mt-4 font-display text-[1.45rem] leading-[1.15] font-normal tracking-[-0.03em] text-paper"
             >
               {failure.title}
             </h2>
@@ -1030,7 +1030,7 @@ export function RegisterFlow() {
               <button
                 type="button"
                 onClick={() => setFailure(null)}
-                className="rounded-full bg-cyan px-6 py-3.5 micro text-ink"
+                className="rounded-full bg-brass px-6 py-3.5 micro text-ink"
               >
                 {failure.primary}
               </button>

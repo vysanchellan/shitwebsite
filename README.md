@@ -27,7 +27,8 @@ the security vault and the activation terminal.
 
 The districts sit inside a generated city roughly 410 by 470 metres: 252
 buildings on a street grid, 656 pieces of street furniture, 161 vehicles, zebra
-crossings, traffic signals and a 380-tower horizon.
+crossings, traffic signals and a 380-tower horizon — under a sunset sky, floating
+islands, falling blossom, strung lanterns, turning rune circles and banners.
 
 Everything in the world is also published as a plain document at `/overview`, so
 nothing is locked behind WebGL, a large screen or a mouse.
@@ -52,6 +53,7 @@ nothing is locked behind WebGL, a large screen or a mouse.
 
 - **Next.js 16** (App Router) + **React 19** + **TypeScript**
 - **Tailwind CSS v4** — CSS-first tokens in `src/app/globals.css`
+- **Bodoni Moda** for the marque voice, **Jost** for everything with a job
 - **three.js** via **@react-three/fiber** and **@react-three/postprocessing**
 - **zustand** for world state
 
@@ -128,15 +130,30 @@ and low-core machines.
 
 ---
 
+## Collision
+
+Bodies are circles, obstacles are height-aware boxes, and the test is
+closest-point-on-box so corners behave. Three things it gets right that a naive
+push-out does not: each axis is resolved separately, so a blocked X leaves Z free
+and you slide along a facade instead of stopping; movement is substepped below a
+body radius, so a sprint cannot jump a railing between frames; and colliders are
+bucketed into a uniform grid, so 1,114 boxes cost about a microsecond a call.
+
+Anything at or below `STEP_HEIGHT` — kerbs, benches, low rails — is walked over
+rather than collided with. A body that somehow ends up inside geometry is pushed
+out, and failing that swept outward to the nearest free point, so nobody gets
+welded into a building.
+
 ## Verifying the world
 
 Movement and collision are pure functions of the layout data, so they are checked
 without a browser. `src/components/world/layout.ts` and `collision.ts` compile on
-their own; a short script then asserts that the spawn point is clear, that each of
-W/A/S/D moves the player the way the camera implies, and that all 24 markers have
-somewhere standable within reading range. Run those checks after moving a marker
-or adding a structure — a building dropped on a marker is otherwise invisible
-until someone walks there.
+their own, and `npm run verify:world` asserts the spawn is clear, that each of
+W/A/S/D moves the player the way the camera implies, that a body slides along a
+wall rather than sticking, that a sprint cannot tunnel a thin obstacle, that a
+trapped body is ejected, that steppable props never block, and that `move()`
+stays cheap. Run it after moving a marker or adding a structure — a building
+dropped on a marker is otherwise invisible until someone walks there.
 
 ## Prototype boundaries
 
