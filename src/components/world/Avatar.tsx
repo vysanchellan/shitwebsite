@@ -16,8 +16,8 @@ import * as THREE from 'three';
 const SKIN = '#c98f6d';
 const COAT = '#f3f1ea';
 const COAT_DARK = '#dcd8ce';
-const TROUSER = '#16233b';
-const BOOT = '#0d1520';
+const TROUSER = '#2a2230';
+const BOOT = '#15111a';
 const ACCENT = '#d8b878';
 
 /** Radians of knee bend at the top of the swing. */
@@ -268,8 +268,8 @@ export function Avatar({ phase, speed, walk, sprint }: Props) {
         figure, on the camera's side, because the avatar walks away from the
         camera and would otherwise be a silhouette all night.
       */}
-      <pointLight position={[0, 1.9, -1.8]} color="#dbeaf5" intensity={4.5} distance={7} decay={2} />
-      <pointLight position={[0.9, 1.1, 0.8]} color="#6fb6d8" intensity={2.4} distance={4.5} decay={2} />
+      <pointLight position={[0, 1.9, -1.8]} color="#f2e4cd" intensity={4.5} distance={7} decay={2} />
+      <pointLight position={[0.9, 1.1, 0.8]} color="#b08a5e" intensity={2.4} distance={4.5} decay={2} />
     </group>
   );
 }

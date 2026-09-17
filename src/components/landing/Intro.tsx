@@ -36,7 +36,7 @@ export function Intro() {
     document.body.style.overflow = 'hidden';
 
     const start = performance.now();
-    const DURATION = 1400;
+    const DURATION = 850;
     let raf = 0;
 
     const tick = (now: number) => {
@@ -48,7 +48,7 @@ export function Intro() {
         window.setTimeout(() => {
           setPhase('gone');
           document.body.style.overflow = '';
-        }, 900);
+        }, 640);
       }
     };
     raf = requestAnimationFrame(tick);
@@ -63,7 +63,7 @@ export function Intro() {
 
   return (
     <div
-      className="fixed inset-0 z-[95] flex flex-col justify-between bg-ink px-5 py-8 transition-transform duration-[900ms] ease-[var(--ease-in-out-quint)] sm:px-8 lg:px-12"
+      className="fixed inset-0 z-[95] flex flex-col justify-between bg-ink px-5 py-8 transition-transform duration-[640ms] ease-[var(--ease-in-out-quint)] sm:px-8 lg:px-12"
       style={{ transform: phase === 'lift' ? 'translateY(-101%)' : 'none' }}
       aria-hidden="true"
     >

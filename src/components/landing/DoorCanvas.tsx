@@ -325,7 +325,14 @@ export default function DoorCanvas({
       <Rig open={open} entering={entering} />
 
       <EffectComposer multisampling={2}>
-        <Bloom intensity={1.1} luminanceThreshold={0.22} luminanceSmoothing={0.4} mipmapBlur radius={0.8} />
+        <Bloom
+          intensity={1.1}
+          luminanceThreshold={0.22}
+          luminanceSmoothing={0.4}
+          mipmapBlur
+          radius={0.8}
+          resolutionScale={0.5}
+        />
         <Vignette offset={0.2} darkness={0.75} eskil={false} />
       </EffectComposer>
     </Canvas>

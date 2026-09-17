@@ -146,6 +146,7 @@ export function Scene({ quality }: { quality: Quality }) {
           luminanceSmoothing={0.35}
           mipmapBlur
           radius={0.72}
+          resolutionScale={0.5}
         />
         <Vignette offset={0.26} darkness={0.62} eskil={false} />
       </EffectComposer>
