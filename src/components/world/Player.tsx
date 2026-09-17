@@ -4,6 +4,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useRef } from 'react';
 import * as THREE from 'three';
 import { NODES } from '@/data/content';
+import { Avatar } from './Avatar';
 import { occupied, resolve } from './collision';
 import { input } from './input';
 import { useWorld } from './store';
@@ -19,88 +20,6 @@ const CAM_DIST = 7.2;
 const CAM_HEIGHT = 2.6;
 const PITCH_MIN = -0.42;
 const PITCH_MAX = 0.78;
-
-/** Stylised clinician-white figure. Limbs swing from a single walk phase. */
-function Avatar({ phase, speed }: { phase: React.RefObject<number>; speed: React.RefObject<number> }) {
-  const legL = useRef<THREE.Mesh>(null);
-  const legR = useRef<THREE.Mesh>(null);
-  const armL = useRef<THREE.Mesh>(null);
-  const armR = useRef<THREE.Mesh>(null);
-  const torso = useRef<THREE.Group>(null);
-
-  useFrame(() => {
-    const p = phase.current ?? 0;
-    const amt = Math.min(1, (speed.current ?? 0) / WALK) * 0.9;
-    const swing = Math.sin(p) * amt;
-    const counter = Math.sin(p + Math.PI) * amt;
-
-    if (legL.current) legL.current.rotation.x = swing;
-    if (legR.current) legR.current.rotation.x = counter;
-    if (armL.current) armL.current.rotation.x = counter * 0.8;
-    if (armR.current) armR.current.rotation.x = swing * 0.8;
-    if (torso.current) {
-      torso.current.position.y = 1.02 + Math.abs(Math.sin(p)) * 0.06 * amt;
-      torso.current.rotation.z = Math.sin(p) * 0.03 * amt;
-    }
-  });
-
-  return (
-    <group>
-      {/* Legs */}
-      {[
-        { ref: legL, x: -0.17 },
-        { ref: legR, x: 0.17 },
-      ].map((l, i) => (
-        <mesh key={i} ref={l.ref} position={[l.x, 0.86, 0]} castShadow>
-          <capsuleGeometry args={[0.13, 0.62, 4, 8]} />
-          <meshStandardMaterial color="#132744" roughness={0.65} metalness={0.15} />
-        </mesh>
-      ))}
-
-      <group ref={torso}>
-        {/* Torso */}
-        <mesh castShadow>
-          <capsuleGeometry args={[0.28, 0.5, 4, 12]} />
-          <meshStandardMaterial color="#eceae4" roughness={0.55} metalness={0.1} />
-        </mesh>
-
-        {/* Chest pulse detail */}
-        <mesh position={[0, 0.08, 0.27]}>
-          <planeGeometry args={[0.3, 0.1]} />
-          <meshBasicMaterial color="#45d7e8" toneMapped={false} />
-        </mesh>
-
-        {/* Arms */}
-        {[
-          { ref: armL, x: -0.37 },
-          { ref: armR, x: 0.37 },
-        ].map((a, i) => (
-          <mesh key={i} ref={a.ref} position={[a.x, 0.06, 0]} castShadow>
-            <capsuleGeometry args={[0.09, 0.46, 4, 8]} />
-            <meshStandardMaterial color="#dcd9d1" roughness={0.6} metalness={0.1} />
-          </mesh>
-        ))}
-
-        {/* Head + visor */}
-        <mesh position={[0, 0.56, 0]} castShadow>
-          <sphereGeometry args={[0.21, 18, 16]} />
-          <meshStandardMaterial color="#1b2f4d" roughness={0.35} metalness={0.4} />
-        </mesh>
-        <mesh position={[0, 0.57, 0.14]}>
-          <torusGeometry args={[0.15, 0.022, 8, 24]} />
-          <meshBasicMaterial color="#45d7e8" toneMapped={false} />
-        </mesh>
-      </group>
-
-      {/* Ground contact glow */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, 0]}>
-        <circleGeometry args={[0.7, 24]} />
-        <meshBasicMaterial color="#45d7e8" transparent opacity={0.14} depthWrite={false} />
-      </mesh>
-      <pointLight position={[0, 1.4, 0]} color="#9ef0fa" intensity={4} distance={7} decay={2} />
-    </group>
-  );
-}
 
 export function Player() {
   const group = useRef<THREE.Group>(null);
@@ -132,13 +51,16 @@ export function Player() {
     const target = new THREE.Vector3();
 
     if (!paused && (input.forward !== 0 || input.right !== 0)) {
-      // Camera-relative: forward is where the camera looks, flattened.
+      // Camera-relative. Forward is where the camera looks, flattened to the
+      // ground: (sin yaw, cos yaw). Screen-right is that turned a quarter turn
+      // clockwise about +Y, which is (-cos yaw, sin yaw) — not (cos, -sin),
+      // which strafes the wrong way.
       const sin = Math.sin(yaw.current);
       const cos = Math.cos(yaw.current);
       target.set(
-        input.forward * sin + input.right * cos,
+        input.forward * sin - input.right * cos,
         0,
-        input.forward * cos - input.right * sin,
+        input.forward * cos + input.right * sin,
       );
       if (target.lengthSq() > 1) target.normalize();
       target.multiplyScalar(input.sprint ? SPRINT : WALK);
@@ -225,7 +147,7 @@ export function Player() {
 
   return (
     <group ref={group} position={[0, 0, 72]}>
-      <Avatar phase={phase} speed={speed} />
+      <Avatar phase={phase} speed={speed} walk={WALK} sprint={SPRINT} />
     </group>
   );
 }

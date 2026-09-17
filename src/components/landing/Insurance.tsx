@@ -10,7 +10,7 @@ import { SectionHead } from '@/components/ui/SectionHead';
 export function InsurerLogo({ insurer, size = 44 }: { insurer: Insurer; size?: number }) {
   return (
     <span
-      className="relative grid shrink-0 place-items-center overflow-hidden rounded-xl"
+      className="relative grid shrink-0 place-items-center overflow-hidden"
       style={{
         width: size,
         height: size,
@@ -59,11 +59,11 @@ export function Insurance() {
               <span className="editorial text-teal">RiskSense</span>.
             </>
           }
-          lede="These are the providers selectable during registration and access verification. The list is data-driven — providers can be added, disabled or reordered without redesigning this page."
+          lede="These are the providers selectable during registration and access verification. The list is data-driven: providers can be added, disabled or reordered without redesigning this page."
         />
 
         {/* Prototype honesty banner — §6 */}
-        <Reveal className="mb-8 flex flex-col gap-3 rounded-2xl border border-warn/35 bg-warn/[0.09] px-5 py-4 sm:flex-row sm:items-center sm:gap-5 sm:px-7">
+        <Reveal className="mb-8 flex flex-col gap-3 border border-warn/35 bg-warn/[0.09] px-5 py-4 sm:flex-row sm:items-center sm:gap-5 sm:px-7">
           <span className="inline-flex w-fit items-center gap-2 rounded-full bg-warn/20 px-3 py-1.5 micro-sm text-[color-mix(in_oklab,var(--color-warn)_70%,var(--color-navy))]">
             <span className="h-1.5 w-1.5 rounded-full bg-warn" />
             Demonstration data
@@ -75,7 +75,7 @@ export function Insurance() {
           </p>
         </Reveal>
 
-        <ul className="grid grid-cols-2 gap-px overflow-hidden rounded-3xl border border-navy/12 bg-navy/12 sm:grid-cols-3 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 gap-px overflow-hidden border border-navy/12 bg-navy/12 sm:grid-cols-3 lg:grid-cols-4">
           {INSURERS.map((insurer, i) => (
             <Reveal key={insurer.id} as="li" delay={i * 55}>
               <button
@@ -133,10 +133,10 @@ export function Insurance() {
             type="button"
             aria-label="Close"
             onClick={() => setActive(null)}
-            className="absolute inset-0 cursor-default bg-ink/72 backdrop-blur-sm"
+            className="absolute inset-0 cursor-default bg-ink/72"
           />
 
-          <div className="animate-rise relative w-full max-w-lg overflow-hidden rounded-3xl border border-white/12 bg-navy p-7 text-paper shadow-[0_40px_120px_-40px_rgba(0,0,0,0.9)] sm:p-9">
+          <div className="animate-rise relative w-full max-w-lg overflow-hidden border border-white/12 bg-navy p-7 text-paper shadow-[0_40px_120px_-40px_rgba(0,0,0,0.9)] sm:p-9">
             <div className="flex items-start gap-4">
               <InsurerLogo insurer={active} size={52} />
               <div className="flex-1">
@@ -157,7 +157,7 @@ export function Insurance() {
               </button>
             </div>
 
-            <div className="mt-6 rounded-2xl bg-white/[0.04] p-5">
+            <div className="mt-6 bg-white/[0.04] p-5">
               <p className="text-[0.92rem] leading-[1.65] text-paper/75">{INSURER_NOTE}</p>
             </div>
 
@@ -177,7 +177,7 @@ export function Insurance() {
             </ul>
 
             {active.demo && (
-              <p className="mt-6 rounded-xl border border-warn/25 bg-warn/[0.08] px-4 py-3 micro-sm leading-[1.8] text-warn">
+              <p className="mt-6 border border-warn/25 bg-warn/[0.08] px-4 py-3 micro-sm leading-[1.8] text-warn">
                 Demonstration provider — verification is simulated in this prototype.
               </p>
             )}

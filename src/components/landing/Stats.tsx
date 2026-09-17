@@ -97,7 +97,7 @@ export function Stats() {
               Risk is quiet <span className="editorial text-teal">long before</span> it is loud.
             </>
           }
-          lede="Heart disease and diabetes both accumulate silently. Every figure below is quoted from a named health authority, with its source and year attached — nothing here is modelled, rounded up or invented."
+          lede="Heart disease and diabetes both accumulate silently. Every figure below is quoted from a named health authority, with its source and year attached. Nothing here is modelled, rounded up or invented."
         />
 
         <ul className="border-t border-navy/12">

@@ -30,7 +30,7 @@ export default function OverviewPage() {
       <main id="main" className="bg-ink">
         {/* Header */}
         <header className="relative overflow-hidden px-5 pt-32 pb-16 sm:px-8 sm:pt-40 sm:pb-24 lg:px-12">
-          <div className="grid-field absolute inset-0 opacity-50" aria-hidden="true" />
+          <div className="column-rules absolute inset-0" aria-hidden="true" />
 
           <div className="relative mx-auto max-w-[1800px]">
             <p className="micro text-cyan">The district, written down</p>
@@ -42,9 +42,8 @@ export default function OverviewPage() {
             <div className="mt-10 grid gap-8 lg:grid-cols-[1.3fr_1fr] lg:gap-20">
               <p className="max-w-[56ch] text-[1rem] leading-[1.68] text-paper/60 sm:text-[1.1rem]">
                 The RiskSense District puts every part of the service into a place you can walk
-                through. This page is the same content as a document — for small screens, for
-                browsers without WebGL, for screen readers, and for anyone who would simply rather
-                read it.
+                through. This page is the same content as a document, for small screens, for browsers without
+                WebGL, for screen readers, and for anyone who would simply rather read it.
               </p>
 
               <div className="flex flex-wrap items-start gap-3 lg:justify-end">
@@ -70,7 +69,7 @@ export default function OverviewPage() {
           <div className="mx-auto max-w-[1800px]">
             <h2 className="micro text-cyan">Health awareness</h2>
 
-            <ul className="mt-10 grid gap-px overflow-hidden rounded-3xl border border-white/10 bg-white/10 sm:grid-cols-2 xl:grid-cols-4">
+            <ul className="mt-10 grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-2 xl:grid-cols-4">
               {STATISTICS.map((s) => (
                 <li key={s.source + s.value} className="flex flex-col justify-between gap-6 bg-ink p-6 sm:p-7">
                   <div>
@@ -121,7 +120,7 @@ export default function OverviewPage() {
                         as="article"
                         delay={i * 60}
                         id={node.id}
-                        className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-6 sm:p-8"
+                        className="relative overflow-hidden border border-white/10 bg-white/[0.02] p-6 sm:p-8"
                       >
                         <span
                           className="absolute inset-x-0 top-0 h-[2px]"
@@ -170,7 +169,7 @@ export default function OverviewPage() {
                         )}
 
                         {node.footnote && (
-                          <p className="mt-5 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 micro-sm leading-[1.85] text-paper/38">
+                          <p className="mt-5 border border-white/10 bg-white/[0.03] px-4 py-3 micro-sm leading-[1.85] text-paper/38">
                             {node.footnote}
                           </p>
                         )}
@@ -198,14 +197,14 @@ export default function OverviewPage() {
                     <p className="micro-sm mb-4 text-paper/35">
                       Supported providers — demonstration data
                     </p>
-                    <ul className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-4">
+                    <ul className="grid grid-cols-2 gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-4">
                       {INSURERS.map((ins) => (
                         <li
                           key={ins.id}
                           className={`bg-ink p-5 ${ins.enabled ? '' : 'opacity-45'}`}
                         >
                           <span
-                            className="grid h-10 w-10 place-items-center rounded-xl font-display text-[0.8rem] font-semibold"
+                            className="grid h-10 w-10 place-items-center font-display text-[0.8rem] font-semibold"
                             style={{
                               background: `${ins.hue}22`,
                               color: ins.hue,

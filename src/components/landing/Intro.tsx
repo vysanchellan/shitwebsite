@@ -67,7 +67,7 @@ export function Intro() {
       style={{ transform: phase === 'lift' ? 'translateY(-101%)' : 'none' }}
       aria-hidden="true"
     >
-      <div className="grid-field absolute inset-0 opacity-40" />
+      <div className="column-rules absolute inset-0" />
 
       <div className="relative flex items-center gap-3 text-paper">
         <Mark className="h-7 w-7 text-cyan" />

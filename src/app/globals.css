@@ -223,30 +223,25 @@ body {
    Components
    ========================================================================== */
 
-/* Hairline grid used behind dark sections — technical, not decorative. */
-@utility grid-field {
-  background-image: linear-gradient(
-      to right,
-      color-mix(in oklab, var(--color-cyan) 8%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
-      color-mix(in oklab, var(--color-cyan) 8%, transparent) 1px,
-      transparent 1px
-    );
-  background-size: 72px 72px;
+/*
+ * The layout grid, made visible. Vertical hairlines on the same twelve-column
+ * rhythm the content sits on — an editorial device, not a sci-fi mesh.
+ */
+@utility column-rules {
+  background-image: repeating-linear-gradient(
+    to right,
+    color-mix(in oklab, var(--color-paper) 7%, transparent) 0 1px,
+    transparent 1px calc(100% / 6)
+  );
+  background-position: 0 0;
 }
 
-@utility noise {
-  position: relative;
-}
-
-@utility glass {
-  background: color-mix(in oklab, var(--color-navy) 62%, transparent);
-  backdrop-filter: blur(18px) saturate(130%);
-  -webkit-backdrop-filter: blur(18px) saturate(130%);
-  border: 1px solid color-mix(in oklab, var(--color-cyan) 16%, transparent);
+@utility column-rules-ink {
+  background-image: repeating-linear-gradient(
+    to right,
+    color-mix(in oklab, var(--color-navy) 9%, transparent) 0 1px,
+    transparent 1px calc(100% / 6)
+  );
 }
 
 /* Reveal-on-scroll, driven by IntersectionObserver in Reveal.tsx. */

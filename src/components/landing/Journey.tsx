@@ -62,7 +62,7 @@ export function Journey() {
           lede="Clinician connection and access activation are both completed before full patient access is granted. Nothing about that is optional."
         />
 
-        <ol className="grid gap-px overflow-hidden rounded-3xl border border-navy/12 bg-navy/12 sm:grid-cols-2 xl:grid-cols-3">
+        <ol className="grid gap-px overflow-hidden border border-navy/12 bg-navy/12 sm:grid-cols-2 xl:grid-cols-3">
           {steps.map((step, i) => {
             const gate = step.step === 2 || step.step === 3;
             return (

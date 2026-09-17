@@ -38,7 +38,7 @@ export const HERO = {
   eyebrow: 'Decision-support risk intelligence',
   headline: ['Know your risk', 'before it becomes', 'your reality.'],
   standfirst:
-    'RiskSense AI combines a patient’s health information with machine-learning models to produce decision-support risk estimates for heart disease and diabetes — reviewed with the clinician who already knows them.',
+    'RiskSense AI combines a patient’s health information with machine-learning models to produce decision-support risk estimates for heart disease and diabetes, reviewed with the clinician who already knows them.',
   badges: [
     'AI-Assisted Risk Analysis',
     'Zero-Trust Security',
@@ -70,7 +70,7 @@ export const STATISTICS = [
   {
     value: '96M',
     unit: 'US adults',
-    claim: 'Have prediabetes — and more than 8 in 10 of them are unaware of it.',
+    claim: 'Have prediabetes. More than 8 in 10 of them are unaware of it.',
     source: 'Centers for Disease Control and Prevention — National Diabetes Statistics Report',
     year: '2022',
   },
@@ -111,14 +111,14 @@ export const NODES: InfoNode[] = [
     accent: 'cyan',
     position: [0, 0, 62],
     body: [
-      'This district is the RiskSense AI service, laid out as a place you can walk through. Every building holds one part of the system — what it analyses, who reviews it, how access is granted and how the data is protected.',
+      'This district is the RiskSense AI service, laid out as a place you can walk through. Every building holds one part of the system: what it analyses, who reviews it, how access is granted, how the data is protected.',
       'The website is the public information and service-activation layer. The mobile application remains the primary patient health application: health profile, vitals, laboratory information and risk-analysis history all live there.',
     ],
     bullets: [
-      { label: 'Move', text: 'W A S D or arrow keys · hold Shift to sprint' },
-      { label: 'Look', text: 'Move the mouse · click once to capture the cursor' },
+      { label: 'Move', text: 'W A S D or arrow keys. Hold Shift to sprint' },
+      { label: 'Look', text: 'Move the mouse. Click once to capture the cursor' },
       { label: 'Interact', text: 'Walk into a marker and press E' },
-      { label: 'Map', text: 'Press M for the district map · Esc releases the cursor' },
+      { label: 'Map', text: 'Press M for the district map. Esc releases the cursor' },
     ],
     footnote:
       'On a touch device, use the left stick to walk, drag the right side of the screen to look, and tap the pulsing marker to read it.',
@@ -174,7 +174,7 @@ export const NODES: InfoNode[] = [
     accent: 'blue',
     position: [11, 0, 20],
     body: [
-      'The patient records the health information the supported models require — demographics, vitals and the relevant laboratory values — in the mobile application.',
+      'The patient records the health information the supported models require: demographics, vitals, and the relevant laboratory values.',
     ],
   },
   {
@@ -187,7 +187,7 @@ export const NODES: InfoNode[] = [
     accent: 'blue',
     position: [-11, 0, 10],
     body: [
-      'The FastAPI backend runs the supported risk-analysis model against the patient’s current information and returns an estimate. Inference is authoritative on the backend — never on the device or in the browser.',
+      'The FastAPI backend runs the supported risk-analysis model against the patient’s current information and returns an estimate. Inference is authoritative on the backend, never on the device or in the browser.',
     ],
   },
   {
@@ -308,7 +308,7 @@ export const NODES: InfoNode[] = [
       'Diabetes v1 is an adult risk model. It reads anthropometric and blood-pressure measurements that can be captured without a laboratory, which makes it usable earlier in a patient’s journey.',
     ],
     bullets: [
-      { label: 'Age', text: 'Years — adult eligibility applies' },
+      { label: 'Age', text: 'Years. Adult eligibility applies' },
       { label: 'Sex', text: 'As recorded on the health profile' },
       { label: 'BMI', text: 'kg/m²' },
       { label: 'Waist circumference', text: 'cm' },
@@ -344,7 +344,7 @@ export const NODES: InfoNode[] = [
     position: [0, 0, -58],
     body: [
       'Patients can activate RiskSense access through a supported insurance provider instead of a subscription. The kiosks around this pavilion show which providers can be selected during registration and access verification.',
-      'The provider list is data-driven: providers can be added, disabled or reordered in the backend without redesigning anything. Selecting a provider explains how eligibility works — it never exposes member information.',
+      'The provider list is data-driven: providers can be added, disabled or reordered in the backend without redesigning anything. Selecting a provider explains how eligibility works. It never exposes member information.',
     ],
     footnote:
       'Every provider shown in this prototype is demonstration data, clearly labelled as such. No commercial partnership is implied. Insurance verification is simulated until a real insurer integration exists.',
@@ -384,7 +384,7 @@ export const NODES: InfoNode[] = [
       { label: 'Audit logging', text: 'Sensitive system activity is recorded.' },
     ],
     footnote:
-      'Infrastructure secrets, database configuration and internal security keys are never exposed on the public website — including in this world.',
+      'Infrastructure secrets, database configuration and internal security keys are never exposed on the public website, including in this world.',
   },
 
   /* --- Architecture and boundaries : sections 2 and 13 ------------------- */
@@ -406,7 +406,7 @@ export const NODES: InfoNode[] = [
       },
       {
         label: 'Mobile app',
-        text: 'The ongoing patient experience — health profile, vitals and labs, risk analyses, prediction history.',
+        text: 'The ongoing patient experience: health profile, vitals and labs, risk analyses, prediction history.',
       },
       {
         label: 'FastAPI backend',
@@ -447,7 +447,7 @@ export const NODES: InfoNode[] = [
     accent: 'amber',
     position: [17, 0, -50],
     body: [
-      'Activation can fail for ordinary reasons. Each one gets plain user-facing language and a way forward — Try Again or Return to App — never a raw API error.',
+      'Activation can fail for ordinary reasons. Each one gets plain user-facing language and a way forward, Try Again or Return to App, never a raw API error.',
     ],
     bullets: [
       { label: 'Payment', text: 'Demo payment failed or was cancelled.' },
@@ -501,7 +501,7 @@ export const NODES: InfoNode[] = [
     position: [16, 0, -34],
     body: [
       'Support opens in your own email application with the subject already filled in.',
-      'Please do not include medical details, identifiers or test results in a support email — RiskSense never asks for them there.',
+      'Please do not include medical details, identifiers or test results in a support email. RiskSense never asks for them there.',
     ],
     cta: {
       label: 'Email ' + SUPPORT_EMAIL,

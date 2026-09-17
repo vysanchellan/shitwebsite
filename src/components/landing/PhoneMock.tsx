@@ -44,13 +44,9 @@ export function PhoneMock() {
   return (
     <div ref={ref} className="relative mx-auto w-full max-w-[19rem]">
       {/* Halo */}
-      <div
-        className="absolute -inset-10 -z-10 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--color-cyan)_18%,transparent)_0%,transparent_68%)] blur-2xl"
-        aria-hidden="true"
-      />
 
-      <div className="relative rounded-[2.6rem] border border-white/12 bg-gradient-to-b from-navy-3/80 to-ink p-2.5 shadow-[0_40px_90px_-30px_rgba(0,0,0,0.9)]">
-        <div className="relative aspect-[9/19.2] overflow-hidden rounded-[2rem] bg-gradient-to-b from-navy-2 via-navy to-ink">
+      <div className="relative border border-white/12 bg-gradient-to-b from-navy-3/80 to-ink p-2.5 shadow-[0_40px_90px_-30px_rgba(0,0,0,0.9)]">
+        <div className="relative aspect-[9/19.2] overflow-hidden bg-gradient-to-b from-navy-2 via-navy to-ink">
           {/* Status bar + island */}
           <div className="flex items-center justify-between px-5 pt-3.5">
             <span className="micro-sm text-paper/55">9:41</span>
@@ -138,7 +134,7 @@ export function PhoneMock() {
           </div>
 
           {/* Clinician row */}
-          <div className="mx-5 mt-4 flex items-center gap-2.5 rounded-xl border border-cyan/18 bg-cyan/8 px-3 py-2.5">
+          <div className="mx-5 mt-4 flex items-center gap-2.5 border border-cyan/18 bg-cyan/8 px-3 py-2.5">
             <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-cyan/20 font-mono text-[0.55rem] text-cyan">
               RS
             </span>

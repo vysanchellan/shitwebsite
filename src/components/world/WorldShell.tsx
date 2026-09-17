@@ -57,7 +57,7 @@ function NoWebGL() {
 function StartCard({ onStart, touch }: { onStart: () => void; touch: boolean }) {
   return (
     <div className="pointer-events-auto absolute inset-0 z-50 flex items-center justify-center bg-ink/78 p-4 backdrop-blur-md">
-      <div className="animate-rise relative w-full max-w-2xl overflow-hidden rounded-3xl border border-white/12 bg-navy/90 p-7 sm:p-10">
+      <div className="animate-rise relative w-full max-w-2xl overflow-hidden border border-white/12 bg-navy/90 p-7 sm:p-10">
         <span className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-cyan to-transparent" aria-hidden="true" />
 
         <div className="flex items-center gap-3">
@@ -70,13 +70,13 @@ function StartCard({ onStart, touch }: { onStart: () => void; touch: boolean }) 
         </h1>
 
         <p className="mt-5 max-w-[56ch] text-[0.98rem] leading-[1.68] text-paper/62">
-          Every part of RiskSense AI — the two risk models, the six-step journey, the insurer
-          pavilion, the clinician link and the security vault — is a building here. Find the glowing
+          Every part of RiskSense AI is a building here: the two risk models, the six-step journey,
+          the insurer pavilion, the clinician link, the security vault. Find the glowing
           markers and read what they hold. There are {NODE_COUNT} across {DISTRICTS.length}{' '}
           districts.
         </p>
 
-        <dl className="mt-8 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-2">
+        <dl className="mt-8 grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-2">
           {(touch
             ? [
                 { k: 'Move', v: 'Left thumbstick' },
@@ -119,7 +119,7 @@ function StartCard({ onStart, touch }: { onStart: () => void; touch: boolean }) 
         </div>
 
         <p className="mt-6 micro-sm leading-[1.9] text-paper/28">
-          Decision support only — RiskSense AI does not diagnose disease or replace professional
+          Decision support only. RiskSense AI does not diagnose disease or replace professional
           medical advice.
         </p>
       </div>
@@ -131,7 +131,7 @@ function StartCard({ onStart, touch }: { onStart: () => void; touch: boolean }) 
 function PausedCard({ onResume }: { onResume: () => void }) {
   return (
     <div className="pointer-events-auto absolute inset-0 z-40 flex items-center justify-center bg-ink/70 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-sm rounded-3xl border border-white/12 bg-navy/90 p-7 text-center">
+      <div className="w-full max-w-sm border border-white/12 bg-navy/90 p-7 text-center">
         <p className="micro text-cyan">Paused</p>
         <h2 className="mt-4 display-m text-paper">Take your time.</h2>
         <p className="mt-4 text-[0.9rem] leading-[1.65] text-paper/55">

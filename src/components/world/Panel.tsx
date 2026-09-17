@@ -16,7 +16,7 @@ function InsurerRoster() {
         {INSURERS.map((ins) => (
           <li
             key={ins.id}
-            className={`rounded-xl border border-white/10 bg-white/[0.03] p-3 ${
+            className={`border border-white/10 bg-white/[0.03] p-3 ${
               ins.enabled ? '' : 'opacity-40'
             }`}
           >
@@ -74,7 +74,7 @@ export function Panel() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="rs-panel-title"
-        className="animate-rise relative flex max-h-[86svh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl border border-white/12 bg-navy/92 shadow-[0_50px_140px_-40px_rgba(0,0,0,0.95)] backdrop-blur-xl"
+        className="animate-rise relative flex max-h-[86svh] w-full max-w-3xl flex-col overflow-hidden border border-white/12 bg-navy/92 shadow-[0_50px_140px_-40px_rgba(0,0,0,0.95)] backdrop-blur-xl"
       >
         {/* Accent rail */}
         <span
@@ -141,7 +141,7 @@ export function Panel() {
           {node.id === 'insurance' && <InsurerRoster />}
 
           {node.footnote && (
-            <p className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3.5 micro-sm leading-[1.85] text-paper/40">
+            <p className="mt-6 border border-white/10 bg-white/[0.03] px-4 py-3.5 micro-sm leading-[1.85] text-paper/40">
               {node.footnote}
             </p>
           )}

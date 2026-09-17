@@ -126,7 +126,7 @@ function Field({
 }
 
 const inputClass =
-  'mt-2 w-full rounded-xl border border-white/12 bg-white/[0.03] px-4 py-3.5 font-sans text-[0.95rem] text-paper placeholder:text-paper/22 transition-colors focus:border-cyan/60 focus:outline-none';
+  'mt-2 w-full border border-white/12 bg-white/[0.03] px-4 py-3.5 font-sans text-[0.95rem] text-paper placeholder:text-paper/22 transition-colors focus:border-cyan/60 focus:outline-none';
 
 function Busy({ label }: { label: string }) {
   return (
@@ -277,7 +277,7 @@ export function RegisterFlow() {
   return (
     <div className="min-h-[100svh] bg-ink">
       {/* Header */}
-      <header className="sticky top-0 z-30 border-b border-white/8 bg-ink/85 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 border-b border-white/8 bg-ink/85">
         <div className="mx-auto flex h-16 max-w-[1500px] items-center justify-between gap-4 px-5 sm:px-8">
           <Link href="/" className="flex items-center gap-2.5 text-paper" aria-label="RiskSense AI — home">
             <Mark className="h-5 w-5 text-cyan" />
@@ -334,7 +334,7 @@ export function RegisterFlow() {
             })}
           </ol>
 
-          <p className="mt-8 hidden rounded-2xl border border-white/10 bg-white/[0.02] p-4 micro-sm leading-[1.85] text-paper/32 lg:block">
+          <p className="mt-8 hidden border border-white/10 bg-white/[0.02] p-4 micro-sm leading-[1.85] text-paper/32 lg:block">
             Your account already exists. Access to risk analysis is granted once this setup and the
             clinician connection are both complete.
           </p>
@@ -355,7 +355,7 @@ export function RegisterFlow() {
                 connect your clinician, and activate.
               </p>
 
-              <ul className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-3">
+              <ul className="mt-10 grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-3">
                 {[
                   { k: 'Account', v: 'Created', tone: 'ok' },
                   { k: 'Access', v: 'Not activated', tone: 'warn' },
@@ -418,7 +418,7 @@ export function RegisterFlow() {
                       type="button"
                       onClick={() => setMethod(opt.id)}
                       aria-pressed={selected}
-                      className={`rounded-3xl border p-6 text-left transition-colors duration-400 sm:p-7 ${
+                      className={`border p-6 text-left transition-colors duration-400 sm:p-7 ${
                         selected
                           ? 'border-cyan bg-cyan/8'
                           : 'border-white/12 bg-white/[0.02] hover:border-white/28'
@@ -482,7 +482,7 @@ export function RegisterFlow() {
               <p className="micro text-cyan">Step 03 · Subscription</p>
               <h1 className="mt-6 display-l text-paper text-balance">RiskSense access</h1>
 
-              <div className="mt-9 rounded-3xl border border-white/10 bg-white/[0.02] p-6 sm:p-8">
+              <div className="mt-9 border border-white/10 bg-white/[0.02] p-6 sm:p-8">
                 <div className="flex flex-wrap items-baseline justify-between gap-4">
                   <div>
                     <p className="micro-sm text-cyan/70">Access package</p>
@@ -514,7 +514,7 @@ export function RegisterFlow() {
               </div>
 
               {/* Demo gateway */}
-              <div className="mt-5 rounded-3xl border border-warn/30 bg-warn/[0.06] p-6 sm:p-8">
+              <div className="mt-5 border border-warn/30 bg-warn/[0.06] p-6 sm:p-8">
                 <div className="flex items-center gap-3">
                   <span className="grid h-7 w-7 place-items-center rounded-full bg-warn/20">
                     <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 text-warn" fill="none" aria-hidden="true">
@@ -619,7 +619,7 @@ export function RegisterFlow() {
               <p className="micro text-cyan">Step 03 · Insurance</p>
               <h1 className="mt-6 display-l text-paper text-balance">Choose your provider</h1>
 
-              <p className="mt-5 rounded-2xl border border-warn/30 bg-warn/[0.06] px-5 py-4 text-[0.88rem] leading-[1.6] text-paper/70">
+              <p className="mt-5 border border-warn/30 bg-warn/[0.06] px-5 py-4 text-[0.88rem] leading-[1.6] text-paper/70">
                 <span className="micro-sm mr-2 text-warn">Demonstration data</span>
                 Every provider listed is a placeholder for the academic prototype, and insurance
                 verification is simulated until a real insurer integration exists.
@@ -635,7 +635,7 @@ export function RegisterFlow() {
                         disabled={!ins.enabled}
                         onClick={() => setInsurer(ins)}
                         aria-pressed={selected}
-                        className={`flex h-full w-full flex-col items-start gap-3 rounded-2xl border p-4 text-left transition-colors duration-300 ${
+                        className={`flex h-full w-full flex-col items-start gap-3 border p-4 text-left transition-colors duration-300 ${
                           selected
                             ? 'border-cyan bg-cyan/8'
                             : ins.enabled
@@ -657,7 +657,7 @@ export function RegisterFlow() {
               </ul>
 
               {insurer && (
-                <div className="animate-rise mt-8 rounded-3xl border border-white/10 bg-white/[0.02] p-6 sm:p-8">
+                <div className="animate-rise mt-8 border border-white/10 bg-white/[0.02] p-6 sm:p-8">
                   <div className="flex items-center gap-4">
                     <InsurerLogo insurer={insurer} size={44} />
                     <div>
@@ -749,7 +749,7 @@ export function RegisterFlow() {
                 any connection is made.
               </p>
 
-              <div className="mt-9 rounded-3xl border border-white/10 bg-white/[0.02] p-6 sm:p-8">
+              <div className="mt-9 border border-white/10 bg-white/[0.02] p-6 sm:p-8">
                 <Field label="RiskSense Clinician ID" hint="Format: RS-0000-0000">
                   <div className="mt-2 flex flex-col gap-3 sm:flex-row">
                     <input
@@ -767,7 +767,7 @@ export function RegisterFlow() {
                       type="button"
                       onClick={verifyClinician}
                       disabled={clinicianId.trim().length < 6 || busy !== null}
-                      className="shrink-0 rounded-xl bg-paper px-6 py-3.5 micro text-ink transition-opacity hover:opacity-85 disabled:opacity-25"
+                      className="shrink-0 bg-paper px-6 py-3.5 micro text-ink transition-opacity hover:opacity-85 disabled:opacity-25"
                     >
                       {busy === 'clinician' ? <Busy label="Verifying" /> : 'Verify clinician'}
                     </button>
@@ -794,7 +794,7 @@ export function RegisterFlow() {
                 </p>
 
                 {clinician && (
-                  <div className="animate-rise mt-6 rounded-2xl border border-ok/25 bg-ok/[0.07] p-5">
+                  <div className="animate-rise mt-6 border border-ok/25 bg-ok/[0.07] p-5">
                     <p className="flex items-center gap-2.5 micro-sm text-ok">
                       <svg viewBox="0 0 14 14" className="h-3.5 w-3.5" fill="none" aria-hidden="true">
                         <path d="m3 7.4 2.6 2.6L11 4.6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -814,7 +814,7 @@ export function RegisterFlow() {
                 )}
 
                 {clinicianError && (
-                  <div className="animate-rise mt-6 rounded-2xl border border-risk/30 bg-risk/[0.08] p-5">
+                  <div className="animate-rise mt-6 border border-risk/30 bg-risk/[0.08] p-5">
                     <p className="micro-sm text-risk">Not connected</p>
                     <p className="mt-2.5 text-[0.9rem] leading-[1.6] text-paper/72">
                       {clinicianError}
@@ -849,7 +849,7 @@ export function RegisterFlow() {
               <p className="micro text-cyan">Step 05 · Review</p>
               <h1 className="mt-6 display-l text-paper text-balance">Check this over.</h1>
 
-              <dl className="mt-9 overflow-hidden rounded-3xl border border-white/10">
+              <dl className="mt-9 overflow-hidden border border-white/10">
                 {summary.map((row, i) => (
                   <div
                     key={row.k}
@@ -867,7 +867,7 @@ export function RegisterFlow() {
                 Membership and card details are masked here and are never persisted by RiskSense.
               </p>
 
-              <label className="mt-8 flex cursor-pointer items-start gap-3.5 rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+              <label className="mt-8 flex cursor-pointer items-start gap-3.5 border border-white/10 bg-white/[0.02] p-5">
                 <input
                   type="checkbox"
                   checked={accepted}
@@ -927,7 +927,7 @@ export function RegisterFlow() {
                 backend when you return — it doesn’t take this screen’s word for it.
               </p>
 
-              <div className="mt-9 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-3">
+              <div className="mt-9 grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-3">
                 {[
                   { k: 'Access', v: 'Activated' },
                   { k: 'Clinician', v: clinician?.name ?? 'Connected' },
@@ -975,7 +975,7 @@ export function RegisterFlow() {
           )}
 
           {/* --- Failure state explorer (specification section 9) -------------- */}
-          <details className="mt-16 rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+          <details className="mt-16 border border-white/10 bg-white/[0.02] p-5">
             <summary className="cursor-pointer micro-sm text-paper/40 transition-colors hover:text-paper/70">
               Failure and recovery states
             </summary>
@@ -1011,10 +1011,10 @@ export function RegisterFlow() {
             type="button"
             aria-label="Dismiss"
             onClick={() => setFailure(null)}
-            className="absolute inset-0 cursor-default bg-ink/80 backdrop-blur-sm"
+            className="absolute inset-0 cursor-default bg-ink/80"
           />
 
-          <div className="animate-rise relative w-full max-w-lg overflow-hidden rounded-3xl border border-warn/25 bg-navy p-7 sm:p-9">
+          <div className="animate-rise relative w-full max-w-lg overflow-hidden border border-warn/25 bg-navy p-7 sm:p-9">
             <span className="absolute inset-x-0 top-0 h-[3px] bg-warn" aria-hidden="true" />
 
             <p className="micro text-warn">Something needs your attention</p>

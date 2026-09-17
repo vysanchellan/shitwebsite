@@ -28,7 +28,7 @@ export function LegalPage({ kicker, title, standfirst, updated, sections }: Prop
 
       <main id="main" className="bg-ink">
         <header className="relative overflow-hidden px-5 pt-32 pb-14 sm:px-8 sm:pt-40 lg:px-12">
-          <div className="grid-field absolute inset-0 opacity-40" aria-hidden="true" />
+          <div className="column-rules absolute inset-0" aria-hidden="true" />
 
           <div className="relative mx-auto max-w-4xl">
             <p className="micro text-cyan">{kicker}</p>

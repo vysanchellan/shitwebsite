@@ -1,7 +1,7 @@
 'use client';
 
 import { NODES } from '@/data/content';
-import { ACCENT_HEX, BOUNDS, STRUCTURES } from './layout';
+import { ACCENT_HEX, BOUNDS, CITY, STRUCTURES } from './layout';
 import { useWorld } from './store';
 
 const W = BOUNDS.maxX - BOUNDS.minX;
@@ -11,9 +11,13 @@ const H = BOUNDS.maxZ - BOUNDS.minZ;
 const sx = (x: number) => x - BOUNDS.minX;
 const sy = (z: number) => z - BOUNDS.minZ;
 
+/** How much of the world the corner map shows around the player, in metres. */
+const MINIMAP_SPAN = 150;
+
 /**
- * District map. The same projection serves the corner minimap and the
- * full-screen version, so what the player learns from one applies to the other.
+ * District map. The same projection serves both views: the corner map windows
+ * in on the player, the full map shows the whole city, and a position learned
+ * from one reads the same way on the other.
  */
 function MapSvg({ full }: { full: boolean }) {
   const [px, pz] = useWorld((s) => s.player);
@@ -21,21 +25,34 @@ function MapSvg({ full }: { full: boolean }) {
   const discovered = useWorld((s) => s.discovered);
   const nearby = useWorld((s) => s.nearby);
 
+  // The corner map follows the player; the full map shows the whole city.
+  const view = full
+    ? `0 0 ${W} ${H}`
+    : `${sx(px) - MINIMAP_SPAN / 2} ${sy(pz) - MINIMAP_SPAN / 2} ${MINIMAP_SPAN} ${MINIMAP_SPAN}`;
+
   return (
     <svg
-      viewBox={`0 0 ${W} ${H}`}
+      viewBox={view}
       className="h-full w-full"
       role={full ? 'img' : 'presentation'}
       aria-label={full ? 'Map of the RiskSense District' : undefined}
     >
-      <defs>
-        <radialGradient id="rs-map-fade" cx="50%" cy="50%" r="50%">
-          <stop offset="70%" stopColor="#040810" stopOpacity="0" />
-          <stop offset="100%" stopColor="#040810" stopOpacity="0.9" />
-        </radialGradient>
-      </defs>
+      <rect x={-W} y={-H} width={W * 3} height={H * 3} fill="#060c18" />
 
-      <rect x="0" y="0" width={W} height={H} fill="#060c18" />
+      {/* The generated city, so the corner map is not an empty field */}
+      <g>
+        {CITY.map((b, i) => (
+          <rect
+            key={i}
+            x={sx(b.pos[0] - b.size[0] / 2)}
+            y={sy(b.pos[1] - b.size[2] / 2)}
+            width={b.size[0]}
+            height={b.size[2]}
+            fill="#162236"
+            fillOpacity={0.9}
+          />
+        ))}
+      </g>
 
       {/* Avenues */}
       <g stroke="#45d7e8" strokeOpacity="0.14" strokeWidth="14" strokeLinecap="round">
@@ -95,14 +112,13 @@ function MapSvg({ full }: { full: boolean }) {
         <path d="M0 -5 L3.6 4 L0 2 L-3.6 4 Z" fill="#f5f4f0" />
       </g>
 
-      {!full && <rect x="0" y="0" width={W} height={H} fill="url(#rs-map-fade)" />}
     </svg>
   );
 }
 
 export function MiniMap() {
   return (
-    <div className="pointer-events-none hidden h-36 w-36 overflow-hidden rounded-2xl border border-white/12 bg-ink/70 backdrop-blur-md sm:block lg:h-44 lg:w-44">
+    <div className="pointer-events-none hidden h-36 w-36 overflow-hidden border border-white/12 bg-ink/70 backdrop-blur-md sm:block lg:h-44 lg:w-44">
       <MapSvg full={false} />
     </div>
   );
@@ -134,11 +150,11 @@ export function FullMap() {
       </header>
 
       <div className="mt-6 grid min-h-0 flex-1 gap-6 lg:grid-cols-[1fr_20rem]">
-        <div className="min-h-0 overflow-hidden rounded-3xl border border-white/10 bg-void">
+        <div className="min-h-0 overflow-hidden border border-white/10 bg-void">
           <MapSvg full />
         </div>
 
-        <div className="min-h-0 overflow-y-auto rounded-3xl border border-white/10 bg-void/60 p-5">
+        <div className="min-h-0 overflow-y-auto border border-white/10 bg-void/60 p-5">
           <p className="micro-sm text-paper/35">Districts</p>
           <ul className="mt-4 space-y-4">
             {districts.map((d) => {

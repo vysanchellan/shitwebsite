@@ -5,6 +5,7 @@ import { Bloom, EffectComposer, Vignette } from '@react-three/postprocessing';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { City } from './City';
+import { CityBlocks } from './CityBlocks';
 import { Drones, HeartHologram, Helix, MoleculeHologram, Motes, Pedestrians, PulseArches } from './Life';
 import { Markers } from './Markers';
 import { Player } from './Player';
@@ -82,7 +83,7 @@ function Atmosphere() {
 
   useEffect(() => {
     const prev = scene.fog;
-    scene.fog = new THREE.FogExp2('#0b1228', 0.0082);
+    scene.fog = new THREE.FogExp2('#0b1228', 0.0042);
     return () => {
       scene.fog = prev;
     };
@@ -101,6 +102,7 @@ function Contents({ quality }: { quality: Quality }) {
       <Sun shadows={quality.shadows} />
 
       <City />
+      <CityBlocks />
       <PulseArches />
       <HeartHologram position={[-40, 40, -44]} />
       <MoleculeHologram position={[40, 34, -44]} />
@@ -120,7 +122,7 @@ export function Scene({ quality }: { quality: Quality }) {
     <Canvas
       shadows={quality.shadows}
       dpr={quality.dpr}
-      camera={{ fov: 62, near: 0.1, far: 520, position: [0, 5, 82] }}
+      camera={{ fov: 62, near: 0.1, far: 1400, position: [0, 5, 82] }}
       gl={{ antialias: quality.multisampling === 0, powerPreference: 'high-performance' }}
       onCreated={({ gl }) => {
         gl.toneMapping = THREE.ACESFilmicToneMapping;

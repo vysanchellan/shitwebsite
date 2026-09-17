@@ -14,11 +14,7 @@ export function Problem() {
       id="problem"
       className="relative overflow-hidden bg-ink px-5 py-24 sm:px-8 sm:py-32 lg:px-12 lg:py-40"
     >
-      <div className="grid-field absolute inset-0 opacity-40" aria-hidden="true" />
-      <div
-        className="absolute top-0 left-1/2 h-[30rem] w-[60rem] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse,color-mix(in_oklab,var(--color-risk)_10%,transparent),transparent_70%)] blur-3xl"
-        aria-hidden="true"
-      />
+      <div className="column-rules absolute inset-0" aria-hidden="true" />
 
       <div className="relative mx-auto max-w-[1800px]">
         <SectionHead
@@ -32,7 +28,7 @@ export function Problem() {
           lede="None of them are exotic. They are the ordinary way a preventable condition gets found late."
         />
 
-        <div className="grid gap-px overflow-hidden rounded-3xl border border-white/10 bg-white/10 md:grid-cols-3">
+        <div className="grid gap-px overflow-hidden border border-white/10 bg-white/10 md:grid-cols-3">
           {problems.map((p, i) => (
             <Reveal
               key={p.id}
@@ -76,7 +72,7 @@ export function Problem() {
               </p>
             </Reveal>
 
-            <ol className="mt-11 space-y-px overflow-hidden rounded-2xl border border-white/10">
+            <ol className="mt-11 space-y-px overflow-hidden border border-white/10">
               {response.bullets?.map((b, i) => (
                 <Reveal
                   key={b.label}

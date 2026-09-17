@@ -11,10 +11,6 @@ export function Trust() {
       id="security"
       className="relative overflow-hidden bg-ink px-5 py-24 sm:px-8 sm:py-32 lg:px-12 lg:py-40"
     >
-      <div
-        className="absolute top-1/3 -left-40 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--color-teal)_13%,transparent),transparent_70%)] blur-3xl"
-        aria-hidden="true"
-      />
 
       <div className="relative mx-auto max-w-[1800px]">
         <SectionHead
@@ -30,7 +26,7 @@ export function Trust() {
 
         <div className="grid gap-5 lg:grid-cols-[1.15fr_1fr] lg:gap-6">
           {/* Clinician */}
-          <Reveal className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-navy/60 via-navy/25 to-ink p-7 sm:p-10">
+          <Reveal className="relative overflow-hidden border border-white/10 bg-gradient-to-br from-navy/60 via-navy/25 to-ink p-7 sm:p-10">
             <p className="micro-sm text-ok/80">{clinician.kicker}</p>
             <h3 className="mt-4 display-m text-paper">{clinician.title}</h3>
 
@@ -44,17 +40,17 @@ export function Trust() {
             ))}
 
             {/* Clinician ID verification, shown as the UI it becomes. */}
-            <div className="mt-9 rounded-2xl border border-white/10 bg-ink/60 p-5 sm:p-6">
+            <div className="mt-9 border border-white/10 bg-ink/60 p-5 sm:p-6">
               <p className="micro-sm mb-3.5 text-paper/32">Clinician ID verification</p>
 
               <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center">
-                <div className="flex flex-1 items-center gap-3 rounded-xl border border-white/12 bg-white/[0.03] px-4 py-3">
+                <div className="flex flex-1 items-center gap-3 border border-white/12 bg-white/[0.03] px-4 py-3">
                   <span className="micro-sm text-cyan/60">RS</span>
                   <span className="font-mono text-[0.92rem] tracking-[0.18em] text-paper/85">
                     ••••-••••-4471
                   </span>
                 </div>
-                <span className="inline-flex items-center justify-center gap-2 rounded-xl bg-ok/14 px-5 py-3 micro-sm text-ok">
+                <span className="inline-flex items-center justify-center gap-2 bg-ok/14 px-5 py-3 micro-sm text-ok">
                   <svg viewBox="0 0 14 14" className="h-3 w-3" fill="none" aria-hidden="true">
                     <path
                       d="m3 7.4 2.6 2.6L11 4.6"
@@ -76,8 +72,8 @@ export function Trust() {
           </Reveal>
 
           {/* Security */}
-          <Reveal delay={120} className="relative overflow-hidden rounded-3xl border border-white/10 bg-ink p-7 sm:p-10">
-            <div className="grid-field absolute inset-0 opacity-70" aria-hidden="true" />
+          <Reveal delay={120} className="relative overflow-hidden border border-white/10 bg-ink p-7 sm:p-10">
+            <div className="column-rules absolute inset-0" aria-hidden="true" />
 
             <div className="relative">
               <p className="micro-sm text-teal/80">{security.kicker}</p>
@@ -86,7 +82,7 @@ export function Trust() {
                 {security.body[0]}
               </p>
 
-              <ul className="mt-9 space-y-px overflow-hidden rounded-2xl border border-white/10">
+              <ul className="mt-9 space-y-px overflow-hidden border border-white/10">
                 {security.bullets?.map((b, i) => (
                   <li
                     key={b.label}

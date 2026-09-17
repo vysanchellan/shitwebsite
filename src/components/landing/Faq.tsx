@@ -24,7 +24,7 @@ export function Faq() {
               The questions patients <span className="editorial text-teal">actually</span> ask.
             </>
           }
-          lede="Short answers, no hedging. Anything clinical belongs with your clinician — that is the whole design."
+          lede="Short answers, no hedging. Anything clinical belongs with your clinician. That is the whole design."
         />
 
         <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr] lg:gap-20">
@@ -79,7 +79,7 @@ export function Faq() {
 
           {/* Contact */}
           <Reveal delay={120} id="contact" className="lg:pt-2">
-            <div className="sticky top-28 rounded-3xl border border-navy/12 bg-white p-7 sm:p-9">
+            <div className="sticky top-28 border border-navy/12 bg-white p-7 sm:p-9">
               <p className="micro-sm text-teal">Contact us</p>
               <h3 className="mt-4 display-m text-navy">{contact.title}</h3>
 
@@ -91,7 +91,7 @@ export function Faq() {
 
               <a
                 href={contact.cta!.href}
-                className="group mt-8 flex items-center justify-between gap-4 rounded-2xl bg-navy px-6 py-5 text-paper transition-colors duration-500 hover:bg-teal hover:text-ink"
+                className="group mt-8 flex items-center justify-between gap-4 bg-navy px-6 py-5 text-paper transition-colors duration-500 hover:bg-teal hover:text-ink"
               >
                 <span>
                   <span className="block micro-sm opacity-55">Email support</span>

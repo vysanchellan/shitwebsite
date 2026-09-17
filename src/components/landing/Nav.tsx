@@ -3,8 +3,12 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { NAV } from '@/data/content';
-import { Wordmark } from '@/components/ui/Wordmark';
+import { Mark } from '@/components/ui/Wordmark';
 
+/**
+ * Menu left, wordmark centred, one action right. Square, hairline-ruled, and
+ * silent until you scroll — the chrome is not the point.
+ */
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -30,133 +34,111 @@ export function Nav() {
     <>
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-full focus:bg-cyan focus:px-5 focus:py-2.5 focus:text-ink focus:micro"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-cyan focus:px-5 focus:py-2.5 focus:text-ink focus:micro"
       >
         Skip to content
       </a>
 
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,backdrop-filter,border-color] duration-500 ${
-          scrolled || open
-            ? 'border-b border-white/8 bg-ink/78 backdrop-blur-xl'
-            : 'border-b border-transparent'
+        className={`fixed inset-x-0 top-0 z-50 transition-colors duration-500 ${
+          scrolled || open ? 'border-b border-paper/12 bg-ink' : 'border-b border-transparent'
         }`}
       >
         <nav
           aria-label="Primary"
-          className="mx-auto flex h-16 max-w-[1800px] items-center justify-between gap-6 px-5 sm:h-18 sm:px-8 lg:px-12"
+          className="mx-auto grid h-16 max-w-[1800px] grid-cols-[1fr_auto_1fr] items-center px-5 sm:h-[4.5rem] sm:px-8 lg:px-12"
         >
+          {/* Menu */}
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            className="flex w-fit items-center gap-3 micro text-paper/70 transition-colors hover:text-paper"
+          >
+            <span className="relative block h-[9px] w-4" aria-hidden="true">
+              <span
+                className={`absolute left-0 h-px w-full bg-current transition-transform duration-400 ease-[var(--ease-out-expo)] ${
+                  open ? 'top-1 rotate-45' : 'top-0'
+                }`}
+              />
+              <span
+                className={`absolute left-0 h-px w-full bg-current transition-transform duration-400 ease-[var(--ease-out-expo)] ${
+                  open ? 'top-1 -rotate-45' : 'top-2'
+                }`}
+              />
+            </span>
+            <span className="hidden sm:inline">{open ? 'Close' : 'Menu'}</span>
+          </button>
+
+          {/* Wordmark */}
           <Link
             href="/"
-            className="shrink-0 text-[1.05rem] text-paper transition-opacity hover:opacity-70"
             aria-label="RiskSense AI — home"
+            className="flex items-center gap-2.5 justify-self-center text-paper transition-opacity hover:opacity-60"
           >
-            <Wordmark />
+            <Mark className="h-4 w-4 text-cyan" />
+            <span className="font-display text-[0.95rem] font-semibold tracking-[0.34em] uppercase">
+              RiskSense
+            </span>
           </Link>
 
-          <ul className="hidden items-center gap-7 xl:flex">
-            {NAV.slice(1).map((item) => (
-              <li key={item.label}>
-                <Link
-                  href={item.href}
-                  className="group relative micro text-paper/60 transition-colors hover:text-paper"
-                >
-                  {item.label}
-                  <span className="absolute -bottom-2 left-0 h-px w-0 bg-cyan transition-[width] duration-500 ease-[var(--ease-out-expo)] group-hover:w-full" />
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          <div className="flex items-center gap-2.5">
-            <Link
-              href="/world"
-              className="group hidden items-center gap-2.5 rounded-full border border-cyan/35 bg-cyan/8 py-2.5 pr-3.5 pl-5 micro text-cyan transition-colors duration-400 hover:bg-cyan hover:text-ink sm:inline-flex"
-            >
-              Enter District
-              <span className="grid h-5 w-5 place-items-center rounded-full bg-cyan/20 transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:translate-x-0.5 group-hover:bg-ink/15">
-                <svg viewBox="0 0 12 12" className="h-2.5 w-2.5" fill="none" aria-hidden="true">
-                  <path
-                    d="M2 6h8M6.5 2.5 10 6l-3.5 3.5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-            </Link>
-
-            <button
-              type="button"
-              onClick={() => setOpen((v) => !v)}
-              aria-expanded={open}
-              aria-label={open ? 'Close menu' : 'Open menu'}
-              className="grid h-10 w-10 place-items-center rounded-full border border-white/12 text-paper transition-colors hover:border-cyan/50 hover:text-cyan xl:hidden"
-            >
-              <span className="relative block h-3 w-4">
-                <span
-                  className={`absolute left-0 h-px w-full bg-current transition-transform duration-400 ease-[var(--ease-out-expo)] ${
-                    open ? 'top-1.5 rotate-45' : 'top-0'
-                  }`}
-                />
-                <span
-                  className={`absolute left-0 h-px w-full bg-current transition-transform duration-400 ease-[var(--ease-out-expo)] ${
-                    open ? 'top-1.5 -rotate-45' : 'top-3'
-                  }`}
-                />
-              </span>
-            </button>
-          </div>
+          {/* Action */}
+          <Link
+            href="/world"
+            className="justify-self-end border border-paper/25 px-4 py-2.5 micro text-paper transition-colors duration-400 hover:border-cyan hover:bg-cyan hover:text-ink sm:px-6"
+          >
+            <span className="hidden sm:inline">Enter the district</span>
+            <span className="sm:hidden">Enter</span>
+          </Link>
         </nav>
       </header>
 
-      {/* Full-bleed menu — the links get the same scale as the headlines. */}
+      {/* Full-bleed menu */}
       <div
-        className={`fixed inset-0 z-40 bg-ink transition-[opacity,visibility] duration-500 xl:hidden ${
+        className={`fixed inset-0 z-40 bg-ink transition-[opacity,visibility] duration-500 ${
           open ? 'visible opacity-100' : 'invisible opacity-0'
         }`}
       >
-        <div className="grid-field absolute inset-0 opacity-50" aria-hidden="true" />
-        <div className="relative flex h-full flex-col justify-center px-5 pt-20 pb-10 sm:px-8">
-          <ul className="space-y-1">
+        <div className="column-rules absolute inset-0" aria-hidden="true" />
+
+        <div className="relative flex h-full flex-col justify-between px-5 pt-24 pb-8 sm:px-8 lg:px-12">
+          <ul className="border-t border-paper/12">
             {NAV.map((item, i) => (
-              <li key={item.label} className="overflow-hidden">
+              <li key={item.label} className="overflow-hidden border-b border-paper/12">
                 <Link
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="flex items-baseline gap-4 py-1.5 transition-colors hover:text-cyan"
+                  className="group flex items-baseline gap-5 py-3 transition-colors hover:text-cyan sm:py-4"
                   style={{
-                    transitionDelay: `${i * 30}ms`,
-                    transform: open ? 'none' : 'translateY(110%)',
-                    transition: 'transform 0.7s var(--ease-out-expo)',
-                    transitionProperty: 'transform, color',
+                    transform: open ? 'none' : 'translateY(105%)',
+                    transition: `transform 0.75s var(--ease-out-expo) ${i * 40}ms, color 0.3s`,
                   }}
                 >
                   <span className="micro-sm w-7 shrink-0 text-cyan/50">
                     {String(i + 1).padStart(2, '0')}
                   </span>
                   <span className="display-m">{item.label}</span>
+                  <span className="rule ml-auto hidden max-w-40 flex-1 self-center text-paper transition-opacity group-hover:opacity-60 sm:block" />
                 </Link>
               </li>
             ))}
           </ul>
 
-          <div className="mt-10 flex flex-col gap-3">
+          <div className="mt-10 grid gap-px bg-paper/12 sm:grid-cols-2">
             <Link
               href="/world"
               onClick={() => setOpen(false)}
-              className="flex items-center justify-between rounded-2xl bg-cyan px-6 py-5 text-ink transition-transform duration-500 ease-[var(--ease-out-expo)] active:scale-[0.98]"
+              className="flex items-center justify-between bg-cyan px-6 py-5 text-ink"
             >
-              <span className="micro">Enter the District</span>
+              <span className="micro">Enter the district</span>
               <span className="micro-sm opacity-60">3D · Interactive</span>
             </Link>
             <Link
               href="/register/complete"
               onClick={() => setOpen(false)}
-              className="flex items-center justify-between rounded-2xl border border-white/12 px-6 py-5 text-paper"
+              className="flex items-center justify-between bg-ink px-6 py-5 text-paper"
             >
-              <span className="micro">Complete Registration</span>
+              <span className="micro">Complete registration</span>
               <span className="micro-sm text-warn">Demo</span>
             </Link>
           </div>

@@ -52,7 +52,7 @@ export function Door() {
       id="enter"
       className="relative overflow-hidden bg-void px-5 py-24 sm:px-8 sm:py-32 lg:px-12 lg:py-40"
     >
-      <div className="grid-field absolute inset-0 opacity-30" aria-hidden="true" />
+      <div className="column-rules absolute inset-0" aria-hidden="true" />
 
       <div className="relative mx-auto max-w-[1800px]">
         <div className="flex items-center gap-4">
@@ -112,7 +112,7 @@ export function Door() {
 
                   {/* Light at the end */}
                   <span
-                    className="absolute top-[56%] left-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full blur-2xl transition-all duration-[900ms] ease-[var(--ease-out-expo)]"
+                    className="absolute top-[56%] left-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-[900ms] ease-[var(--ease-out-expo)]"
                     style={{
                       background:
                         'radial-gradient(circle, var(--color-cyan), color-mix(in oklab, var(--color-medical) 60%, transparent) 55%, transparent 72%)',
@@ -169,11 +169,6 @@ export function Door() {
               </div>
 
               {/* Plinth glow */}
-              <div
-                className="mx-auto h-24 w-[85%] rounded-[50%] bg-[radial-gradient(ellipse,color-mix(in_oklab,var(--color-cyan)_22%,transparent),transparent_70%)] blur-xl transition-opacity duration-700"
-                style={{ opacity: open ? 1 : 0.4 }}
-                aria-hidden="true"
-              />
 
               <span
                 className={`mx-auto mt-2 block w-fit rounded-full border px-5 py-2.5 micro transition-colors duration-500 ${
@@ -195,12 +190,12 @@ export function Door() {
             </h2>
 
             <p className="mt-7 max-w-[52ch] text-[1rem] leading-[1.68] text-paper/58 sm:text-[1.08rem]">
-              Everything in the specification — the models, the six-step journey, the insurer
-              pavilion, the clinician link, the security vault — is built as a district you can
-              walk through. Find a marker, press E, read what it holds, and move on.
+              Everything in the specification is built as a district you can walk through: the two
+              models, the six-step journey, the insurer pavilion, the clinician link, the security
+              vault. Find a marker, press E, read what it holds, move on.
             </p>
 
-            <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-3">
+            <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-3">
               {[
                 { k: 'Interactables', v: String(NODE_COUNT) },
                 { k: 'Districts', v: String(DISTRICTS.length) },

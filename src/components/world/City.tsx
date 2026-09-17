@@ -9,7 +9,6 @@ import {
   LAMPS,
   PAVILION_COLUMNS,
   ROADS,
-  SKYLINE,
   STRUCTURES,
   TREES,
   type Structure,
@@ -80,7 +79,7 @@ function Sky() {
 
   return (
     <mesh scale={[-1, 1, 1]} frustumCulled={false}>
-      <sphereGeometry args={[420, 32, 24]} />
+      <sphereGeometry args={[1200, 32, 24]} />
       <shaderMaterial
         vertexShader={SKY_VERT}
         fragmentShader={SKY_FRAG}
@@ -93,17 +92,17 @@ function Sky() {
   );
 }
 
-function Stars({ count = 700 }: { count?: number }) {
+function Stars({ count = 900 }: { count?: number }) {
   const geometry = useMemo(() => {
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       const v = new THREE.Vector3()
         .setFromSphericalCoords(
-          300,
+          860,
           Math.acos(THREE.MathUtils.randFloat(0.05, 0.85)),
           Math.random() * Math.PI * 2,
         );
-      pos.set([v.x, Math.abs(v.y) + 40, v.z], i * 3);
+      pos.set([v.x, Math.abs(v.y) + 120, v.z], i * 3);
     }
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
@@ -123,8 +122,8 @@ function Ground() {
 
   return (
     <group>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, -10]} receiveShadow>
-        <planeGeometry args={[440, 440]} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, -24]} receiveShadow>
+        <planeGeometry args={[1100, 1100]} />
         <meshStandardMaterial map={ground} roughness={0.78} metalness={0.28} color="#131c31" />
       </mesh>
 
@@ -221,58 +220,128 @@ function Glow({
 /* Structures                                                                  */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * The two institutes. Massed properly — a glazed podium at street level, a
+ * shaft with banded floor plates, a setback, a crown and roof plant — so they
+ * read as architecture from the boulevard rather than as lit boxes.
+ */
 function Building({ s, seed }: { s: Structure; seed: number }) {
   const [w, h, d] = s.size;
+
+  const podiumH = 6.5;
+  const shaftH = h - podiumH - 5;
+  const setbackW = w * 0.68;
+  const setbackD = d * 0.68;
+
   const windows = useMemo(
-    () => windowTexture(seed, Math.max(6, Math.round(w)), Math.max(10, Math.round(h * 0.9)), s.accent),
+    () => windowTexture(seed, Math.max(8, Math.round(w)), Math.max(14, Math.round(h)), s.accent),
     [seed, w, h, s.accent],
   );
+  const podiumWindows = useMemo(
+    () => windowTexture(seed + 5, Math.max(6, Math.round(w * 0.8)), 4, s.accent),
+    [seed, w, s.accent],
+  );
+
+  // Floor plates every 3.4m up the shaft.
+  const bands = Math.max(2, Math.floor(shaftH / 3.4));
 
   return (
     <group position={[s.pos[0], 0, s.pos[1]]} rotation={[0, s.rotY ?? 0, 0]}>
-      <mesh position={[0, h / 2, 0]} castShadow receiveShadow>
-        <boxGeometry args={[w, h, d]} />
+      {/* Podium */}
+      <mesh position={[0, podiumH / 2, 0]} castShadow receiveShadow>
+        <boxGeometry args={[w + 2.4, podiumH, d + 2.4]} />
         <meshStandardMaterial
-          color="#0a1426"
-          roughness={0.55}
-          metalness={0.6}
+          color="#0c1728"
+          roughness={0.5}
+          metalness={0.55}
           emissive="#ffffff"
-          emissiveMap={windows}
-          emissiveIntensity={1.35}
+          emissiveMap={podiumWindows}
+          emissiveIntensity={1.5}
         />
       </mesh>
 
-      {/* Crown + base light bars */}
-      <mesh position={[0, h + 0.18, 0]}>
-        <boxGeometry args={[w + 0.5, 0.34, d + 0.5]} />
-        <meshBasicMaterial color={s.accent} toneMapped={false} />
+      {/* Entrance canopy */}
+      <mesh position={[0, podiumH - 1.2, d / 2 + 2.8]} castShadow>
+        <boxGeometry args={[w * 0.55, 0.5, 5.2]} />
+        <meshStandardMaterial color="#0e1b2e" roughness={0.45} metalness={0.65} />
       </mesh>
-      <mesh position={[0, 0.2, 0]}>
-        <boxGeometry args={[w + 0.7, 0.3, d + 0.7]} />
+      <mesh position={[0, podiumH - 1.5, d / 2 + 2.8]}>
+        <boxGeometry args={[w * 0.55 + 0.25, 0.12, 5.4]} />
         <meshBasicMaterial color={s.accent} toneMapped={false} />
       </mesh>
 
-      {/* Vertical fins */}
+      {/* Shaft */}
+      <mesh position={[0, podiumH + shaftH / 2, 0]} castShadow receiveShadow>
+        <boxGeometry args={[w, shaftH, d]} />
+        <meshStandardMaterial
+          color="#0a1426"
+          roughness={0.55}
+          metalness={0.62}
+          emissive="#ffffff"
+          emissiveMap={windows}
+          emissiveIntensity={1.3}
+        />
+      </mesh>
+
+      {/* Floor plates */}
+      {Array.from({ length: bands }).map((_, i) => (
+        <mesh key={i} position={[0, podiumH + ((i + 1) * shaftH) / (bands + 1), 0]}>
+          <boxGeometry args={[w + 0.3, 0.12, d + 0.3]} />
+          <meshStandardMaterial color="#1a2942" roughness={0.6} metalness={0.5} />
+        </mesh>
+      ))}
+
+      {/* Setback + crown */}
+      <mesh position={[0, podiumH + shaftH + 2.5, 0]} castShadow>
+        <boxGeometry args={[setbackW, 5, setbackD]} />
+        <meshStandardMaterial color="#0b1526" roughness={0.5} metalness={0.7} />
+      </mesh>
+      <mesh position={[0, podiumH + shaftH + 5.2, 0]}>
+        <boxGeometry args={[setbackW + 0.5, 0.4, setbackD + 0.5]} />
+        <meshBasicMaterial color={s.accent} toneMapped={false} />
+      </mesh>
+
+      {/* Roof plant and mast */}
+      <mesh position={[setbackW * 0.2, podiumH + shaftH + 6.3, 0]} castShadow>
+        <boxGeometry args={[setbackW * 0.4, 1.8, setbackD * 0.45]} />
+        <meshStandardMaterial color="#131d2c" roughness={0.75} metalness={0.4} />
+      </mesh>
+      <mesh position={[-setbackW * 0.28, podiumH + shaftH + 9, 0]}>
+        <cylinderGeometry args={[0.1, 0.16, 6, 6]} />
+        <meshStandardMaterial color="#222b38" roughness={0.6} metalness={0.7} />
+      </mesh>
+      <mesh position={[-setbackW * 0.28, podiumH + shaftH + 12.2, 0]}>
+        <sphereGeometry args={[0.24, 8, 6]} />
+        <meshBasicMaterial color="#ff5a4a" toneMapped={false} />
+      </mesh>
+
+      {/* Corner fins the full height of the shaft */}
       {[-1, 1].map((sx) => (
-        <mesh key={sx} position={[(sx * w) / 2, h / 2, d / 2 + 0.06]}>
-          <boxGeometry args={[0.3, h, 0.24]} />
+        <mesh key={sx} position={[(sx * w) / 2, podiumH + shaftH / 2, d / 2 + 0.06]}>
+          <boxGeometry args={[0.26, shaftH, 0.24]} />
           <meshBasicMaterial color={s.accent} toneMapped={false} />
         </mesh>
       ))}
+
+      {/* Base light wash */}
+      <mesh position={[0, 0.2, 0]}>
+        <boxGeometry args={[w + 3.2, 0.3, d + 3.2]} />
+        <meshBasicMaterial color={s.accent} toneMapped={false} />
+      </mesh>
 
       {s.sign && (
         <Sign
           title={s.sign}
           sub={s.subSign}
           color={s.accent}
-          y={h * 0.62}
+          y={podiumH + shaftH * 0.72}
           z={d / 2 + 0.3}
           width={Math.min(w * 0.92, 18)}
         />
       )}
 
-      <Glow color={s.accent} size={h * 1.5} position={[0, h * 0.5, d / 2 + 1.2]} opacity={0.2} />
-      <pointLight position={[0, h * 0.5, d / 2 + 2]} color={s.accent} intensity={16} distance={34} decay={2} />
+      <Glow color={s.accent} size={h * 1.2} position={[0, h * 0.5, d / 2 + 1.2]} opacity={0.16} />
+      <pointLight position={[0, 5, d / 2 + 4]} color={s.accent} intensity={20} distance={36} decay={2} />
     </group>
   );
 }
@@ -763,39 +832,6 @@ function Trees() {
   );
 }
 
-function Skyline() {
-  const ref = useRef<THREE.InstancedMesh>(null);
-
-  useLayoutEffect(() => {
-    const color = new THREE.Color();
-    SKYLINE.forEach((t, i) => {
-      UP.position.set(t.pos[0], t.size[1] / 2, t.pos[1]);
-      UP.rotation.set(0, 0, 0);
-      UP.scale.set(t.size[0], t.size[1], t.size[2]);
-      UP.updateMatrix();
-      ref.current?.setMatrixAt(i, UP.matrix);
-      color.setHSL(0.56 + t.tint * 0.12, 0.5, 0.08 + t.tint * 0.06);
-      ref.current?.setColorAt(i, color);
-    });
-    if (ref.current) {
-      ref.current.instanceMatrix.needsUpdate = true;
-      if (ref.current.instanceColor) ref.current.instanceColor.needsUpdate = true;
-    }
-  }, []);
-
-  return (
-    <instancedMesh ref={ref} args={[undefined, undefined, SKYLINE.length]} frustumCulled={false}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial
-        roughness={0.6}
-        metalness={0.5}
-        emissive="#173a5e"
-        emissiveIntensity={0.55}
-      />
-    </instancedMesh>
-  );
-}
-
 /* -------------------------------------------------------------------------- */
 
 const KIND_COMPONENT: Partial<Record<Structure['kind'], (p: { s: Structure }) => React.ReactNode>> = {
@@ -816,7 +852,6 @@ export function City() {
       <Sky />
       <Stars />
       <Ground />
-      <Skyline />
       <Lamps />
       <Trees />
       <InsurerBoards />

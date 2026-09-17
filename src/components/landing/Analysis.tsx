@@ -14,7 +14,7 @@ export function Analysis() {
       id="analysis"
       className="relative overflow-hidden bg-ink px-5 py-24 sm:px-8 sm:py-32 lg:px-12 lg:py-40"
     >
-      <div className="grid-field absolute inset-0 opacity-40" aria-hidden="true" />
+      <div className="column-rules absolute inset-0" aria-hidden="true" />
 
       <div className="relative mx-auto max-w-[1800px]">
         <SectionHead
@@ -34,10 +34,10 @@ export function Analysis() {
             <Reveal
               key={m.node.id}
               delay={i * 130}
-              className="group relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-navy/55 to-ink p-7 transition-colors duration-600 hover:border-white/20 sm:p-10"
+              className="group relative overflow-hidden border border-white/10 bg-gradient-to-b from-navy/55 to-ink p-7 transition-colors duration-600 hover:border-white/20 sm:p-10"
             >
               <div
-                className="pointer-events-none absolute -top-28 -right-28 h-64 w-64 rounded-full opacity-20 blur-3xl transition-opacity duration-700 group-hover:opacity-40"
+                className="pointer-events-none absolute -top-28 -right-28 h-64 w-64 rounded-full opacity-20 transition-opacity duration-700 group-hover:opacity-40"
                 style={{ background: m.tint }}
                 aria-hidden="true"
               />
@@ -87,7 +87,7 @@ export function Analysis() {
         {/* Medical disclaimer — given the weight of a statement, not a footnote. */}
         <Reveal
           delay={120}
-          className="mt-6 flex flex-col gap-6 rounded-3xl border border-warn/22 bg-warn/[0.06] p-7 sm:p-10 lg:flex-row lg:items-center lg:gap-14"
+          className="mt-6 flex flex-col gap-6 border border-warn/22 bg-warn/[0.06] p-7 sm:p-10 lg:flex-row lg:items-center lg:gap-14"
         >
           <div className="flex items-center gap-4 lg:w-64 lg:shrink-0">
             <svg
