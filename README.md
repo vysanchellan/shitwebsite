@@ -20,10 +20,14 @@ through it.
 
 The landing page is a conventional (if cinematic) marketing page. At the end of
 it there is a door. Step through it and the rest of the specification is a 3D
-city — **the RiskSense District** — where every building holds one part of the
-system. Twenty-four readable markers across twelve districts: the two risk
+city: **the RiskSense District**, where every building holds one part of the
+system. Twenty-four readable markers across twelve districts cover the two risk
 models, the six-step patient journey, the insurance pavilion, the clinician link,
-the security vault, the activation terminal.
+the security vault and the activation terminal.
+
+The districts sit inside a generated city roughly 410 by 470 metres: 252
+buildings on a street grid, 656 pieces of street furniture, 161 vehicles, zebra
+crossings, traffic signals and a 380-tower horizon.
 
 Everything in the world is also published as a plain document at `/overview`, so
 nothing is locked behind WebGL, a large screen or a mouse.
@@ -52,9 +56,9 @@ nothing is locked behind WebGL, a large screen or a mouse.
 - **zustand** for world state
 
 No 3D model files, no texture downloads, no external asset CDN. Every building,
-sign, insurer lockup and facade in the district is generated at runtime from
-geometry primitives and canvas textures, which keeps the repository small and the
-world fast to load.
+sign, insurer lockup and facade is generated at runtime from geometry primitives
+and canvas textures. The wider city is drawn entirely with instanced meshes, so
+252 buildings and 800-odd props cost about twenty draw calls.
 
 ---
 
@@ -114,11 +118,25 @@ Controls are WASD (or arrows) with Shift to sprint, mouse to look, `E` to read a
 marker and `M` for the map. On a touch device you get a thumbstick, a look pad
 and a Read button. Without pointer lock, drag-to-look works instead.
 
+The player is a rigged figure rather than a billboard: hips and shoulders carry
+the limbs, knees and elbows are children of the segment above them, and a single
+walk phase drives the whole cycle.
+
 Quality is detected once at startup: shadows, pedestrian count, drone count,
 particle count and antialiasing all step down on touch devices, small viewports
 and low-core machines.
 
 ---
+
+## Verifying the world
+
+Movement and collision are pure functions of the layout data, so they are checked
+without a browser. `src/components/world/layout.ts` and `collision.ts` compile on
+their own; a short script then asserts that the spawn point is clear, that each of
+W/A/S/D moves the player the way the camera implies, and that all 24 markers have
+somewhere standable within reading range. Run those checks after moving a marker
+or adding a structure — a building dropped on a marker is otherwise invisible
+until someone walks there.
 
 ## Prototype boundaries
 
