@@ -1,0 +1,289 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   RiskSense AI — design tokens
+   Deep navy for trust and structure, medical blue and teal/cyan accents, a
+   warm off-white paper, and status colours reserved strictly for status.
+   ========================================================================== */
+
+@theme {
+  /* Surfaces */
+  --color-ink: #04070f;
+  --color-void: #02040a;
+  --color-navy: #071226;
+  --color-navy-2: #0c1e3a;
+  --color-navy-3: #14314f;
+  --color-paper: #f5f4f0;
+  --color-paper-2: #ebe9e3;
+  --color-line: #d9d6cd;
+
+  /* Brand */
+  --color-cyan: #45d7e8;
+  --color-teal: #1fb8a6;
+  --color-medical: #2f6bff;
+
+  /* Status */
+  --color-ok: #2fc27a;
+  --color-warn: #e9a63c;
+  --color-risk: #ff6a55;
+  --color-violet: #9a7cff;
+
+  /* Type */
+  --font-display: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  --font-editorial: var(--font-instrument), ui-serif, Georgia, serif;
+  --font-mono: var(--font-mono-face), ui-monospace, SFMono-Regular, monospace;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+* {
+  min-width: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-cyan);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* A thin, restrained scrollbar so long legal pages stay editorial. */
+@supports selector(::-webkit-scrollbar) {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--color-cyan) 35%, transparent);
+    border-radius: 99px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+}
+
+/* ==========================================================================
+   Type utilities — the luxury register: scale, tight tracking, hairlines
+   ========================================================================== */
+
+@utility display-xl {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.75rem, 11vw, 11rem);
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+}
+
+@utility display-l {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.1rem, 6.4vw, 5.25rem);
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+}
+
+@utility display-m {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.6rem, 3.4vw, 2.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+@utility editorial {
+  font-family: var(--font-editorial);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.02em;
+}
+
+@utility micro {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+@utility micro-sm {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+@utility rule {
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  opacity: 0.18;
+}
+
+/* ==========================================================================
+   Motion
+   ========================================================================== */
+
+@keyframes rs-ecg {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
+
+@keyframes rs-marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes rs-pulse-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+
+@keyframes rs-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.6rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rs-scan {
+  0%,
+  100% {
+    transform: translateY(-100%);
+  }
+  50% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes rs-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@utility animate-marquee {
+  animation: rs-marquee 38s linear infinite;
+}
+
+@utility animate-rise {
+  animation: rs-rise 0.9s var(--ease-out-expo) both;
+}
+
+@utility animate-blink {
+  animation: rs-blink 1.6s steps(2, end) infinite;
+}
+
+/* ==========================================================================
+   Components
+   ========================================================================== */
+
+/* Hairline grid used behind dark sections — technical, not decorative. */
+@utility grid-field {
+  background-image: linear-gradient(
+      to right,
+      color-mix(in oklab, var(--color-cyan) 8%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--color-cyan) 8%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 72px 72px;
+}
+
+@utility noise {
+  position: relative;
+}
+
+@utility glass {
+  background: color-mix(in oklab, var(--color-navy) 62%, transparent);
+  backdrop-filter: blur(18px) saturate(130%);
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+  border: 1px solid color-mix(in oklab, var(--color-cyan) 16%, transparent);
+}
+
+/* Reveal-on-scroll, driven by IntersectionObserver in Reveal.tsx. */
+[data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 2rem, 0);
+  transition:
+    opacity 1s var(--ease-out-expo),
+    transform 1s var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal='in'] {
+  opacity: 1;
+  transform: none;
+}
+
+/* The world takes the whole viewport and must never scroll. */
+.world-lock {
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}

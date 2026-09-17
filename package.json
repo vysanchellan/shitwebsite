@@ -1,0 +1,32 @@
+{
+  "name": "risksense-ai-web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@react-three/drei": "10.7.6",
+    "@react-three/fiber": "9.3.0",
+    "@react-three/postprocessing": "3.0.4",
+    "motion": "12.23.12",
+    "next": "^16.3.5",
+    "postprocessing": "6.37.8",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "three": "0.180.0",
+    "zustand": "5.0.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.1.13",
+    "@types/node": "24.3.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@types/three": "0.180.0",
+    "tailwindcss": "4.1.13",
+    "typescript": "5.9.2"
+  }
+}
