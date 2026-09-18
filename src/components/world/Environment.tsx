@@ -5,6 +5,7 @@ import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { INSURERS } from '@/data/insurers';
 import { INSURER_SLOTS } from './parkSquare';
+import { heightAt } from './terrain';
 import { groundTexture, insurerTexture } from './textures';
 
 /**
@@ -158,7 +159,11 @@ export function InsurerBoards() {
         const dim = !ins.enabled;
 
         return (
-          <group key={ins.id} position={[slot.pos[0], 0, slot.pos[1]]} rotation={[0, slot.rotY, 0]}>
+          <group
+            key={ins.id}
+            position={[slot.pos[0], heightAt(slot.pos[0], slot.pos[1]), slot.pos[1]]}
+            rotation={[0, slot.rotY, 0]}
+          >
             <mesh position={[0, 1.4, 0]} castShadow>
               <boxGeometry args={[2.6, 2.8, 0.34]} />
               <meshStandardMaterial color="#1a181d" roughness={0.5} metalness={0.5} />

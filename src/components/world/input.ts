@@ -61,7 +61,14 @@ export function setStick(x: number, y: number) {
   input.forward = y;
 }
 
+/**
+ * Look deltas.
+ *
+ * Pitch here is the camera's *elevation* on its boom, so pushing the pointer
+ * down has to raise it — that is what tilts the view downward. Subtracting dy
+ * did the opposite and read as inverted.
+ */
 export function addLook(dx: number, dy: number) {
   input.yaw -= dx;
-  input.pitch -= dy;
+  input.pitch += dy;
 }

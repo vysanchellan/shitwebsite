@@ -5,129 +5,140 @@ import { useLayoutEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import {
   ARCADE,
-  BAY,
+  ARCADE_COLUMNS,
+  BENCHES,
+  CAFE_SETS,
+  LIFT_CORE,
   OFFICE_BLOCKS,
   OFFICE_LEVEL,
-  PARKING,
   PIAZZA,
+  PIAZZA_LAMPS,
   PLANTERS,
   SERVICE_YARD,
-  SITE,
-  STEPS,
   UNITS,
-  col,
-  row,
+  shellHeight,
   type Unit,
 } from './parkSquare';
+import {
+  CAMPUS,
+  CAMPUS_TERRACE,
+  DECK,
+  DECK_TERRACE,
+  EDGES,
+  RETAIL,
+  RETAIL_TERRACE,
+  SLOPES,
+  heightAt,
+  type Slope,
+} from './terrain';
 import { signTexture } from './textures';
 
 /**
  * Park Square, built.
  *
- * The palette here is the building's own — off-white and board-marked
- * concrete, clear glass, black steel and dark shopfront bands. Only the
- * signage and the marker light carry our world's brass, which is what keeps it
- * recognisably Park Square and recognisably ours at the same time.
+ * The palette is the building's own — off-white and board-marked concrete,
+ * clear glass, galvanised steel and dark shopfront bands. Only the signage and
+ * the marker light carry our world's brass, which is what keeps it recognisably
+ * Park Square and recognisably ours at once.
  */
 
 const O = new THREE.Object3D();
 
-/* Materials, shared so the whole precinct is a handful of programs. */
 function useMaterials() {
   return useMemo(() => {
-    const concrete = new THREE.MeshStandardMaterial({
-      color: '#b9b4ab',
-      roughness: 0.92,
-      metalness: 0.02,
-    });
-    const concreteDark = new THREE.MeshStandardMaterial({
-      color: '#8d887f',
-      roughness: 0.95,
-      metalness: 0.02,
-    });
+    const concrete = new THREE.MeshStandardMaterial({ color: '#b9b4ab', roughness: 0.92, metalness: 0.02 });
+    const concreteDark = new THREE.MeshStandardMaterial({ color: '#8d887f', roughness: 0.95, metalness: 0.02 });
     const soffit = new THREE.MeshStandardMaterial({
-      color: '#1c1d21',
-      roughness: 0.85,
-      metalness: 0.35,
-      side: THREE.DoubleSide,
+      color: '#1c1d21', roughness: 0.85, metalness: 0.35, side: THREE.DoubleSide,
     });
     const glass = new THREE.MeshStandardMaterial({
-      color: '#243036',
-      roughness: 0.08,
-      metalness: 0.9,
-      transparent: true,
-      opacity: 0.72,
+      color: '#243036', roughness: 0.08, metalness: 0.9, transparent: true, opacity: 0.72,
     });
-    const shopfront = new THREE.MeshStandardMaterial({
-      color: '#14151a',
-      roughness: 0.55,
-      metalness: 0.3,
-    });
-    const steel = new THREE.MeshStandardMaterial({
-      color: '#2a2c31',
-      roughness: 0.5,
-      metalness: 0.75,
-    });
-    const paving = new THREE.MeshStandardMaterial({
-      color: '#9c968c',
-      roughness: 0.94,
-      metalness: 0.02,
-    });
-    const paving2 = new THREE.MeshStandardMaterial({
-      color: '#7d766d',
-      roughness: 0.94,
-      metalness: 0.02,
-    });
-    return { concrete, concreteDark, soffit, glass, shopfront, steel, paving, paving2 };
+    const shopfront = new THREE.MeshStandardMaterial({ color: '#14151a', roughness: 0.55, metalness: 0.3 });
+    /** Galvanised steel: the stairs, the handrails, the balustrade posts. */
+    const metal = new THREE.MeshStandardMaterial({ color: '#8f949c', roughness: 0.34, metalness: 0.95 });
+    const metalDark = new THREE.MeshStandardMaterial({ color: '#3a3e45', roughness: 0.45, metalness: 0.85 });
+    const paving = new THREE.MeshStandardMaterial({ color: '#9c968c', roughness: 0.94, metalness: 0.02 });
+    const paving2 = new THREE.MeshStandardMaterial({ color: '#7d766d', roughness: 0.94, metalness: 0.02 });
+    const timber = new THREE.MeshStandardMaterial({ color: '#6b4c31', roughness: 0.88, metalness: 0.03 });
+    return { concrete, concreteDark, soffit, glass, shopfront, metal, metalDark, paving, paving2, timber };
   }, []);
 }
 
 /* -------------------------------------------------------------------------- */
-/* Ground planes                                                               */
+/* Levels                                                                      */
 /* -------------------------------------------------------------------------- */
 
-function Decks() {
+/** The podium and the campus terrace. The deck gets its own treatment below. */
+function Terraces() {
   const m = useMaterials();
+
+  const slabs = [
+    { t: RETAIL_TERRACE, mat: m.paving2, thick: RETAIL },
+    { t: CAMPUS_TERRACE, mat: m.paving, thick: CAMPUS - DECK },
+  ];
 
   return (
     <group>
-      {/* The whole site slab */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]} receiveShadow material={m.paving2}>
-        <planeGeometry args={[SITE.maxX - SITE.minX + 12, SITE.maxZ - SITE.minZ + 12]} />
-      </mesh>
+      {slabs.map(({ t, mat, thick }, i) => {
+        const w = t.maxX - t.minX;
+        const d = t.maxZ - t.minZ;
+        const cx = (t.minX + t.maxX) / 2;
+        const cz = (t.minZ + t.maxZ) / 2;
+        return (
+          <group key={i}>
+            {/* The mass the level stands on */}
+            <mesh position={[cx, t.y - thick / 2, cz]} material={m.concreteDark} receiveShadow>
+              <boxGeometry args={[w, thick, d]} />
+            </mesh>
+            {/* Its paved top */}
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[cx, t.y + 0.01, cz]} material={mat} receiveShadow>
+              <planeGeometry args={[w, d]} />
+            </mesh>
+            {/* The projecting slab edge that reads the level change from below */}
+            <mesh position={[cx, t.y - 0.34, cz]} material={m.concrete} castShadow>
+              <boxGeometry args={[w + 1.4, 0.6, d + 1.4]} />
+            </mesh>
+          </group>
+        );
+      })}
 
-      {/* The piazza, a lighter paving field inside it */}
+      {/* The piazza's own paving, over the deck. */}
       <mesh
         rotation={[-Math.PI / 2, 0, 0]}
-        position={[(PIAZZA.minX + PIAZZA.maxX) / 2, 0.05, (PIAZZA.minZ + PIAZZA.maxZ) / 2]}
-        receiveShadow
+        position={[
+          (DECK_TERRACE.minX + DECK_TERRACE.maxX) / 2,
+          DECK + 0.01,
+          (DECK_TERRACE.minZ + DECK_TERRACE.maxZ) / 2,
+        ]}
         material={m.paving}
+        receiveShadow
       >
-        <planeGeometry args={[PIAZZA.maxX - PIAZZA.minX, PIAZZA.maxZ - PIAZZA.minZ]} />
+        <planeGeometry args={[DECK_TERRACE.maxX - DECK_TERRACE.minX, DECK_TERRACE.maxZ - DECK_TERRACE.minZ]} />
       </mesh>
 
-      {/* A banded paving inlay down the piazza, as the drawings show */}
-      {Array.from({ length: 9 }).map((_, i) => (
+      {/* Banded paving inlay down the piazza */}
+      {Array.from({ length: 10 }).map((_, i) => (
         <mesh
           key={i}
           rotation={[-Math.PI / 2, 0, 0]}
           position={[
             (PIAZZA.minX + PIAZZA.maxX) / 2,
-            0.07,
-            PIAZZA.minZ + ((i + 0.5) / 9) * (PIAZZA.maxZ - PIAZZA.minZ),
+            DECK + 0.03,
+            PIAZZA.minZ + ((i + 0.5) / 10) * (PIAZZA.maxZ - PIAZZA.minZ),
           ]}
           material={m.paving2}
         >
-          <planeGeometry args={[PIAZZA.maxX - PIAZZA.minX - 6, 0.7]} />
+          <planeGeometry args={[PIAZZA.maxX - PIAZZA.minX, 0.8]} />
         </mesh>
       ))}
 
-      {/* Service yard tarmac */}
+      {/* Service yard tarmac, at podium level */}
       <mesh
         rotation={[-Math.PI / 2, 0, 0]}
-        position={[SERVICE_YARD.x, 0.04, SERVICE_YARD.z]}
-        receiveShadow
+        position={[SERVICE_YARD.x, RETAIL + 0.02, SERVICE_YARD.z]}
         material={m.paving2}
+        receiveShadow
       >
         <planeGeometry args={[SERVICE_YARD.w, SERVICE_YARD.d]} />
       </mesh>
@@ -135,31 +146,43 @@ function Decks() {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* Parking deck under the western half                                         */
-/* -------------------------------------------------------------------------- */
-
 /**
- * The deck is read from outside: a long horizontal slab edge on the boundary,
- * a rhythm of columns behind it, and the ramp. The bays themselves are dark.
+ * The parking the piazza stands on.
+ *
+ * Open at street level behind a colonnade, solid above it, with the deck slab
+ * projecting over the whole thing — which is how the west side of the precinct
+ * reads from Centenary Boulevard.
  */
-function ParkingDeck() {
+const OPEN = 3.4;
+
+function Undercroft() {
   const m = useMaterials();
   const columns = useRef<THREE.InstancedMesh>(null);
 
+  const d = DECK_TERRACE;
+  const w = d.maxX - d.minX;
+  const depth = d.maxZ - d.minZ;
+  const cx = (d.minX + d.maxX) / 2;
+  const cz = (d.minZ + d.maxZ) / 2;
+
+  /** The perimeter colonnade, plus a grid of them inside for the parking bays. */
   const posts = useMemo(() => {
     const out: [number, number][] = [];
-    for (let c = 1; c <= PARKING.cols; c += 2) {
-      for (let r = 1; r < PARKING.rows; r += 3) {
-        out.push([col(c) + BAY / 2, row(r) + BAY / 2]);
-      }
+    for (let x = d.minX + 4; x <= d.maxX - 4; x += 7.8) {
+      out.push([x, d.minZ + 0.9], [x, d.maxZ - 0.9]);
+    }
+    for (let z = d.minZ + 8; z <= d.maxZ - 8; z += 7.8) {
+      out.push([d.minX + 0.9, z], [d.maxX - 0.9, z]);
+    }
+    for (let x = d.minX + 12; x < d.maxX - 10; x += 15.6) {
+      for (let z = d.minZ + 12; z < d.maxZ - 10; z += 17) out.push([x, z]);
     }
     return out;
-  }, []);
+  }, [d.maxX, d.maxZ, d.minX, d.minZ]);
 
   useLayoutEffect(() => {
     posts.forEach((p, i) => {
-      O.position.set(p[0], -2.7, p[1]);
+      O.position.set(p[0], OPEN / 2, p[1]);
       O.rotation.set(0, 0, 0);
       O.scale.set(1, 1, 1);
       O.updateMatrix();
@@ -168,61 +191,341 @@ function ParkingDeck() {
     if (columns.current) columns.current.instanceMatrix.needsUpdate = true;
   }, [posts]);
 
-  const w = PARKING.maxX - PARKING.minX;
-  const d = PARKING.maxZ - PARKING.minZ;
-  const cx = (PARKING.minX + PARKING.maxX) / 2;
-  const cz = (PARKING.minZ + PARKING.maxZ) / 2;
-
   return (
     <group>
-      {/*
-        The deck is an undercroft: the piazza is its roof, so the whole mass
-        sits below the walkable plane and is read from the boundary, where the
-        site drops away to the street.
-      */}
-      <mesh position={[cx, -2.7, cz]} material={m.concreteDark} receiveShadow>
-        <boxGeometry args={[w, 5.4, d]} />
+      {/* The dark interior you see between the columns */}
+      <mesh position={[cx, OPEN / 2, cz]}>
+        <boxGeometry args={[w - 2, OPEN, depth - 2]} />
+        <meshStandardMaterial color="#14161a" roughness={0.98} />
       </mesh>
 
-      {/* The slab edge that caps it, flush with the piazza paving */}
-      <mesh position={[cx, -0.15, cz]} material={m.concrete} castShadow>
-        <boxGeometry args={[w + 1.8, 0.6, d + 1.8]} />
+      <instancedMesh
+        ref={columns}
+        args={[undefined, undefined, Math.max(1, posts.length)]}
+        material={m.concreteDark}
+        castShadow
+      >
+        <boxGeometry args={[0.8, OPEN, 0.8]} />
+      </instancedMesh>
+
+      {/* The solid upper storey of the parking, and the deck slab over it */}
+      <mesh position={[cx, (OPEN + DECK - 0.9) / 2, cz]} material={m.concrete} receiveShadow castShadow>
+        <boxGeometry args={[w, DECK - 0.9 - OPEN, depth]} />
+      </mesh>
+      <mesh position={[cx, DECK - 0.45, cz]} material={m.concreteDark} castShadow>
+        <boxGeometry args={[w + 1.4, 0.9, depth + 1.4]} />
       </mesh>
 
       {/* Ventilation slots along the exposed south and west faces */}
       {Array.from({ length: 24 }).map((_, i) => (
         <mesh
           key={`s${i}`}
-          position={[PARKING.minX + ((i + 0.5) / 24) * w, -2.0, PARKING.maxZ + 0.95]}
-          material={m.steel}
+          position={[d.minX + ((i + 0.5) / 24) * w, DECK - 2.4, d.maxZ + 0.05]}
+          material={m.metalDark}
         >
-          <boxGeometry args={[w / 32, 1.6, 0.2]} />
+          <boxGeometry args={[w / 34, 1.9, 0.2]} />
         </mesh>
       ))}
       {Array.from({ length: 16 }).map((_, i) => (
         <mesh
           key={`w${i}`}
-          position={[PARKING.minX - 0.95, -2.0, PARKING.minZ + ((i + 0.5) / 16) * d]}
+          position={[d.minX - 0.05, DECK - 2.4, d.minZ + ((i + 0.5) / 16) * depth]}
           rotation={[0, Math.PI / 2, 0]}
-          material={m.steel}
+          material={m.metalDark}
         >
-          <boxGeometry args={[d / 22, 1.6, 0.2]} />
+          <boxGeometry args={[depth / 24, 1.9, 0.2]} />
         </mesh>
       ))}
 
-      <instancedMesh
-        ref={columns}
-        args={[undefined, undefined, posts.length]}
-        material={m.concreteDark}
-      >
-        <boxGeometry args={[0.85, 5.4, 0.85]} />
+      {/* Sodium light spilling out from under the deck */}
+      {[-1, 0, 1].map((s) => (
+        <pointLight
+          key={s}
+          position={[cx + s * (w / 3), OPEN - 0.8, cz + s * (depth / 4)]}
+          color="#ffcf8a"
+          intensity={26}
+          distance={38}
+          decay={2}
+        />
+      ))}
+    </group>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* Stairs and ramps                                                            */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A flight built on a slope in the height field.
+ *
+ * Concrete flights are cast treads on a solid skirt. Steel flights are what
+ * Park Square uses where it meets the street: open treads on a pair of inclined
+ * stringers, with tubular handrails and posts.
+ */
+function Flight({ slope }: { slope: Slope }) {
+  const m = useMaterials();
+
+  const alongX = slope.axis === 'x';
+  const run = alongX ? slope.maxX - slope.minX : slope.maxZ - slope.minZ;
+  const width = alongX ? slope.maxZ - slope.minZ : slope.maxX - slope.minX;
+  const rise = slope.to - slope.from;
+  const cx = (slope.minX + slope.maxX) / 2;
+  const cy = (slope.from + slope.to) / 2;
+  const cz = (slope.minZ + slope.maxZ) / 2;
+
+  /** The rake, and the two rotations that lay something along it. */
+  const angle = Math.atan2(rise, run);
+  const slant = run / Math.cos(angle);
+  // A box's own axes follow the slope.
+  const tilt: [number, number, number] = alongX ? [0, 0, angle] : [-angle, 0, 0];
+  // A cylinder stands on +Y, so it is turned down onto the slope first.
+  const rail: [number, number, number] = alongX
+    ? [0, 0, Math.PI / 2 + angle]
+    : [Math.PI / 2 - angle, 0, 0];
+
+  /** A point `t` of the way up the flight, offset sideways by `s` half-widths. */
+  const at = (t: number, s = 0, lift = 0): [number, number, number] =>
+    alongX
+      ? [slope.minX + t * run, slope.from + rise * t + lift, cz + s * (width / 2)]
+      : [cx + s * (width / 2), slope.from + rise * t + lift, slope.minZ + t * run];
+
+  const side = (s: number, lift = 0): [number, number, number] =>
+    alongX ? [cx, cy + lift, cz + s * (width / 2)] : [cx + s * (width / 2), cy + lift, cz];
+
+  if (slope.kind === 'ramp') {
+    return (
+      <group>
+        <mesh position={[cx, cy, cz]} rotation={tilt} material={m.paving} receiveShadow>
+          <boxGeometry args={alongX ? [slant, 0.4, width] : [width, 0.4, slant]} />
+        </mesh>
+        {/* A kerb and a handrail down each side */}
+        {[-1, 1].map((s) => (
+          <group key={s}>
+            <mesh position={side(s * 0.96, 0.22)} rotation={tilt} material={m.concrete} castShadow>
+              <boxGeometry args={alongX ? [slant, 0.32, 0.5] : [0.5, 0.32, slant]} />
+            </mesh>
+            <mesh position={side(s * 0.9, 1.0)} rotation={rail} material={m.metal}>
+              <cylinderGeometry args={[0.05, 0.05, slant, 8]} />
+            </mesh>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <mesh key={i} position={at((i + 0.5) / 6, s * 0.9, 0.5)} material={m.metal}>
+                <cylinderGeometry args={[0.035, 0.035, 1.0, 6]} />
+              </mesh>
+            ))}
+          </group>
+        ))}
+      </group>
+    );
+  }
+
+  const treads = Math.max(3, Math.round(Math.abs(rise) / 0.19));
+
+  return (
+    <group>
+      {/* Treads */}
+      {Array.from({ length: treads }).map((_, i) => (
+        <mesh
+          key={i}
+          position={at((i + 0.5) / treads)}
+          material={slope.steel ? m.metal : m.paving}
+          receiveShadow
+          castShadow
+        >
+          <boxGeometry
+            args={
+              alongX
+                ? [run / treads + 0.04, 0.14, width]
+                : [width, 0.14, run / treads + 0.04]
+            }
+          />
+        </mesh>
+      ))}
+
+      {slope.steel ? (
+        <>
+          {/* Inclined stringers carrying the open risers */}
+          {[-1, 1].map((s) => (
+            <mesh
+              key={s}
+              position={side(s * 1.02, -0.3)}
+              rotation={tilt}
+              material={m.metalDark}
+              castShadow
+            >
+              <boxGeometry args={alongX ? [slant, 0.45, 0.16] : [0.16, 0.45, slant]} />
+            </mesh>
+          ))}
+
+          {/* Tubular handrails on their posts */}
+          {[-1, 1].map((s) => (
+            <group key={s}>
+              <mesh position={side(s * 1.0, 1.05)} rotation={rail} material={m.metal}>
+                <cylinderGeometry args={[0.05, 0.05, slant, 8]} />
+              </mesh>
+              {Array.from({ length: 6 }).map((_, i) => (
+                <mesh key={i} position={at((i + 0.5) / 6, s, 0.55)} material={m.metal}>
+                  <cylinderGeometry args={[0.035, 0.035, 1.1, 6]} />
+                </mesh>
+              ))}
+            </group>
+          ))}
+
+          {/* Landings top and bottom, which is where the flight meets the paving */}
+          {[0, 1].map((e) => (
+            <mesh key={e} position={at(e, 0, -0.12)} material={m.metalDark}>
+              <boxGeometry args={alongX ? [1.6, 0.24, width + 0.5] : [width + 0.5, 0.24, 1.6]} />
+            </mesh>
+          ))}
+        </>
+      ) : (
+        <>
+          {/* Concrete flights sit on a solid skirt */}
+          <mesh position={[cx, cy - 0.5, cz]} material={m.concreteDark} receiveShadow>
+            <boxGeometry
+              args={alongX ? [run, Math.abs(rise), width] : [width, Math.abs(rise), run]}
+            />
+          </mesh>
+          {/* Cheek walls, and a handrail down the middle of the flight */}
+          {[-1, 1].map((s) => (
+            <mesh key={s} position={side(s * 1.02, -0.1)} rotation={tilt} material={m.concrete} castShadow>
+              <boxGeometry args={alongX ? [slant, 0.9, 0.7] : [0.7, 0.9, slant]} />
+            </mesh>
+          ))}
+          <mesh position={side(0, 1.0)} rotation={rail} material={m.metal}>
+            <cylinderGeometry args={[0.05, 0.05, slant, 8]} />
+          </mesh>
+          {Array.from({ length: 7 }).map((_, i) => (
+            <mesh key={i} position={at((i + 0.5) / 7, 0, 0.5)} material={m.metal}>
+              <cylinderGeometry args={[0.035, 0.035, 1.0, 6]} />
+            </mesh>
+          ))}
+        </>
+      )}
+    </group>
+  );
+}
+
+/**
+ * The glass lift core beside the grand flight.
+ *
+ * You cannot ride it — the whole precinct is one walkable surface — but a
+ * shopping centre without one reads as a model rather than a building, and it
+ * is the piece that tells you at a glance that these are two separate levels.
+ */
+function LiftCore() {
+  const m = useMaterials();
+  const car = useRef<THREE.Mesh>(null);
+
+  const { x, z } = LIFT_CORE;
+  const base = RETAIL;
+  const top = DECK + 3.2;
+
+  useFrame(({ clock }) => {
+    if (!car.current) return;
+    // A slow shuttle between the two levels, with a pause at each end.
+    const t = (clock.elapsedTime % 24) / 24;
+    const k = t < 0.5 ? Math.min(1, Math.max(0, (t - 0.08) * 2.4)) : Math.min(1, Math.max(0, (0.92 - t) * 2.4));
+    car.current.position.y = base + 1.4 + k * (DECK - base);
+  });
+
+  return (
+    <group position={[x, 0, z]}>
+      {/* Shaft: four steel corner posts and glass between them */}
+      {[-1, 1].map((sx) =>
+        [-1, 1].map((sz) => (
+          <mesh key={`${sx}${sz}`} position={[sx * 1.5, (base + top) / 2, sz * 1.5]} material={m.metalDark} castShadow>
+            <boxGeometry args={[0.22, top - base, 0.22]} />
+          </mesh>
+        )),
+      )}
+      <mesh position={[0, (base + top) / 2, 0]} material={m.glass}>
+        <boxGeometry args={[3, top - base, 3]} />
+      </mesh>
+      <mesh position={[0, top + 0.2, 0]} material={m.metalDark} castShadow>
+        <boxGeometry args={[3.8, 0.4, 3.8]} />
+      </mesh>
+
+      {/* The car */}
+      <mesh ref={car} position={[0, base + 1.4, 0]} material={m.metalDark}>
+        <boxGeometry args={[2.3, 2.5, 2.3]} />
+      </mesh>
+      <pointLight position={[0, base + 2.6, 0]} color="#ffe8c4" intensity={12} distance={12} decay={2} />
+    </group>
+  );
+}
+
+/** Balustrades along every edge where the ground drops. */
+function Balustrades() {
+  const m = useMaterials();
+  const posts = useRef<THREE.InstancedMesh>(null);
+
+  const postList = useMemo(() => {
+    const out: [number, number, number][] = [];
+    for (const e of EDGES) {
+      const w = e.maxX - e.minX;
+      const d = e.maxZ - e.minZ;
+      const alongX = w > d;
+      const n = Math.max(2, Math.round((alongX ? w : d) / 2.4));
+      for (let i = 0; i < n; i++) {
+        const t = (i + 0.5) / n;
+        out.push([
+          alongX ? e.minX + t * w : (e.minX + e.maxX) / 2,
+          e.baseY,
+          alongX ? (e.minZ + e.maxZ) / 2 : e.minZ + t * d,
+        ]);
+      }
+    }
+    return out;
+  }, []);
+
+  useLayoutEffect(() => {
+    postList.forEach((p, i) => {
+      O.position.set(p[0], p[1] + 0.55, p[2]);
+      O.rotation.set(0, 0, 0);
+      O.scale.set(1, 1, 1);
+      O.updateMatrix();
+      posts.current?.setMatrixAt(i, O.matrix);
+    });
+    if (posts.current) posts.current.instanceMatrix.needsUpdate = true;
+  }, [postList]);
+
+  return (
+    <group>
+      {/* Glass panels along each run */}
+      {EDGES.map((e, i) => {
+        const w = e.maxX - e.minX;
+        const d = e.maxZ - e.minZ;
+        const alongX = w > d;
+        return (
+          <group key={i}>
+            <mesh
+              position={[(e.minX + e.maxX) / 2, e.baseY + 0.55, (e.minZ + e.maxZ) / 2]}
+              material={m.glass}
+            >
+              <boxGeometry args={alongX ? [w, 1.0, 0.06] : [0.06, 1.0, d]} />
+            </mesh>
+            {/* Capping rail */}
+            <mesh
+              position={[(e.minX + e.maxX) / 2, e.baseY + 1.1, (e.minZ + e.maxZ) / 2]}
+              rotation={alongX ? [0, 0, Math.PI / 2] : [Math.PI / 2, 0, 0]}
+              material={m.metal}
+            >
+              <cylinderGeometry args={[0.05, 0.05, alongX ? w : d, 8]} />
+            </mesh>
+          </group>
+        );
+      })}
+
+      <instancedMesh ref={posts} args={[undefined, undefined, Math.max(1, postList.length)]} material={m.metal}>
+        <cylinderGeometry args={[0.035, 0.035, 1.1, 6]} />
       </instancedMesh>
     </group>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/* The arcade — the building's signature space                                 */
+/* The arcade                                                                  */
 /* -------------------------------------------------------------------------- */
 
 /**
@@ -237,9 +540,9 @@ function Arcade() {
   const span = ARCADE.maxX - ARCADE.minX;
   const half = ARCADE.width / 2;
   const bays = ARCADE.bays;
+  const base = RETAIL;
 
   useFrame(({ clock }) => {
-    // The strips breathe very slightly, so the ceiling is never quite static.
     const t = clock.elapsedTime;
     lights.current.forEach((l, i) => {
       if (!l) return;
@@ -249,10 +552,10 @@ function Arcade() {
   });
 
   return (
-    <group position={[0, 0, ARCADE.z]}>
+    <group position={[0, base, ARCADE.z]}>
       {/* Splayed columns: an A-frame pair per bay, leaning into the walkway */}
-      {Array.from({ length: bays }).map((_, i) => {
-        const x = ARCADE.minX + ((i + 0.5) / bays) * span;
+      {ARCADE_COLUMNS.map((cx, i) => {
+        const x = cx - 0;
         return (
           <group key={i} position={[x, 0, 0]}>
             {[-1, 1].map((s) => (
@@ -270,27 +573,22 @@ function Arcade() {
         );
       })}
 
-      {/* Dark steel soffit over the walkway */}
       <mesh position={[(ARCADE.minX + ARCADE.maxX) / 2, ARCADE.height, 0]} material={m.soffit}>
         <boxGeometry args={[span, 0.5, ARCADE.width + 3.4]} />
       </mesh>
 
-      {/* Exposed truss lines under the soffit */}
       {Array.from({ length: bays * 2 }).map((_, i) => (
         <mesh
           key={i}
           position={[ARCADE.minX + ((i + 0.5) / (bays * 2)) * span, ARCADE.height - 0.5, 0]}
-          material={m.steel}
+          material={m.metalDark}
         >
           <boxGeometry args={[0.16, 0.5, ARCADE.width + 3.0]} />
         </mesh>
       ))}
 
-      {/* Radiating linear lights, the ceiling's signature */}
       {Array.from({ length: bays * 2 }).map((_, i) => {
-        const t = i / (bays * 2 - 1);
-        const x = ARCADE.minX + t * span;
-        // Alternating diagonals give the herringbone of the render.
+        const x = ARCADE.minX + (i / (bays * 2 - 1)) * span;
         const tilt = (i % 2 === 0 ? 1 : -1) * 0.5;
         return (
           <mesh
@@ -309,16 +607,13 @@ function Arcade() {
 
       {/* Sprinkler run, the red line in the render */}
       {[-1, 1].map((s) => (
-        <mesh
-          key={s}
-          position={[(ARCADE.minX + ARCADE.maxX) / 2, ARCADE.height - 0.62, s * (half - 0.4)]}
-        >
+        <mesh key={s} position={[(ARCADE.minX + ARCADE.maxX) / 2, ARCADE.height - 0.62, s * (half - 0.4)]}>
           <cylinderGeometry args={[0.055, 0.055, span, 6]} />
           <meshStandardMaterial color="#8e2b22" roughness={0.6} metalness={0.4} />
         </mesh>
       ))}
 
-      {/* First-floor gallery down each side, with a glass balustrade */}
+      {/* First-floor gallery each side, with a glass balustrade */}
       {[-1, 1].map((s) => (
         <group key={s}>
           <mesh
@@ -337,17 +632,6 @@ function Arcade() {
         </group>
       ))}
 
-      {/* Arcade floor, a darker band than the piazza */}
-      <mesh
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[(ARCADE.minX + ARCADE.maxX) / 2, 0.08, 0]}
-        material={m.paving}
-        receiveShadow
-      >
-        <planeGeometry args={[span, ARCADE.width + 3.4]} />
-      </mesh>
-
-      {/* A wash of light on the floor so the arcade reads from a distance */}
       <pointLight position={[ARCADE.minX + span * 0.25, 5, 0]} color="#ffe6bd" intensity={40} distance={44} decay={2} />
       <pointLight position={[ARCADE.minX + span * 0.72, 5, 0]} color="#ffe6bd" intensity={40} distance={44} decay={2} />
     </group>
@@ -358,29 +642,21 @@ function Arcade() {
 /* Tenancies                                                                   */
 /* -------------------------------------------------------------------------- */
 
-/** Where a unit's shopfront sits, given which way it faces. */
 function frontOf(u: Unit): { x: number; z: number; rot: number } {
   switch (u.facing) {
-    case 'n':
-      return { x: u.x, z: u.z - u.d / 2, rot: Math.PI };
-    case 's':
-      return { x: u.x, z: u.z + u.d / 2, rot: 0 };
-    case 'e':
-      return { x: u.x + u.w / 2, z: u.z, rot: Math.PI / 2 };
-    default:
-      return { x: u.x - u.w / 2, z: u.z, rot: -Math.PI / 2 };
+    case 'n': return { x: u.x, z: u.z - u.d / 2, rot: Math.PI };
+    case 's': return { x: u.x, z: u.z + u.d / 2, rot: 0 };
+    case 'e': return { x: u.x + u.w / 2, z: u.z, rot: Math.PI / 2 };
+    default: return { x: u.x - u.w / 2, z: u.z, rot: -Math.PI / 2 };
   }
 }
 
-/**
- * One tenancy: a concrete shell, a glazed shopfront under a dark fascia, and
- * the unit's name on the fascia in our world's brass.
- */
 function Tenancy({ unit }: { unit: Unit }) {
   const m = useMaterials();
   const front = frontOf(unit);
-  const tall = unit.kind === 'anchor' ? 11.2 : unit.kind === 'institution' ? 8.4 : 5.6;
+  const tall = shellHeight(unit.kind);
   const frontWidth = unit.facing === 'n' || unit.facing === 's' ? unit.w : unit.d;
+  const base = heightAt(unit.x, unit.z);
 
   const sign = useMemo(
     () => signTexture(unit.label, unit.tenant, unit.accent, 1024),
@@ -388,27 +664,20 @@ function Tenancy({ unit }: { unit: Unit }) {
   );
 
   return (
-    <group position={[unit.x, 0, unit.z]} rotation={[0, unit.rotY ?? 0, 0]}>
-      {/* Shell */}
+    <group position={[unit.x, base, unit.z]} rotation={[0, unit.rotY ?? 0, 0]}>
       <mesh position={[0, tall / 2, 0]} material={m.concrete} castShadow receiveShadow>
         <boxGeometry args={[unit.w, tall, unit.d]} />
       </mesh>
 
-      {/* Parapet */}
       <mesh position={[0, tall + 0.3, 0]} material={m.concreteDark} castShadow>
         <boxGeometry args={[unit.w + 0.5, 0.6, unit.d + 0.5]} />
       </mesh>
 
-      <group
-        position={[front.x - unit.x, 0, front.z - unit.z]}
-        rotation={[0, front.rot, 0]}
-      >
-        {/* Full-height glazing */}
+      <group position={[front.x - unit.x, 0, front.z - unit.z]} rotation={[0, front.rot, 0]}>
         <mesh position={[0, 2.3, 0.06]} material={m.glass}>
           <planeGeometry args={[frontWidth * 0.94, 4.2]} />
         </mesh>
 
-        {/* Mullions */}
         {Array.from({ length: Math.max(3, Math.round(frontWidth / 2.1)) }).map((_, i, arr) => (
           <mesh
             key={i}
@@ -419,16 +688,20 @@ function Tenancy({ unit }: { unit: Unit }) {
           </mesh>
         ))}
 
-        {/* Dark fascia band with the name on it */}
-        <mesh position={[0, 4.9, 0.12]} material={m.shopfront}>
-          <boxGeometry args={[frontWidth * 0.98, 1.25, 0.22]} />
+        {/* Dark fascia band carrying the name */}
+        <mesh position={[0, 4.85, 0.12]} material={m.shopfront}>
+          <boxGeometry args={[frontWidth * 0.98, 1.05, 0.22]} />
         </mesh>
-        <mesh position={[0, 4.9, 0.25]}>
-          <planeGeometry args={[frontWidth * 0.9, (frontWidth * 0.9) / 4]} />
+        <mesh position={[0, 4.85, 0.25]}>
+          <planeGeometry args={[frontWidth * 0.78, (frontWidth * 0.78) / 4]} />
           <meshBasicMaterial map={sign} transparent depthWrite={false} toneMapped={false} />
         </mesh>
 
-        {/* Spill from the shopfront onto the paving */}
+        {/* Entrance canopy */}
+        <mesh position={[0, 4.1, 1.5]} material={m.metalDark} castShadow>
+          <boxGeometry args={[frontWidth * 0.5, 0.12, 3.0]} />
+        </mesh>
+
         <pointLight position={[0, 3, 2.6]} color={unit.accent} intensity={9} distance={13} decay={2} />
       </group>
     </group>
@@ -436,42 +709,27 @@ function Tenancy({ unit }: { unit: Unit }) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Office bars above                                                           */
+/* Office bars                                                                 */
 /* -------------------------------------------------------------------------- */
 
-/**
- * The upper storeys: a projecting slab per level, a glass balustrade set back
- * behind it, and a screen of close-spaced vertical fins. That combination is
- * what the elevations read as from the street.
- */
 function OfficeBar({
-  x,
-  z,
-  w,
-  d,
-  levels,
-  base,
+  x, z, w, d, levels, base,
 }: {
-  x: number;
-  z: number;
-  w: number;
-  d: number;
-  levels: number;
-  base: number;
+  x: number; z: number; w: number; d: number; levels: number; base: number;
 }) {
   const m = useMaterials();
   const fins = useRef<THREE.InstancedMesh>(null);
+  const ground = heightAt(x, z);
 
   const finList = useMemo(() => {
-    const out: { x: number; y: number; z: number; rot: number }[] = [];
+    const out: { x: number; y: number; z: number }[] = [];
     const step = 1.35;
     for (let l = 0; l < levels; l++) {
       const y = base + l * OFFICE_LEVEL + OFFICE_LEVEL / 2;
-      // Fins only on the two long elevations.
       for (let i = 0; i * step < w; i++) {
         const px = -w / 2 + i * step + step / 2;
-        out.push({ x: px, y, z: d / 2 + 0.28, rot: 0 });
-        out.push({ x: px, y, z: -d / 2 - 0.28, rot: 0 });
+        out.push({ x: px, y, z: d / 2 + 0.28 });
+        out.push({ x: px, y, z: -d / 2 - 0.28 });
       }
     }
     return out;
@@ -480,7 +738,7 @@ function OfficeBar({
   useLayoutEffect(() => {
     finList.forEach((f, i) => {
       O.position.set(f.x, f.y, f.z);
-      O.rotation.set(0, f.rot, 0);
+      O.rotation.set(0, 0, 0);
       O.scale.set(1, 1, 1);
       O.updateMatrix();
       fins.current?.setMatrixAt(i, O.matrix);
@@ -489,32 +747,23 @@ function OfficeBar({
   }, [finList]);
 
   return (
-    <group position={[x, 0, z]}>
-      {/* The mass itself, glazed */}
+    <group position={[x, ground, z]}>
       {Array.from({ length: levels }).map((_, l) => (
         <group key={l} position={[0, base + l * OFFICE_LEVEL, 0]}>
-          {/* Glazing band */}
           <mesh position={[0, OFFICE_LEVEL / 2, 0]} material={m.glass}>
             <boxGeometry args={[w - 0.4, OFFICE_LEVEL - 0.55, d - 0.4]} />
           </mesh>
-          {/* Projecting slab, the horizontal that defines the elevation */}
           <mesh position={[0, OFFICE_LEVEL - 0.28, 0]} material={m.concrete} castShadow receiveShadow>
             <boxGeometry args={[w + 1.5, 0.55, d + 1.5]} />
           </mesh>
-          {/* Glass balustrade set back on the balcony */}
           {[-1, 1].map((s) => (
-            <mesh
-              key={s}
-              position={[0, OFFICE_LEVEL + 0.55, s * (d / 2 + 0.7)]}
-              material={m.glass}
-            >
+            <mesh key={s} position={[0, OFFICE_LEVEL + 0.55, s * (d / 2 + 0.7)]} material={m.glass}>
               <boxGeometry args={[w + 1.4, 1.05, 0.06]} />
             </mesh>
           ))}
         </group>
       ))}
 
-      {/* Vertical fin screen */}
       <instancedMesh
         ref={fins}
         args={[undefined, undefined, Math.max(1, finList.length)]}
@@ -524,7 +773,6 @@ function OfficeBar({
         <boxGeometry args={[0.16, OFFICE_LEVEL - 0.6, 0.42]} />
       </instancedMesh>
 
-      {/* Roof plant */}
       <mesh position={[w * 0.18, base + levels * OFFICE_LEVEL + 1.1, 0]} material={m.concreteDark} castShadow>
         <boxGeometry args={[w * 0.3, 2.2, d * 0.42]} />
       </mesh>
@@ -533,45 +781,42 @@ function OfficeBar({
 }
 
 /* -------------------------------------------------------------------------- */
-/* Piazza furniture                                                            */
+/* Furniture                                                                   */
 /* -------------------------------------------------------------------------- */
 
-function Steps() {
+/** Timber-and-steel benches, set out along the piazza's paving bands. */
+function Benches() {
   const m = useMaterials();
 
   return (
     <group>
-      {STEPS.map((s, i) => {
-        const along = s.facing === 'e' ? 'z' : 'x';
-        return (
-          <group key={i} position={[s.x, 0, s.z]}>
-            {Array.from({ length: s.treads }).map((_, t) => {
-              const inset = t * 0.62;
-              const y = 0.1 + t * 0.17;
-              return (
-                <mesh
-                  key={t}
-                  position={[
-                    s.facing === 'e' ? inset : 0,
-                    y,
-                    s.facing === 's' ? inset : 0,
-                  ]}
-                  material={m.paving}
-                  receiveShadow
-                >
-                  <boxGeometry
-                    args={
-                      along === 'z'
-                        ? [s.w - inset * 0.6, 0.18, s.d]
-                        : [s.w, 0.18, s.d - inset * 0.6]
-                    }
-                  />
-                </mesh>
-              );
-            })}
-          </group>
-        );
-      })}
+      {BENCHES.map((s, i) => (
+        <group key={i} position={[s.x, heightAt(s.x, s.z), s.z]} rotation={[0, s.rotY, 0]}>
+          {/* Slatted seat */}
+          {[-0.22, 0, 0.22].map((o) => (
+            <mesh key={o} position={[0, 0.45, o]} material={m.timber} castShadow>
+              <boxGeometry args={[2.2, 0.07, 0.17]} />
+            </mesh>
+          ))}
+          {/* Back */}
+          {[0.62, 0.8].map((h) => (
+            <mesh key={h} position={[0, h, -0.3]} rotation={[-0.18, 0, 0]} material={m.timber} castShadow>
+              <boxGeometry args={[2.2, 0.07, 0.17]} />
+            </mesh>
+          ))}
+          {/* Steel legs */}
+          {[-0.9, 0.9].map((o) => (
+            <group key={o}>
+              <mesh position={[o, 0.22, 0]} material={m.metalDark}>
+                <boxGeometry args={[0.07, 0.45, 0.6]} />
+              </mesh>
+              <mesh position={[o, 0.66, -0.31]} rotation={[-0.18, 0, 0]} material={m.metalDark}>
+                <boxGeometry args={[0.07, 0.44, 0.06]} />
+              </mesh>
+            </group>
+          ))}
+        </group>
+      ))}
     </group>
   );
 }
@@ -581,24 +826,58 @@ function Planters() {
 
   return (
     <group>
-      {PLANTERS.map((p, i) => (
-        <group key={i} position={[p.x, 0, p.z]}>
-          <mesh position={[0, 0.34, 0]} material={m.concrete} castShadow receiveShadow>
-            <boxGeometry args={[p.w, 0.68, p.d]} />
+      {PLANTERS.map((p, i) => {
+        const y = heightAt(p.x, p.z);
+        return (
+          <group key={i} position={[p.x, y, p.z]}>
+            <mesh position={[0, 0.34, 0]} material={m.concrete} castShadow receiveShadow>
+              <boxGeometry args={[p.w, 0.68, p.d]} />
+            </mesh>
+            {/* Timber capping, so the planters double as seating */}
+            <mesh position={[0, 0.72, 0]} material={m.timber}>
+              <boxGeometry args={[p.w + 0.12, 0.09, p.d + 0.12]} />
+            </mesh>
+            <mesh position={[0, 0.74, 0]}>
+              <boxGeometry args={[p.w - 0.7, 0.1, p.d - 0.7]} />
+              <meshStandardMaterial color="#2f4a2c" roughness={0.95} />
+            </mesh>
+            <mesh position={[0, 2.8, 0]} castShadow>
+              <cylinderGeometry args={[0.13, 0.2, 4.2, 6]} />
+              <meshStandardMaterial color="#3a2e26" roughness={0.94} />
+            </mesh>
+            <mesh position={[0, 5.4, 0]} castShadow>
+              <icosahedronGeometry args={[2.0, 1]} />
+              <meshStandardMaterial color="#3f6b40" roughness={0.9} flatShading />
+            </mesh>
+          </group>
+        );
+      })}
+    </group>
+  );
+}
+
+function PiazzaLights() {
+  const m = useMaterials();
+
+  return (
+    <group>
+      {PIAZZA_LAMPS.map((p, i) => (
+        <group key={i} position={[p[0], heightAt(p[0], p[1]), p[1]]}>
+          <mesh position={[0, 3.4, 0]} material={m.metalDark} castShadow>
+            <cylinderGeometry args={[0.09, 0.15, 6.8, 8]} />
           </mesh>
-          <mesh position={[0, 0.72, 0]}>
-            <boxGeometry args={[p.w - 0.5, 0.12, p.d - 0.5]} />
-            <meshStandardMaterial color="#2f4a2c" roughness={0.95} />
-          </mesh>
-          {/* A tree per planter, matching the light canopies in the renders */}
-          <mesh position={[0, 2.6, 0]} castShadow>
-            <cylinderGeometry args={[0.13, 0.2, 4.0, 6]} />
-            <meshStandardMaterial color="#3a2e26" roughness={0.94} />
-          </mesh>
-          <mesh position={[0, 5.2, 0]} castShadow>
-            <icosahedronGeometry args={[2.0, 1]} />
-            <meshStandardMaterial color="#3f6b40" roughness={0.9} flatShading />
-          </mesh>
+          {[-1, 1].map((s) => (
+            <group key={s}>
+              <mesh position={[s * 0.75, 6.9, 0]} material={m.metalDark}>
+                <boxGeometry args={[1.5, 0.16, 0.5]} />
+              </mesh>
+              <mesh position={[s * 0.75, 6.78, 0]}>
+                <boxGeometry args={[1.3, 0.07, 0.36]} />
+                <meshBasicMaterial color="#ffe8c4" toneMapped={false} />
+              </mesh>
+            </group>
+          ))}
+          <pointLight position={[0, 6.4, 0]} color="#ffdfb0" intensity={30} distance={28} decay={2} />
         </group>
       ))}
     </group>
@@ -606,40 +885,31 @@ function Planters() {
 }
 
 /** Café seating with the red umbrellas the renders put along the frontages. */
-function Terraces() {
+function CafeTerraces() {
   const m = useMaterials();
-
-  const sets = useMemo(() => {
-    const out: { x: number; z: number; rot: number }[] = [];
-    for (const u of UNITS) {
-      if (u.kind !== 'restaurant') continue;
-      const f = frontOf(u);
-      const n = 3;
-      for (let i = 0; i < n; i++) {
-        const t = (i - (n - 1) / 2) * 3.2;
-        const sideways = u.facing === 'n' || u.facing === 's';
-        out.push({
-          x: f.x + (sideways ? t : (u.facing === 'e' ? 3.4 : -3.4)),
-          z: f.z + (sideways ? (u.facing === 's' ? 3.4 : -3.4) : t),
-          rot: i * 0.4,
-        });
-      }
-    }
-    return out;
-  }, []);
 
   return (
     <group>
-      {sets.map((s, i) => (
-        <group key={i} position={[s.x, 0, s.z]} rotation={[0, s.rot, 0]}>
-          <mesh position={[0, 0.74, 0]} material={m.steel} castShadow>
+      {CAFE_SETS.map((s, i) => (
+        <group key={i} position={[s.x, heightAt(s.x, s.z), s.z]} rotation={[0, s.rotY, 0]}>
+          <mesh position={[0, 0.74, 0]} material={m.metalDark} castShadow>
             <cylinderGeometry args={[0.55, 0.55, 0.07, 12]} />
           </mesh>
-          <mesh position={[0, 0.37, 0]} material={m.steel}>
+          <mesh position={[0, 0.37, 0]} material={m.metalDark}>
             <cylinderGeometry args={[0.07, 0.07, 0.74, 6]} />
           </mesh>
-          {/* Umbrella */}
-          <mesh position={[0, 1.55, 0]} material={m.steel}>
+          {/* Two chairs */}
+          {[-1, 1].map((c) => (
+            <group key={c} position={[c * 1.0, 0, 0]}>
+              <mesh position={[0, 0.44, 0]} material={m.metalDark}>
+                <boxGeometry args={[0.44, 0.06, 0.44]} />
+              </mesh>
+              <mesh position={[c * 0.2, 0.7, 0]} material={m.metalDark}>
+                <boxGeometry args={[0.06, 0.46, 0.44]} />
+              </mesh>
+            </group>
+          ))}
+          <mesh position={[0, 1.55, 0]} material={m.metalDark}>
             <cylinderGeometry args={[0.05, 0.05, 2.3, 6]} />
           </mesh>
           <mesh position={[0, 2.5, 0]} castShadow>
@@ -652,43 +922,34 @@ function Terraces() {
   );
 }
 
-/** The square's lighting columns, on the piazza's paving grid. */
-function PiazzaLights() {
+/** Bollards and bins along the podium frontage. */
+function StreetFurniture() {
   const m = useMaterials();
+  const bollards = useRef<THREE.InstancedMesh>(null);
 
-  const posts = useMemo(() => {
+  const spots = useMemo(() => {
     const out: [number, number][] = [];
-    const nx = 3;
-    const nz = 5;
-    for (let i = 0; i < nx; i++) {
-      for (let j = 0; j < nz; j++) {
-        out.push([
-          PIAZZA.minX + ((i + 0.5) / nx) * (PIAZZA.maxX - PIAZZA.minX),
-          PIAZZA.minZ + ((j + 0.5) / nz) * (PIAZZA.maxZ - PIAZZA.minZ),
-        ]);
-      }
-    }
+    const r = RETAIL_TERRACE;
+    for (let z = r.minZ + 6; z < r.maxZ - 4; z += 6) out.push([r.maxX - 2.2, z]);
+    for (let x = r.minX + 6; x < r.maxX - 4; x += 6) out.push([x, r.maxZ - 2.2]);
     return out;
   }, []);
 
+  useLayoutEffect(() => {
+    spots.forEach((p, i) => {
+      O.position.set(p[0], heightAt(p[0], p[1]) + 0.55, p[1]);
+      O.rotation.set(0, 0, 0);
+      O.scale.set(1, 1, 1);
+      O.updateMatrix();
+      bollards.current?.setMatrixAt(i, O.matrix);
+    });
+    if (bollards.current) bollards.current.instanceMatrix.needsUpdate = true;
+  }, [spots]);
+
   return (
-    <group>
-      {posts.map((p, i) => (
-        <group key={i} position={[p[0], 0, p[1]]}>
-          <mesh position={[0, 3.4, 0]} material={m.steel} castShadow>
-            <cylinderGeometry args={[0.09, 0.15, 6.8, 8]} />
-          </mesh>
-          <mesh position={[0, 6.9, 0]} material={m.steel}>
-            <boxGeometry args={[1.5, 0.16, 0.5]} />
-          </mesh>
-          <mesh position={[0, 6.78, 0]}>
-            <boxGeometry args={[1.3, 0.07, 0.36]} />
-            <meshBasicMaterial color="#ffe8c4" toneMapped={false} />
-          </mesh>
-          <pointLight position={[0, 6.4, 0]} color="#ffdfb0" intensity={26} distance={26} decay={2} />
-        </group>
-      ))}
-    </group>
+    <instancedMesh ref={bollards} args={[undefined, undefined, Math.max(1, spots.length)]} material={m.metal}>
+      <cylinderGeometry args={[0.12, 0.15, 1.1, 8]} />
+    </instancedMesh>
   );
 }
 
@@ -697,13 +958,19 @@ function PiazzaLights() {
 export function Precinct() {
   return (
     <group>
-      <Decks />
-      <ParkingDeck />
+      <Terraces />
+      <Undercroft />
+      {SLOPES.map((s, i) => (
+        <Flight key={i} slope={s} />
+      ))}
+      <LiftCore />
+      <Balustrades />
       <Arcade />
-      <Steps />
       <PiazzaLights />
       <Planters />
-      <Terraces />
+      <Benches />
+      <CafeTerraces />
+      <StreetFurniture />
 
       {UNITS.map((u) => (
         <Tenancy key={u.tenant} unit={u} />

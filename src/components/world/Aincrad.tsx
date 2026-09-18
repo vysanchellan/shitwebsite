@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { NODES } from '@/data/content';
 import { ACCENT_HEX } from './accents';
 import { ARCADE as ARC } from './parkSquare';
+import { RETAIL, heightAt } from './terrain';
 import { glowTexture } from './textures';
 
 /**
@@ -433,7 +434,7 @@ export function Lanterns() {
     for (let x = ARC.minX + 4; x <= ARC.maxX - 4; x += 7) {
       for (const z of [ARC.z - 6.2, ARC.z + 6.2]) {
         out.push({
-          pos: [x + (r() - 0.5) * 0.8, 9.2 + r() * 0.4, z],
+          pos: [x + (r() - 0.5) * 0.8, RETAIL + 9.2 + r() * 0.4, z],
           phase: r() * Math.PI * 2,
           tint: r() > 0.72 ? '#ffd9a0' : r() > 0.4 ? '#ffb27a' : '#f7e0b8',
         });
@@ -571,7 +572,11 @@ export function Aincrad({ quality }: { quality: { petals: number; islands: numbe
       {wards.map((w) => (
         <RuneCircle
           key={w.id}
-          position={[w.node.position[0], 0.05, w.node.position[2]]}
+          position={[
+            w.node.position[0],
+            heightAt(w.node.position[0], w.node.position[2]) + 0.05,
+            w.node.position[2],
+          ]}
           radius={w.radius}
           color={ACCENT_HEX[w.node.accent]}
           speed={0.05 + (w.radius % 3) * 0.02}
@@ -582,7 +587,7 @@ export function Aincrad({ quality }: { quality: { petals: number; islands: numbe
       {[-34, -12, 10, 32].map((z, i) => (
         <Banner
           key={z}
-          position={[-70, 8.5, z]}
+          position={[-70, heightAt(-70, z) + 8.5, z]}
           color={i % 2 ? '#7a3b3b' : '#2f3b4a'}
           seed={i * 2}
         />

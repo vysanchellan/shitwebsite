@@ -5,7 +5,8 @@ import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { NODES } from '@/data/content';
 import { ACCENT_HEX } from './layout';
-import { glowTexture, signTexture } from './textures';
+import { glowTexture } from './textures';
+import { heightAt } from './terrain';
 import { useWorld } from './store';
 
 /**
@@ -20,33 +21,14 @@ export function Markers() {
   const cores = useRef<(THREE.Mesh | null)[]>([]);
   const rings = useRef<(THREE.Mesh | null)[]>([]);
   const groups = useRef<(THREE.Group | null)[]>([]);
-  const tags = useRef<(THREE.Sprite | null)[]>([]);
 
   const glow = useMemo(() => glowTexture(), []);
-  const labels = useMemo(
-    () => NODES.map((n) => signTexture(n.label, undefined, ACCENT_HEX[n.accent], 768)),
-    [],
-  );
-
   useFrame(({ clock, camera }) => {
     const t = clock.elapsedTime;
     for (let i = 0; i < NODES.length; i++) {
       const core = cores.current[i];
       const ring = rings.current[i];
-      const tag = tags.current[i];
       const isNear = nearby === NODES[i].id;
-
-      if (tag) {
-        // Labels draw through walls so the district can be read from a distance,
-        // which means they must fade out or the view turns into a wall of text.
-        const dx = NODES[i].position[0] - camera.position.x;
-        const dz = NODES[i].position[2] - camera.position.z;
-        const dist = Math.hypot(dx, dz);
-        const fade = 1 - THREE.MathUtils.clamp((dist - 16) / 34, 0, 1);
-        const mat = tag.material as THREE.SpriteMaterial;
-        mat.opacity = fade * (discovered.includes(NODES[i].id) ? 0.45 : 0.95);
-        tag.visible = fade > 0.02;
-      }
 
       if (core) {
         core.rotation.y = t * 0.8 + i;
@@ -80,7 +62,7 @@ export function Markers() {
             ref={(el) => {
               groups.current[i] = el;
             }}
-            position={[node.position[0], 0, node.position[2]]}
+            position={[node.position[0], heightAt(node.position[0], node.position[2]), node.position[2]]}
           >
             {/* Light column */}
             <mesh position={[0, 5, 0]}>
@@ -151,24 +133,6 @@ export function Markers() {
                 opacity={read ? 0.1 : isNear ? 0.38 : 0.2}
                 depthWrite={false}
                 blending={THREE.AdditiveBlending}
-                toneMapped={false}
-              />
-            </sprite>
-
-            {/* Billboarded label */}
-            <sprite
-              ref={(el) => {
-                tags.current[i] = el;
-              }}
-              position={[0, 4.75, 0]}
-              scale={[5.2, 1.3, 1]}
-            >
-              <spriteMaterial
-                map={labels[i]}
-                transparent
-                opacity={read ? 0.42 : 0.95}
-                depthWrite={false}
-                depthTest={false}
                 toneMapped={false}
               />
             </sprite>

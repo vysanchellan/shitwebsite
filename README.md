@@ -120,29 +120,47 @@ world position, so moving a marker is a data change, not a scene change.
 Developments' own leasing brochure (architect MAP Group, engineer Arup,
 completed November 2018). What the drawings establish and the model rebuilds:
 
-- A rounded-corner site on a 8.4 m structural grid, 21 column lines by 16 row
-  lines, with the south-east corner chamfered.
+- A rounded-corner site on a 8.4 m structural grid, with the south-east corner
+  chamfered.
 - Parking at ground level under the western half, with the public piazza over
-  it; retail on the eastern half anchored by a double-volume Spar in its
-  north-west corner.
-- A pedestrian arcade on grid row H tying the two together — double-height,
-  splayed concrete columns, dark steel soffit, radiating linear lights, a
-  first-floor gallery down both sides.
+  it; retail on the eastern half anchored by a double-volume Spar.
+- A pedestrian arcade tying the two together — double-height, splayed concrete
+  columns, dark steel soffit, radiating linear lights, a first-floor gallery
+  down both sides.
 - Restaurants ringing the piazza north, east and west, with an angled unit on
   the south-west corner.
 - Office bars above with projecting floor slabs, glass balustrade balconies and
   close-spaced vertical fins.
 
-Two departures, both deliberate:
+Tenancies are laid out as **frontages** — a run of units butted against each
+other along one line, sharing party walls — rather than placed one at a time.
+Placing them individually is what produced shells growing through each other and
+two fascias fighting for the same air.
 
-1. **The walkable plane is flat.** The real piazza is a level above the
-   parking; two walkable levels would need a height-aware controller. The deck
-   is modelled as an undercroft below the plane and the level change is read at
-   the retaining edge and amphitheatre steps, which is how it presents on
-   approach anyway.
-2. **Tenant positions are inferred, not copied.** The brochure's plans are
-   generic leasing drawings that label units "RETAIL TENANCY". Positions here
-   come from unit size, servicing and frontage.
+One departure, deliberate: **tenant positions are inferred, not copied.** The
+brochure's plans are generic leasing drawings that label units "RETAIL TENANCY".
+Positions here come from unit size, servicing and frontage.
+
+### Levels
+
+Park Square is not a flat site, so the walkable surface is a height field rather
+than a plane. `src/components/world/terrain.ts` holds four levels — the street,
+the podium the whole precinct stands on, the piazza a storey higher again on the
+parking deck, and the campus terrace above that — joined by six slopes: the
+concrete grand flight down to the arcade, the ramp up to the campus, and four
+exposed steel flights with open risers and tubular handrails where the precinct
+meets the street.
+
+Everything in the scene reads its own ground off `heightAt(x, z)`, so nothing has
+to know which level it is on, and collision is height-aware: a box whose top is
+within a step of your feet is walked over, one whose underside clears your
+shoulders is walked under. Balustrades run every edge where the ground drops,
+broken at each stair mouth.
+
+Marker positions are derived from the plan rather than written by hand —
+`npm run derive:markers` puts each interactable in front of the shopfront it
+belongs to and writes the result back to `content.ts`. Moving a tenancy used to
+silently bury its marker inside the building.
 
 ### The wider city
 
@@ -181,14 +199,24 @@ welded into a building.
 
 ## Verifying the world
 
-Movement and collision are pure functions of the layout data, so they are checked
-without a browser. `src/components/world/layout.ts` and `collision.ts` compile on
-their own, and `npm run verify:world` asserts the spawn is clear, that each of
-W/A/S/D moves the player the way the camera implies, that a body slides along a
-wall rather than sticking, that a sprint cannot tunnel a thin obstacle, that a
-trapped body is ejected, that steppable props never block, and that `move()`
-stays cheap. Run it after moving a marker or adding a structure — a building
-dropped on a marker is otherwise invisible until someone walks there.
+Movement, collision and the precinct plan are pure functions of data, so they are
+checked without a browser — which matters, because a browser throttles
+`requestAnimationFrame` whenever its window is hidden and makes working movement
+look broken.
+
+`npm run verify:world` compiles the height field, the plan, the city layout and
+collision on their own and asserts seventeen things: that the spawn is clear,
+that each of W/A/S/D moves the player the way the camera implies, that a body
+slides along a wall rather than sticking, that a sprint cannot tunnel a thin
+obstacle, that a trapped body is ejected, that steppable props never block, that
+`move()` stays cheap — and, on the plan, that no two tenancies share ground, that
+none straddles a level change, that every level and the street below are walkable
+on foot from the spawn (a flood fill over the height field, so a stair that does
+not actually connect fails), that every marker can be stood in front of, and that
+none is buried inside its own building.
+
+Run it after moving a tenancy or adding a structure. Every one of those checks is
+there because that exact failure shipped once.
 
 ## Prototype boundaries
 

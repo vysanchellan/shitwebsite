@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "verify:world": "bash scripts/verify-world.sh"
+    "verify:world": "bash scripts/verify-world.sh",
+    "derive:markers": "bash scripts/derive-markers.sh"
   },
   "dependencies": {
     "@react-three/drei": "10.7.6",

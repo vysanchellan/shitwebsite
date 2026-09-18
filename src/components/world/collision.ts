@@ -22,6 +22,9 @@ import { BOUNDS, COLLIDERS, type Collider } from './layout';
 /** Anything no taller than this is a kerb, a rail or a planter: step over it. */
 export const STEP_HEIGHT = 0.5;
 
+/** Shoulder height. Anything whose underside clears this is walked under. */
+export const BODY_HEIGHT = 1.9;
+
 const CELL = 16;
 
 function key(cx: number, cz: number) {
@@ -32,8 +35,9 @@ function key(cx: number, cz: number) {
 /** Uniform grid over the collider set, built once. */
 const GRID = new Map<number, Collider[]>();
 
+// Everything goes in the grid. Whether a box blocks depends on where the body
+// is standing, which is only known at query time now that the site has levels.
 for (const c of COLLIDERS) {
-  if (c.height <= STEP_HEIGHT) continue;
   const x0 = Math.floor(c.minX / CELL);
   const x1 = Math.floor(c.maxX / CELL);
   const z0 = Math.floor(c.minZ / CELL);
@@ -79,11 +83,21 @@ function distanceSq(c: Collider, x: number, z: number) {
   return dx * dx + dz * dz;
 }
 
-/** True when a body of radius `r` centred at (x, z) overlaps anything solid. */
-export function blocked(x: number, z: number, r: number): boolean {
+/**
+ * True when a body of radius `r` standing at height `y` overlaps anything solid.
+ *
+ * The vertical test is what makes a multi-level site work: a box whose top is
+ * within a step of your feet is walked over, and one whose underside clears
+ * your shoulders is walked under. The arcade soffit and the office overhangs
+ * pass the second test; kerbs and planters pass the first.
+ */
+export function blocked(x: number, z: number, r: number, y = 0): boolean {
   const list = gather(x, z, r);
   for (let i = 0; i < list.length; i++) {
-    if (distanceSq(list[i], x, z) < r * r) return true;
+    const c = list[i];
+    if (c.baseY + c.height <= y + STEP_HEIGHT) continue;
+    if (c.baseY >= y + BODY_HEIGHT) continue;
+    if (distanceSq(c, x, z) < r * r) return true;
   }
   return false;
 }
@@ -94,7 +108,7 @@ export function blocked(x: number, z: number, r: number): boolean {
  * Only ever needed when something spawns badly or the layout changes under a
  * standing player, but without it those cases trap you permanently.
  */
-export function depenetrate(x: number, z: number, r: number): [number, number] {
+export function depenetrate(x: number, z: number, r: number, y = 0): [number, number] {
   let px = x;
   let pz = z;
 
@@ -104,6 +118,8 @@ export function depenetrate(x: number, z: number, r: number): [number, number] {
 
     for (let i = 0; i < list.length; i++) {
       const c = list[i];
+      if (c.baseY + c.height <= y + STEP_HEIGHT) continue;
+      if (c.baseY >= y + BODY_HEIGHT) continue;
       if (distanceSq(c, px, pz) >= r * r) continue;
 
       // Inside the box: leave by the nearest face. Outside but overlapping:
@@ -140,14 +156,14 @@ export function depenetrate(x: number, z: number, r: number): [number, number] {
   // Deep inside a dense block, pushing out of one box can land inside the next,
   // and the passes above can trade the body back and forth. Rather than leave
   // someone welded into a building, sweep outwards for the nearest free spot.
-  if (blocked(px, pz, r)) {
+  if (blocked(px, pz, r, y)) {
     for (let ring = 1; ring <= 24; ring++) {
       const radius = ring * r * 1.5;
       for (let a = 0; a < 16; a++) {
         const angle = (a / 16) * Math.PI * 2;
         const tx = x + Math.cos(angle) * radius;
         const tz = z + Math.sin(angle) * radius;
-        if (!blocked(tx, tz, r)) return [tx, tz];
+        if (!blocked(tx, tz, r, y)) return [tx, tz];
       }
     }
   }
@@ -175,6 +191,7 @@ export function move(
   dx: number,
   dz: number,
   r: number,
+  y = 0,
 ): MoveResult {
   let px = x;
   let pz = z;
@@ -189,17 +206,17 @@ export function move(
   for (let s = 0; s < steps; s++) {
     if (sx !== 0) {
       const nx = px + sx;
-      if (blocked(nx, pz, r)) hitX = true;
+      if (blocked(nx, pz, r, y)) hitX = true;
       else px = nx;
     }
     if (sz !== 0) {
       const nz = pz + sz;
-      if (blocked(px, nz, r)) hitZ = true;
+      if (blocked(px, nz, r, y)) hitZ = true;
       else pz = nz;
     }
   }
 
-  [px, pz] = depenetrate(px, pz, r);
+  [px, pz] = depenetrate(px, pz, r, y);
 
   return {
     x: Math.max(BOUNDS.minX + r, Math.min(BOUNDS.maxX - r, px)),
@@ -210,6 +227,6 @@ export function move(
 }
 
 /** Line-of-sight test along the camera boom. */
-export function occupied(x: number, z: number, pad = 0.6): boolean {
-  return blocked(x, z, pad);
+export function occupied(x: number, z: number, pad = 0.6, y = 0): boolean {
+  return blocked(x, z, pad, y);
 }

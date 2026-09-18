@@ -122,7 +122,10 @@ export const TREES: Scatter[] = scatterIn(rng, GREENS[0], 54, 0.9, 1.8);
  * built by hand from the real plans. The generated city is uMhlanga Ridge
  * around it.
  */
-const CORE = { minX: -92, maxX: 92, minZ: -72, maxZ: 72 };
+// The precinct plus its perimeter flights. The city generator keeps out of
+// this rectangle entirely, so nothing procedural can land on the podium, the
+// campus terrace or the steps down to the street.
+const CORE = { minX: -104, maxX: 108, minZ: -88, maxZ: 88 };
 
 /** Block pitch, and the carriageway left between blocks. */
 const CELL = 40;
@@ -326,9 +329,10 @@ export const CROSSINGS: Crossing[] = generated.crossings;
 /** Street lamps down the district avenues and along the city grid. */
 export const LAMPS: [number, number][] = (() => {
   const out: [number, number][] = [];
-  // Centenary Boulevard and Park Avenue, both sides.
-  for (let z = -96; z <= 96; z += 14) out.push([92, z], [110, z]);
-  for (let x = -108; x <= 108; x += 14) out.push([x, 72], [x, 90]);
+  // Centenary Boulevard and Park Avenue, both sides, clear of the steps that
+  // come down off the podium onto them.
+  for (let z = -104; z <= 104; z += 14) out.push([104, z], [118, z]);
+  for (let x = -118; x <= 118; x += 14) out.push([x, 84], [x, 98]);
   // One pair per city block frontage, set back from the kerb.
   for (const b of CITY) {
     if (Math.abs(b.pos[0]) > 140 || b.pos[1] < -200) continue;
@@ -376,7 +380,10 @@ export type Collider = {
   maxX: number;
   minZ: number;
   maxZ: number;
+  /** Height above its own base, not above sea level. */
   height: number;
+  /** The level this box stands on. */
+  baseY: number;
 };
 
 /** The institutes are drawn with a podium wider than their nominal footprint. */
@@ -395,6 +402,7 @@ function boxFor(s: Structure, pad: number): Collider {
     minZ: s.pos[1] - d,
     maxZ: s.pos[1] + d,
     height: s.size[1],
+    baseY: 0,
   };
 }
 
@@ -406,6 +414,7 @@ export const COLLIDERS: Collider[] = STRUCTURES.filter((s) => s.solid !== false)
         minZ: s.pos[1] + dz - hd,
         maxZ: s.pos[1] + dz + hd,
         height: s.size[1],
+        baseY: 0,
       }))
     : [boxFor(s, 0.35)],
 );
@@ -421,6 +430,7 @@ for (const b of CITY) {
     minZ: b.pos[1] - b.size[2] / 2 - 0.35,
     maxZ: b.pos[1] + b.size[2] / 2 + 0.35,
     height: b.size[1] + b.tower[1],
+    baseY: 0,
   });
 }
 
@@ -447,6 +457,7 @@ for (const p of STREET_PROPS) {
     minZ: p.pos[1] - halfD,
     maxZ: p.pos[1] + halfD,
     height: h,
+    baseY: 0,
   });
 }
 
@@ -467,5 +478,6 @@ for (const v of VEHICLES) {
     minZ: v.pos[1] - halfD,
     maxZ: v.pos[1] + halfD,
     height: h,
+    baseY: 0,
   });
 }

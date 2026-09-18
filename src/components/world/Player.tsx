@@ -8,6 +8,7 @@ import { Avatar } from './Avatar';
 import { move, occupied } from './collision';
 import { input } from './input';
 import { SPAWN } from './parkSquare';
+import { heightAt } from './terrain';
 import { useWorld } from './store';
 
 const WALK = 7.4;
@@ -27,7 +28,7 @@ export function Player() {
   const yaw = useRef(Math.PI);
   const pitch = useRef(0.04);
   const vel = useRef(new THREE.Vector3());
-  const pos = useRef(new THREE.Vector3(SPAWN[0], 0, SPAWN[1]));
+  const pos = useRef(new THREE.Vector3(SPAWN[0], heightAt(SPAWN[0], SPAWN[1]), SPAWN[1]));
   const facing = useRef(Math.PI);
   const phase = useRef(0);
   const speed = useRef(0);
@@ -78,11 +79,18 @@ export function Player() {
       vel.current.x * dt,
       vel.current.z * dt,
       RADIUS,
+      pos.current.y,
     );
     if (step.hitX) vel.current.x = 0;
     if (step.hitZ) vel.current.z = 0;
     pos.current.x = step.x;
     pos.current.z = step.z;
+
+    // Follow the ground. Damped rather than snapped, so a flight of stairs
+    // reads as a climb instead of a stutter, but tight enough that you never
+    // look like you are hovering.
+    const ground = heightAt(pos.current.x, pos.current.z);
+    pos.current.y = THREE.MathUtils.damp(pos.current.y, ground, 16, dt);
 
     speed.current = Math.hypot(vel.current.x, vel.current.z);
     phase.current += speed.current * dt * 1.55;
@@ -97,7 +105,7 @@ export function Player() {
     }
 
     if (group.current) {
-      group.current.position.set(pos.current.x, 0, pos.current.z);
+      group.current.position.set(pos.current.x, pos.current.y, pos.current.z);
       group.current.rotation.y = facing.current;
     }
 
@@ -114,7 +122,7 @@ export function Player() {
       const t = (step / 6) * wantDist;
       const sx = pos.current.x - dirX * flat * t;
       const sz = pos.current.z - dirZ * flat * t;
-      if (occupied(sx, sz, 0.5)) {
+      if (occupied(sx, sz, 0.5, pos.current.y)) {
         allowed = Math.max(2.2, t - wantDist / 6);
         break;
       }
@@ -123,10 +131,10 @@ export function Player() {
 
     camera.position.set(
       pos.current.x - dirX * flat * camDist.current,
-      1.55 + CAM_HEIGHT + lift * camDist.current,
+      pos.current.y + 1.55 + CAM_HEIGHT + lift * camDist.current,
       pos.current.z - dirZ * flat * camDist.current,
     );
-    camera.lookAt(pos.current.x, 1.62 + lift * 1.4, pos.current.z);
+    camera.lookAt(pos.current.x, pos.current.y + 1.62 + lift * 1.4, pos.current.z);
 
     /* --- proximity ------------------------------------------------------- */
     let best: string | null = null;
@@ -151,7 +159,7 @@ export function Player() {
   });
 
   return (
-    <group ref={group} position={[SPAWN[0], 0, SPAWN[1]]}>
+    <group ref={group} position={[SPAWN[0], heightAt(SPAWN[0], SPAWN[1]), SPAWN[1]]}>
       <Avatar phase={phase} speed={speed} walk={WALK} sprint={SPRINT} />
     </group>
   );
