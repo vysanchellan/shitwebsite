@@ -6,7 +6,45 @@ import { NODES, NODE_COUNT } from '@/data/content';
 import { Mark } from '@/components/ui/Wordmark';
 import { ACCENT_HEX } from './layout';
 import { MiniMap } from './MiniMap';
+import { CAMPUS, DECK, RETAIL, heightAt } from './terrain';
 import { useWorld } from './store';
+
+/**
+ * Which level you are standing on.
+ *
+ * The precinct is four levels now and they look alike from inside — off-white
+ * concrete and the same paving — so without this it is genuinely easy to come
+ * down the flight and not register that you have changed floor.
+ */
+function levelName(y: number) {
+  if (y >= CAMPUS - 0.4) return 'Campus terrace';
+  if (y >= DECK - 0.4) return 'The piazza';
+  if (y >= RETAIL - 0.4) return 'Retail podium';
+  if (y > 0.4) return 'On the steps';
+  return 'Street level';
+}
+
+function LevelChip() {
+  const [px, pz] = useWorld((s) => s.player);
+  const y = heightAt(px, pz);
+  const name = levelName(y);
+
+  return (
+    <span className="flex items-center gap-2 rounded-full border border-white/12 bg-ink/70 px-4 py-2 backdrop-blur-md">
+      <span aria-hidden="true" className="flex h-3 w-3 flex-col justify-end gap-px">
+        {[CAMPUS, DECK, RETAIL, 0].map((level) => (
+          <span
+            key={level}
+            className={`block h-px w-full rounded-full transition-colors ${
+              Math.abs(level - y) < 0.4 ? 'bg-brass' : 'bg-white/25'
+            }`}
+          />
+        ))}
+      </span>
+      <span className="micro-sm text-paper/65">{name}</span>
+    </span>
+  );
+}
 
 /** A brief confirmation each time something new is read. */
 function Toast() {
@@ -87,6 +125,10 @@ export function Hud() {
             <Mark className="h-4 w-4 text-brass" />
             <span className="micro-sm">Exit district</span>
           </Link>
+
+          <span className="hidden md:inline">
+            <LevelChip />
+          </span>
 
           {node && (
             <span className="hidden rounded-full border border-white/10 bg-ink/60 px-4 py-2.5 micro-sm text-paper/55 backdrop-blur-md md:inline">

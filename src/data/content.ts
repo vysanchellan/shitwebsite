@@ -214,7 +214,7 @@ export const NODES: InfoNode[] = [
     title: 'Why earlier awareness matters',
     kicker: 'Awareness Park',
     accent: 'amber',
-    position: [54.8, 0, -0.2],
+    position: [81.2, 0, 1.6],
     body: [
       'Heart disease and diabetes are both conditions where risk accumulates quietly and where earlier awareness changes what can be done about it. The obelisks in this park each carry one published figure, with its source and year.',
       'RiskSense does not generate these numbers and does not estimate late-detection rates of its own. They are quoted, attributed and dated so that anyone reading them can go and check them.',
@@ -230,7 +230,7 @@ export const NODES: InfoNode[] = [
     title: 'Risk factors go unnoticed',
     kicker: 'The problem · 01',
     accent: 'ember',
-    position: [-56.4, 0, 6],
+    position: [-56.4, 0, 12],
     body: [
       'Raised blood pressure, raised cholesterol and impaired fasting glucose rarely announce themselves. A patient can carry several of them for years and feel entirely well.',
     ],
@@ -266,7 +266,7 @@ export const NODES: InfoNode[] = [
     title: 'The RiskSense response',
     kicker: 'Central Plaza',
     accent: 'aether',
-    position: [-72.4, 0, -56],
+    position: [-72.4, 0, -55],
     body: ['RiskSense answers those three problems with three deliberate moves.'],
     bullets: [
       { label: 'Consolidate', text: 'Bring the relevant health information into one structured profile.' },
@@ -325,7 +325,7 @@ export const NODES: InfoNode[] = [
     title: 'Medical disclaimer',
     kicker: 'Read this one',
     accent: 'amber',
-    position: [77, 0, 1.6],
+    position: [67.7, 0, 1.6],
     body: [
       'RiskSense AI provides risk estimates for decision support and awareness. It does not provide a medical diagnosis and it does not replace professional medical advice.',
       'A risk estimate describes a probability across a population with similar characteristics. It does not tell a patient what will happen to them, and it must never be used to start, stop or change treatment without a clinician.',
@@ -341,7 +341,7 @@ export const NODES: InfoNode[] = [
     title: 'Use your supported insurance cover with RiskSense',
     kicker: 'Insurance Pavilion',
     accent: 'plum',
-    position: [29, 0, 1.6],
+    position: [21.6, 0, 1.6],
     body: [
       'Patients can activate RiskSense access through a supported insurance provider instead of a subscription. The kiosks around this pavilion show which providers can be selected during registration and access verification.',
       'The provider list is data-driven: providers can be added, disabled or reordered in the backend without redesigning anything. Selecting a provider explains how eligibility works. It never exposes member information.',
@@ -358,7 +358,7 @@ export const NODES: InfoNode[] = [
     title: 'RiskSense complements the clinician',
     kicker: 'Clinician Link',
     accent: 'jade',
-    position: [-56.4, 0, -34],
+    position: [-56.4, 0, -28],
     body: [
       'RiskSense is built to end in a conversation, not to replace one. Every patient supplies the unique RiskSense Clinician ID issued by their clinician during service activation.',
       'The backend verifies that the identifier belongs to an eligible, approved clinician before confirming the relationship. On success the patient sees only the minimum clinician detail needed to confirm they picked the right person. An invalid or unapproved ID produces a clear correction message and creates no relationship at all.',
@@ -373,7 +373,7 @@ export const NODES: InfoNode[] = [
     title: 'Zero-trust by default',
     kicker: 'Security Vault',
     accent: 'verdant',
-    position: [-56.4, 0, -14],
+    position: [-56.4, 0, -8],
     body: [
       'Protected requests are never trusted on the strength of where they came from. Every one is authenticated and authorised at the backend.',
     ],
@@ -445,7 +445,7 @@ export const NODES: InfoNode[] = [
     title: 'Failure and recovery',
     kicker: 'Error handling',
     accent: 'amber',
-    position: [59, 0, 1.6],
+    position: [50.5, 0, 1.6],
     body: [
       'Activation can fail for ordinary reasons. Each one gets plain user-facing language and a way forward, Try Again or Return to App, never a raw API error.',
     ],

@@ -1,22 +1,37 @@
 import { BOUNDS, COLLIDERS, type Collider } from './layout';
+import { heightAt } from './terrain';
 
 /**
- * Collision for the district.
- *
- * Three things the old single-pass push-out got wrong, and this fixes:
- *
- *  - **Sliding.** Resolving the shortest overlap on one combined move makes a
- *    player scrape along a wall in jerks. Here each axis is tried on its own, so
- *    a blocked X leaves Z free and you slide along the facade smoothly.
- *  - **Tunnelling.** A sprint step is large enough to jump a thin kerb or a
- *    railing between frames. Movement is substepped to under a body radius.
- *  - **Cost.** Testing ~300 boxes every frame is wasteful and gets worse as the
- *    city grows, so colliders are bucketed into a uniform grid and only the
- *    buckets the body touches are ever queried.
+ * Collision for the precinct.
  *
  * Bodies are circles, obstacles are axis-aligned boxes, and the test is
  * closest-point-on-box, which is correct at corners where an overlap test on
  * each axis separately is not.
+ *
+ * Four things this gets right that a naive push-out does not:
+ *
+ *  - **Sliding.** Resolving the shortest overlap on one combined move makes a
+ *    player scrape along a wall in jerks. Each axis is tried on its own, so a
+ *    blocked X leaves Z free and you slide along the facade smoothly.
+ *  - **Tunnelling.** A sprint step is large enough to jump a thin kerb or a
+ *    railing between frames. Movement is substepped to under a body radius.
+ *  - **Cost.** Testing every box every frame gets worse as the world grows, so
+ *    colliders are bucketed into a uniform grid and only the buckets the body
+ *    touches are ever queried.
+ *  - **Levels.** Which boxes are solid depends on the height you are standing
+ *    at, and that height is read from the terrain here, per substep.
+ *
+ * That last point is the one that bit. The height used to be passed in by the
+ * caller, which passed the *damped* value it uses to move the avatar smoothly
+ * up a flight of stairs. That value lags the real ground by design, so during
+ * any level change every box was tested against a height the body was not
+ * actually at — walls and balustrades were skipped, and the depenetration
+ * sweep then hunted metres outward for somewhere "free", which is what walking
+ * through a building looked like from the inside.
+ *
+ * Collision owns the height now, and a body only ever moves to a point it has
+ * tested clear at that point's own ground. That makes being inside geometry
+ * unreachable rather than recoverable, so nothing has to teleport.
  */
 
 /** Anything no taller than this is a kerb, a rail or a planter: step over it. */
@@ -84,14 +99,20 @@ function distanceSq(c: Collider, x: number, z: number) {
 }
 
 /**
- * True when a body of radius `r` standing at height `y` overlaps anything solid.
+ * True when a body of radius `r` standing on the ground at (x, z) overlaps
+ * anything solid.
  *
  * The vertical test is what makes a multi-level site work: a box whose top is
  * within a step of your feet is walked over, and one whose underside clears
  * your shoulders is walked under. The arcade soffit and the office overhangs
- * pass the second test; kerbs and planters pass the first.
+ * pass the second test; kerbs, planters and benches pass the first.
+ *
+ * `y` defaults to the terrain height at the point being tested, which is what
+ * every movement query wants. Pass it explicitly only to ask a hypothetical —
+ * the camera boom does, because it sweeps at the player's height rather than
+ * at the ground under each sample.
  */
-export function blocked(x: number, z: number, r: number, y = 0): boolean {
+export function blocked(x: number, z: number, r: number, y = heightAt(x, z)): boolean {
   const list = gather(x, z, r);
   for (let i = 0; i < list.length; i++) {
     const c = list[i];
@@ -105,15 +126,19 @@ export function blocked(x: number, z: number, r: number, y = 0): boolean {
 /**
  * Pushes a body out of anything it has ended up inside.
  *
- * Only ever needed when something spawns badly or the layout changes under a
- * standing player, but without it those cases trap you permanently.
+ * With movement testing every candidate point this is only needed when
+ * something is *placed* badly — a spawn, or a layout change under a standing
+ * player. It is deliberately short-range: a body that cannot free itself
+ * within a couple of metres stays where it is rather than being flung across
+ * the precinct, because a teleport through a wall is worse than a snag.
  */
-export function depenetrate(x: number, z: number, r: number, y = 0): [number, number] {
+export function depenetrate(x: number, z: number, r: number): [number, number] {
   let px = x;
   let pz = z;
 
   for (let pass = 0; pass < 8; pass++) {
     let moved = false;
+    const y = heightAt(px, pz);
     const list = gather(px, pz, r);
 
     for (let i = 0; i < list.length; i++) {
@@ -153,22 +178,22 @@ export function depenetrate(x: number, z: number, r: number, y = 0): [number, nu
     if (!moved) break;
   }
 
-  // Deep inside a dense block, pushing out of one box can land inside the next,
-  // and the passes above can trade the body back and forth. Rather than leave
-  // someone welded into a building, sweep outwards for the nearest free spot.
-  if (blocked(px, pz, r, y)) {
-    for (let ring = 1; ring <= 24; ring++) {
-      const radius = ring * r * 1.5;
-      for (let a = 0; a < 16; a++) {
-        const angle = (a / 16) * Math.PI * 2;
-        const tx = x + Math.cos(angle) * radius;
-        const tz = z + Math.sin(angle) * radius;
-        if (!blocked(tx, tz, r, y)) return [tx, tz];
-      }
+  if (!blocked(px, pz, r)) return [px, pz];
+
+  // Deep inside a dense block the passes above can trade the body between two
+  // boxes forever. Sweep outward for the nearest free spot, but only a short
+  // way, and test each candidate against its own ground.
+  for (let ring = 1; ring <= 6; ring++) {
+    const radius = ring * r * 0.8;
+    for (let a = 0; a < 16; a++) {
+      const angle = (a / 16) * Math.PI * 2;
+      const tx = x + Math.cos(angle) * radius;
+      const tz = z + Math.sin(angle) * radius;
+      if (!blocked(tx, tz, r)) return [tx, tz];
     }
   }
 
-  return [px, pz];
+  return [x, z];
 }
 
 export type MoveResult = {
@@ -183,16 +208,11 @@ export type MoveResult = {
  * Advances a body by (dx, dz), sliding along whatever it meets.
  *
  * Each axis is attempted separately within each substep: that is what turns a
- * head-on collision into a slide instead of a stop.
+ * head-on collision into a slide instead of a stop. Every candidate point is
+ * tested against the ground at that point, so stepping onto a stair, a ramp or
+ * another level re-reads which boxes are solid before committing to the step.
  */
-export function move(
-  x: number,
-  z: number,
-  dx: number,
-  dz: number,
-  r: number,
-  y = 0,
-): MoveResult {
+export function move(x: number, z: number, dx: number, dz: number, r: number): MoveResult {
   let px = x;
   let pz = z;
   let hitX = false;
@@ -206,17 +226,18 @@ export function move(
   for (let s = 0; s < steps; s++) {
     if (sx !== 0) {
       const nx = px + sx;
-      if (blocked(nx, pz, r, y)) hitX = true;
+      if (blocked(nx, pz, r)) hitX = true;
       else px = nx;
     }
     if (sz !== 0) {
       const nz = pz + sz;
-      if (blocked(px, nz, r, y)) hitZ = true;
+      if (blocked(px, nz, r)) hitZ = true;
       else pz = nz;
     }
   }
 
-  [px, pz] = depenetrate(px, pz, r, y);
+  // Only ever needed if the body was already inside something when it arrived.
+  if (blocked(px, pz, r)) [px, pz] = depenetrate(px, pz, r);
 
   return {
     x: Math.max(BOUNDS.minX + r, Math.min(BOUNDS.maxX - r, px)),
@@ -226,7 +247,7 @@ export function move(
   };
 }
 
-/** Line-of-sight test along the camera boom. */
+/** Line-of-sight test along the camera boom, at the player's own height. */
 export function occupied(x: number, z: number, pad = 0.6, y = 0): boolean {
   return blocked(x, z, pad, y);
 }

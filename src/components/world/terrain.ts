@@ -60,8 +60,10 @@ export type Slope = {
 export const GRAND_STAIR: Slope = {
   minX: -14,
   maxX: 6,
-  minZ: -18,
-  maxZ: 18,
+  // The mouth lines up with the arcade: you come down the flight and the
+  // arcade runs away east in front of you, between the same two frontages.
+  minZ: -3,
+  maxZ: 17,
   from: DECK,
   to: RETAIL,
   axis: 'x',
@@ -81,16 +83,35 @@ export const SOUTH_STAIR: Slope = {
   steel: true,
 };
 
-/** The ramp up from the piazza to the campus entrance. */
+/**
+ * The ramp up from the piazza to the campus entrance, and the flight running
+ * parallel to it.
+ *
+ * The drawings pair them everywhere the section steps: a ramp for the gentle
+ * way up and a flight alongside for the quick one. Having only the ramp read
+ * as a service road rather than an entrance.
+ */
 export const CAMPUS_RAMP: Slope = {
   minX: -74,
   maxX: -56,
-  minZ: -60,
-  maxZ: -48,
+  minZ: -62,
+  maxZ: -52,
   from: CAMPUS,
   to: DECK,
   axis: 'x',
   kind: 'ramp',
+};
+
+export const CAMPUS_STAIR: Slope = {
+  minX: -74,
+  maxX: -64,
+  minZ: -50,
+  maxZ: -42,
+  from: CAMPUS,
+  to: DECK,
+  axis: 'x',
+  kind: 'stair',
+  steel: true,
 };
 
 /**
@@ -138,6 +159,7 @@ export const SLOPES: Slope[] = [
   GRAND_STAIR,
   SOUTH_STAIR,
   CAMPUS_RAMP,
+  CAMPUS_STAIR,
   EAST_STAIR,
   SOUTH_PODIUM_STAIR,
   NORTH_PODIUM_STAIR,
@@ -164,7 +186,7 @@ export const CAMPUS_TERRACE: Terrace = {
   minX: -94,
   maxX: -74,
   minZ: -68,
-  maxZ: -46,
+  maxZ: -40,
   y: CAMPUS,
 };
 
@@ -243,7 +265,8 @@ export const EDGES: Edge[] = (() => {
   const c = CAMPUS_TERRACE;
   const mouthX = CAMPUS_RAMP.minX;
   out.push({ minX: mouthX - t, maxX: mouthX, minZ: c.minZ, maxZ: CAMPUS_RAMP.minZ, baseY: CAMPUS });
-  out.push({ minX: mouthX - t, maxX: mouthX, minZ: CAMPUS_RAMP.maxZ, maxZ: c.maxZ, baseY: CAMPUS });
+  out.push({ minX: mouthX - t, maxX: mouthX, minZ: CAMPUS_RAMP.maxZ, maxZ: CAMPUS_STAIR.minZ, baseY: CAMPUS });
+  out.push({ minX: mouthX - t, maxX: mouthX, minZ: CAMPUS_STAIR.maxZ, maxZ: c.maxZ, baseY: CAMPUS });
   out.push({ minX: c.minX, maxX: mouthX, minZ: c.minZ, maxZ: c.minZ + t, baseY: CAMPUS });
   out.push({ minX: c.minX, maxX: mouthX, minZ: c.maxZ - t, maxZ: c.maxZ, baseY: CAMPUS });
   out.push({ minX: c.minX, maxX: c.minX + t, minZ: c.minZ, maxZ: c.maxZ, baseY: CAMPUS });
@@ -252,18 +275,98 @@ export const EDGES: Edge[] = (() => {
 })();
 
 /**
- * The ramp's own sides, which drop to the deck below along their length.
+ * The sides of every flight and ramp.
  *
- * These are kept out of `EDGES` because a balustrade there is not level — the
- * flight geometry draws its own raking handrail — but they still have to stop
- * you walking off sideways, so collision picks them up separately.
+ * A slope is a solid object standing proud of the ground beside it, and its
+ * long sides are a cliff: walk at the grand flight from the side and the
+ * height field hands you the tread height, which teleports you three metres
+ * up onto it mid-stride. What is actually there is a cheek wall, so that is
+ * what collision gets.
+ *
+ * Only the portion that genuinely stands above its neighbour is walled — near
+ * the foot of a flight it is flush with the paving, and a wall there would be
+ * a kerb rising out of nothing.
  */
-export const RAMP_SIDES = (() => {
-  // Only the raised part of the ramp needs a side. Running them the full length
-  // walls off the ramp's own mouth, where it is level with the deck anyway.
-  const maxX = CAMPUS_RAMP.maxX - 6;
-  return [
-    { minX: CAMPUS_RAMP.minX, maxX, minZ: CAMPUS_RAMP.minZ - 0.5, maxZ: CAMPUS_RAMP.minZ },
-    { minX: CAMPUS_RAMP.minX, maxX, minZ: CAMPUS_RAMP.maxZ, maxZ: CAMPUS_RAMP.maxZ + 0.5 },
-  ];
+export type SlopeSide = {
+  minX: number;
+  maxX: number;
+  minZ: number;
+  maxZ: number;
+  baseY: number;
+  height: number;
+};
+
+export const SLOPE_SIDES: SlopeSide[] = (() => {
+  const out: SlopeSide[] = [];
+  const T = 0.6;
+  /** Below this the flight is effectively flush and needs no cheek. */
+  const PROUD = 0.4;
+
+  for (const s of SLOPES) {
+    const alongX = s.axis === 'x';
+    const run = alongX ? s.maxX - s.minX : s.maxZ - s.minZ;
+    const lo = alongX ? s.minX : s.minZ;
+
+    for (const side of [-1, 1] as const) {
+      // Just outside the flight, along this side.
+      const off = side < 0
+        ? (alongX ? s.minZ : s.minX) - T
+        : (alongX ? s.maxZ : s.maxX) + T;
+
+      // Walk the run and keep the stretch that stands above its neighbour.
+      const STEPS = 40;
+      let startT: number | null = null;
+      let lowest = Infinity;
+      let highest = -Infinity;
+
+      const flush = (i: number) => {
+        const t = i / STEPS;
+        const along = lo + t * run;
+        const y = s.from + (s.to - s.from) * t;
+        const outside = alongX ? heightAt(along, off) : heightAt(off, along);
+        return { proud: y - outside > PROUD, y, outside, along };
+      };
+
+      const emit = (a: number, b: number) => {
+        if (b - a < 1.2) return;
+        out.push(
+          alongX
+            ? {
+                minX: a, maxX: b,
+                minZ: side < 0 ? s.minZ - T : s.maxZ,
+                maxZ: side < 0 ? s.minZ : s.maxZ + T,
+                baseY: lowest - 0.2,
+                height: highest - lowest + 1.4,
+              }
+            : {
+                minX: side < 0 ? s.minX - T : s.maxX,
+                maxX: side < 0 ? s.minX : s.maxX + T,
+                minZ: a, maxZ: b,
+                baseY: lowest - 0.2,
+                height: highest - lowest + 1.4,
+              },
+        );
+        lowest = Infinity;
+        highest = -Infinity;
+      };
+
+      for (let i = 0; i <= STEPS; i++) {
+        const f = flush(i);
+        if (f.proud) {
+          if (startT === null) startT = f.along;
+          lowest = Math.min(lowest, f.outside);
+          highest = Math.max(highest, f.y);
+        } else if (startT !== null) {
+          emit(Math.min(startT, f.along), Math.max(startT, f.along));
+          startT = null;
+        }
+      }
+      if (startT !== null) {
+        const end = lo + run;
+        emit(Math.min(startT, end), Math.max(startT, end));
+      }
+    }
+  }
+
+  return out;
 })();

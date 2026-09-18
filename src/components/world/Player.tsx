@@ -17,6 +17,8 @@ const ACCEL = 14;
 const DAMP = 11;
 const RADIUS = 0.55;
 const READ_RANGE = 5.2;
+/** Boom samples between the player and full extension. */
+const SAMPLES = 14;
 
 const CAM_DIST = 7.2;
 const CAM_HEIGHT = 2.6;
@@ -73,13 +75,16 @@ export function Player() {
 
     // Collision slides rather than stops, and reports which axis it refused so
     // the velocity that drove into a wall can be shed instead of accumulating.
+    // Note the height is NOT passed: collision reads the terrain itself, per
+    // substep. Handing it pos.current.y — which is damped for the avatar's
+    // benefit and lags the ground on every stair — is what let the body walk
+    // through walls during a level change.
     const step = move(
       pos.current.x,
       pos.current.z,
       vel.current.x * dt,
       vel.current.z * dt,
       RADIUS,
-      pos.current.y,
     );
     if (step.hitX) vel.current.x = 0;
     if (step.hitZ) vel.current.z = 0;
@@ -107,6 +112,9 @@ export function Player() {
     if (group.current) {
       group.current.position.set(pos.current.x, pos.current.y, pos.current.z);
       group.current.rotation.y = facing.current;
+      // Once the boom is pulled right in, the avatar is between the lens and
+      // everything else, so it steps out of the way.
+      group.current.visible = camDist.current > 1.9;
     }
 
     /* --- camera ---------------------------------------------------------- */
@@ -116,18 +124,27 @@ export function Player() {
     const lift = Math.sin(pitch.current);
     const flat = Math.cos(pitch.current);
 
-    // Walk the boom outward until it hits something.
-    let allowed = wantDist;
-    for (let step = 1; step <= 6; step++) {
-      const t = (step / 6) * wantDist;
+    // Find the longest boom that is actually clear, working inward from full
+    // extension. The old version walked outward and clamped at 2.2m, so in the
+    // arcade — where the columns are closer together than that — the camera
+    // ended up inside a shopfront and the screen filled with wall.
+    let allowed = 0.5;
+    for (let step = SAMPLES; step >= 1; step--) {
+      const t = (step / SAMPLES) * wantDist;
       const sx = pos.current.x - dirX * flat * t;
       const sz = pos.current.z - dirZ * flat * t;
-      if (occupied(sx, sz, 0.5, pos.current.y)) {
-        allowed = Math.max(2.2, t - wantDist / 6);
+      if (!occupied(sx, sz, 0.45, pos.current.y)) {
+        allowed = t;
         break;
       }
     }
-    camDist.current = THREE.MathUtils.damp(camDist.current, allowed, 9, dt);
+    // Pull in fast so a wall never gets in front of the lens; ease back out.
+    camDist.current = THREE.MathUtils.damp(
+      camDist.current,
+      allowed,
+      allowed < camDist.current ? 26 : 8,
+      dt,
+    );
 
     camera.position.set(
       pos.current.x - dirX * flat * camDist.current,

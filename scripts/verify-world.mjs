@@ -1,6 +1,6 @@
 import { COLLIDERS, CITY, BOUNDS, STREET_PROPS, VEHICLES } from './layout.js';
 import { SPAWN, UNITS } from './parkSquare.js';
-import { move, blocked, STEP_HEIGHT } from './collision.js';
+import { move, blocked, depenetrate, STEP_HEIGHT } from './collision.js';
 import { heightAt, TERRACES, SLOPES } from './terrain.js';
 import { NODES } from './content.js';
 
@@ -10,8 +10,7 @@ function step(yaw, fwd, right, p, speed = WALK) {
   const sin = Math.sin(yaw), cos = Math.cos(yaw);
   let tx = fwd * sin - right * cos, tz = fwd * cos + right * sin;
   const len = Math.hypot(tx, tz) || 1;
-  const y = heightAt(p.x, p.z);
-  return move(p.x, p.z, (tx / len) * speed * DT, (tz / len) * speed * DT, R, y);
+  return move(p.x, p.z, (tx / len) * speed * DT, (tz / len) * speed * DT, R);
 }
 function walk(yaw, fwd, right, from, frames, speed) {
   let p = { ...from };
@@ -26,7 +25,7 @@ const spawn = { x: SPAWN[0], z: SPAWN[1] }, YAW = Math.PI;
 
 /* -- Direction ------------------------------------------------------------ */
 
-t('spawn is clear', !blocked(spawn.x, spawn.z, R, heightAt(spawn.x, spawn.z)));
+t('spawn is clear', !blocked(spawn.x, spawn.z, R));
 t('W walks forward', walk(YAW, 1, 0, spawn, 60).z < spawn.z - 3);
 t('S retreats', walk(YAW, -1, 0, spawn, 60).z > spawn.z + 3);
 t('D strafes screen-right', walk(YAW, 0, 1, spawn, 60).x > spawn.x + 3);
@@ -39,12 +38,11 @@ const wall = COLLIDERS.find(c => c.height > 8 && c.maxX - c.minX > 10);
 const start = { x: (wall.minX + wall.maxX) / 2, z: wall.maxZ + R + 2.5 };
 let p = { ...start };
 for (let i = 0; i < 180; i++) {
-  const y = heightAt(p.x, p.z);
-  p = move(p.x, p.z, -WALK * DT * 0.707, -WALK * DT * 0.707, R, y);
+  p = move(p.x, p.z, -WALK * DT * 0.707, -WALK * DT * 0.707, R);
 }
 t('slides along a wall instead of sticking', Math.abs(p.x - start.x) > 5,
   `travelled ${Math.abs(start.x - p.x).toFixed(1)}m along the face`);
-t('never enters the wall', !blocked(p.x, p.z, R, heightAt(p.x, p.z)));
+t('never enters the wall', !blocked(p.x, p.z, R));
 
 // Tunnelling: sprint straight at a thin obstacle and make sure it stops you.
 const thin = COLLIDERS.find(c => c.height > STEP_HEIGHT && (c.maxZ - c.minZ) < 0.9);
@@ -55,11 +53,28 @@ if (thin) {
     `z=${after.z.toFixed(2)} vs face ${thin.maxZ.toFixed(2)}`);
 }
 
-// Depenetration: start inside a building and confirm one move ejects you.
-const box = COLLIDERS.find(c => c.height > 8);
-const bx = (box.minX + box.maxX) / 2, bz = (box.minZ + box.maxZ) / 2;
-const inside = move(bx, bz, 0, 0, R, heightAt(bx, bz));
-t('ejects a body stuck inside geometry', !blocked(inside.x, inside.z, R, heightAt(inside.x, inside.z)));
+// Depenetration: a body clipping a wall is pushed back out of it.
+const box = COLLIDERS.find(c => c.height > 8 && c.baseY < 3);
+const edged = move((box.minX + box.maxX) / 2, box.maxZ - 0.2, 0, 0, R);
+t('pushes a body clipping a wall back out', !blocked(edged.x, edged.z, R));
+
+// ...but it is never allowed to fling one across the precinct. Pushing out of
+// a box you are standing in the middle of is unavoidably a long move, so the
+// case that matters is the realistic one: a body clipping a face by a few
+// centimetres must come out of that face, not reappear somewhere else.
+let flung = 0, stuck = 0;
+for (const c of COLLIDERS.slice(0, 600)) {
+  if (c.height <= STEP_HEIGHT) continue;
+  const sx = (c.minX + c.maxX) / 2, sz = c.maxZ - 0.15;
+  const out = depenetrate(sx, sz, R);
+  // The sweep is capped by construction, so this bound is the guarantee that a
+  // mis-tested body can never reappear on the far side of a building. Wedged
+  // between a wall and a balustrade, a couple of metres is the honest answer.
+  if (Math.hypot(out[0] - sx, out[1] - sz) > 4) flung++;
+  if (blocked(out[0], out[1], R) && !blocked(sx, sz, R)) stuck++;
+}
+t('depenetration never teleports a body', flung === 0, `${flung} displaced over 4m`);
+t('depenetration never makes things worse', stuck === 0, `${stuck} left blocked`);
 
 // A steppable box must never block on its own account. Some sit inside a solid
 // one (a bench pushed against a planter), so exclude those.
@@ -68,7 +83,7 @@ const solid = COLLIDERS.filter(c => c.height > STEP_HEIGHT);
 const inSolid = (x, z) => solid.some(c => x > c.minX && x < c.maxX && z > c.minZ && z < c.maxZ);
 const wrong = low.filter(c => {
   const x = (c.minX + c.maxX) / 2, z = (c.minZ + c.maxZ) / 2;
-  return blocked(x, z, 0.01, heightAt(x, z)) && !inSolid(x, z);
+  return blocked(x, z, 0.01) && !inSolid(x, z);
 });
 t('kerb-height props never block', wrong.length === 0, `${low.length} steppable, ${wrong.length} wrongly solid`);
 
@@ -119,7 +134,7 @@ const heights = new Set();
 const gkey = (i, j) => (i + 1024) * 4096 + (j + 1024);
 const standable = (i, j) => {
   const x = i * GRID, z = j * GRID;
-  return !blocked(x, z, R, heightAt(x, z));
+  return !blocked(x, z, R);
 };
 // A stair is a real gradient, not a kerb: the test here is whether the ground
 // between two cells is climbable, which STEP_HEIGHT (a collider's top) is not.
@@ -177,11 +192,66 @@ const buried = NODES.filter((n) => {
 }).map(n => n.id);
 t('no marker is buried inside its building', buried.length === 0, buried.join(', '));
 
+/**
+ * Escape hunt.
+ *
+ * Drive the body the way the controller actually drives it — long sprints on
+ * changing headings, at the worst frame time the controller allows — and check
+ * it never ends up somewhere it could not have walked to. The flood fill above
+ * already knows every point reachable on foot, so anything outside it is a
+ * body that went through something.
+ *
+ * This is the check that was missing. Collision took the height from the
+ * caller, the caller passed its damped avatar height, and on every level
+ * change the body was tested at a height it was not at.
+ */
+const SPRINT_DT = 0.05; // the controller's clamp: the worst case, not the best
+
+// Two invariants, both grid-free so a narrow but legitimate gap is not a
+// failure. The body is never inside geometry, and its ground never jumps: a
+// stair changes height by about 0.3 m in a sprinting frame, so anything past
+// 0.6 m is a body that left one level without using a connection between them.
+const MAX_FRAME_RISE = 0.6;
+let clipped = 0, fell = 0;
+let worstClip = null, worstFall = null;
+let rng = 20260918;
+const rand = () => ((rng = (rng * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
+
+for (let trial = 0; trial < 240; trial++) {
+  let b = { x: spawn.x, z: spawn.z };
+  let y = heightAt(b.x, b.z);
+  let heading = rand() * Math.PI * 2;
+  for (let frame = 0; frame < 400; frame++) {
+    if (frame % 40 === 0) heading += (rand() - 0.5) * 3;
+    const d = SPRINT * SPRINT_DT;
+    b = move(b.x, b.z, Math.sin(heading) * d, Math.cos(heading) * d, R);
+    const ny = heightAt(b.x, b.z);
+    if (blocked(b.x, b.z, R)) {
+      clipped++;
+      if (!worstClip) worstClip = { ...b };
+      break;
+    }
+    if (Math.abs(ny - y) > MAX_FRAME_RISE) {
+      fell++;
+      if (!worstFall) worstFall = { ...b, from: y, to: ny };
+      break;
+    }
+    y = ny;
+  }
+}
+
+t('a sprinting body never ends up inside geometry', clipped === 0,
+  clipped ? `${clipped}/240, first at ${worstClip.x.toFixed(1)}, ${worstClip.z.toFixed(1)}`
+          : '240 sprints, 96000 frames at the worst frame time the controller allows');
+t('a sprinting body never drops off a level', fell === 0,
+  fell ? `${fell}/240, first ${worstFall.from.toFixed(1)}m to ${worstFall.to.toFixed(1)}m at ${worstFall.x.toFixed(1)}, ${worstFall.z.toFixed(1)}`
+       : 'every level change went through a stair or the ramp');
+
 /* -- Perf ----------------------------------------------------------------- */
 
 const t0 = performance.now();
 let q = { x: -45, z: 0 };
-for (let i = 0; i < 20000; i++) q = move(q.x, q.z, 0.02, -0.01, R, heightAt(q.x, q.z));
+for (let i = 0; i < 20000; i++) q = move(q.x, q.z, 0.02, -0.01, R);
 const us = ((performance.now() - t0) / 20000) * 1000;
 t('move() stays cheap', us < 40, `${us.toFixed(1)}us per call, ${COLLIDERS.length} colliders`);
 

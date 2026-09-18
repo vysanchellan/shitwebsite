@@ -89,7 +89,7 @@ function Atmosphere() {
 
   useEffect(() => {
     const prev = scene.fog;
-    scene.fog = new THREE.FogExp2('#2a2740', 0.0034);
+    scene.fog = new THREE.FogExp2('#2a2740', 0.0029);
     return () => {
       scene.fog = prev;
     };
@@ -103,8 +103,8 @@ function Contents({ quality }: { quality: Quality }) {
     <>
       <Atmosphere />
 
-      <ambientLight intensity={0.52} color="#8a92b5" />
-      <hemisphereLight args={['#6076a8', '#1a1418', 0.7]} />
+      <ambientLight intensity={0.62} color="#959cbe" />
+      <hemisphereLight args={['#6f85b8', '#241c1e', 0.85]} />
       <Sun shadows={quality.shadows} />
 
       <Environment />
@@ -135,7 +135,7 @@ export function Scene({ quality }: { quality: Quality }) {
       gl={{ antialias: quality.multisampling === 0, powerPreference: 'high-performance' }}
       onCreated={({ gl }) => {
         gl.toneMapping = THREE.ACESFilmicToneMapping;
-        gl.toneMappingExposure = 1.05;
+        gl.toneMappingExposure = 1.22;
       }}
     >
       <color attach="background" args={['#121a30']} />

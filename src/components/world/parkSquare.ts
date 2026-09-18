@@ -35,7 +35,7 @@
  */
 
 import { ACCENT_HEX } from './accents';
-import { EDGES, RAMP_SIDES, TERRACES, heightAt } from './terrain';
+import { EDGES, SLOPE_SIDES, TERRACES, heightAt, type SlopeSide } from './terrain';
 
 /** Structural grid. Column lines run east-west, row lines north-south. */
 export const BAY = 8.4;
@@ -78,6 +78,10 @@ export type Unit = {
   facing: 'n' | 's' | 'e' | 'w';
   rotY?: number;
   accent: string;
+  /** Back-of-house: a shell with no shopfront, glazing or sign. */
+  blank?: boolean;
+  /** Carries the glazed lift shaft that ties the two levels together. */
+  lift?: boolean;
 };
 
 const A = ACCENT_HEX;
@@ -121,8 +125,20 @@ function frontage(
 /* The eastern retail wing — on the podium, Spar-anchored                      */
 /* -------------------------------------------------------------------------- */
 
-/** The arcade's northern frontage. Spar takes the western two thirds of it. */
-const ARCADE_NORTH = frontage('x', 8, 86, -32, -4, [
+/**
+ * The arcade's northern frontage. The plans put Spar's back-of-house and its
+ * delivery dock at the western end, against the level change, so that is what
+ * closes the run rather than the blank paving that used to be there.
+ */
+const ARCADE_NORTH = frontage('x', -12, 86, -32, -4, [
+  {
+    tenant: 'Spar service dock',
+    label: '',
+    kind: 'shop',
+    span: 14,
+    blank: true,
+    accent: A.plum,
+  },
   {
     node: 'insurance',
     tenant: 'Spar',
@@ -147,10 +163,30 @@ const ARCADE_NORTH = frontage('x', 8, 86, -32, -4, [
     span: 18,
     accent: A.amber,
   },
+  {
+    node: 'awareness',
+    tenant: 'Exquisite Blooms',
+    label: 'Why Earlier Matters',
+    kind: 'shop',
+    span: 10,
+    accent: A.amber,
+  },
 ]);
 
-/** The arcade's southern frontage: the food court and the smaller line shops. */
-const ARCADE_SOUTH = frontage('x', 8, 86, 42, 18, [
+/**
+ * The arcade's southern frontage: the circulation core at the level change,
+ * then the food court and the smaller line shops.
+ */
+const ARCADE_SOUTH = frontage('x', -12, 86, 42, 18, [
+  {
+    tenant: 'Piazza circulation core',
+    label: '',
+    kind: 'shop',
+    span: 20,
+    blank: true,
+    lift: true,
+    accent: A.azure,
+  },
   {
     node: 'problem-fragmented',
     tenant: 'Pizza Hut',
@@ -196,21 +232,6 @@ const ARCADE_SOUTH = frontage('x', 8, 86, 42, 18, [
 export const RETAIL_UNITS: Unit[] = [
   ...ARCADE_NORTH,
   ...ARCADE_SOUTH,
-
-  // The flower stall standing free in the arcade, set in one structural bay so
-  // it clears the columns either side of it.
-  {
-    node: 'awareness',
-    tenant: 'Exquisite Blooms',
-    label: 'Why Earlier Matters',
-    kind: 'kiosk',
-    x: 54.8,
-    z: 7,
-    w: 5.5,
-    d: 5.5,
-    facing: 'n',
-    accent: A.amber,
-  },
 
   // The institution on the chamfered south-east corner of the site.
   {
@@ -302,7 +323,7 @@ const PIAZZA_EAST_S = frontage('z', 18, 42, -14, -28, [
 ]);
 
 /** The west colonnade, under the office bar, facing back across the square. */
-const PIAZZA_WEST = frontage('z', -44, 16, -76, -62, [
+const PIAZZA_WEST = frontage('z', -38, 22, -76, -62, [
   {
     node: 'clinician',
     tenant: 'Old Mutual',
@@ -376,9 +397,9 @@ export const CAMPUS_UNITS: Unit[] = [
     label: 'The Response',
     kind: 'institution',
     x: -85,
-    z: -56,
+    z: -55,
     w: 14,
-    d: 20,
+    d: 18,
     facing: 'e',
     accent: A.aether,
   },
@@ -477,15 +498,6 @@ export const CAFE_SETS: { x: number; z: number; rotY: number }[] = (() => {
   }
   return out;
 })();
-
-/**
- * The glass lift core at the foot of the grand flight.
- *
- * You cannot ride it — the precinct is one walkable surface — but it stands
- * where the real one does, between the flight and the arcade, and it is the
- * piece that tells you at a glance that these are two separate levels.
- */
-export const LIFT_CORE = { x: 2, z: 24, half: 1.9 };
 
 /** Taxi drop-off and delivery yard behind the southern frontage, as drawn. */
 export const SERVICE_YARD = { x: 29, z: 52, w: 42, d: 16 };
@@ -614,17 +626,15 @@ export const PARK_SQUARE_COLLIDERS: Box[] = [
     baseY: e.baseY,
   })),
 
-  // The ramp's sides, blocking from the deck all the way up past the campus.
-  ...RAMP_SIDES.map((s) => ({ ...s, height: 4.2, baseY: 7.2 })),
-
-  {
-    minX: LIFT_CORE.x - LIFT_CORE.half,
-    maxX: LIFT_CORE.x + LIFT_CORE.half,
-    minZ: LIFT_CORE.z - LIFT_CORE.half,
-    maxZ: LIFT_CORE.z + LIFT_CORE.half,
-    height: 9,
-    baseY: heightAt(LIFT_CORE.x, LIFT_CORE.z),
-  },
+  // The cheek walls down both sides of every flight and the ramp.
+  ...SLOPE_SIDES.map((s: SlopeSide) => ({
+    minX: s.minX,
+    maxX: s.maxX,
+    minZ: s.minZ,
+    maxZ: s.maxZ,
+    height: s.height,
+    baseY: s.baseY,
+  })),
 ];
 
 /** Where the player starts: on the square's axis, the arcade away to the east. */

@@ -186,16 +186,34 @@ and low-core machines.
 ## Collision
 
 Bodies are circles, obstacles are height-aware boxes, and the test is
-closest-point-on-box so corners behave. Three things it gets right that a naive
-push-out does not: each axis is resolved separately, so a blocked X leaves Z free
-and you slide along a facade instead of stopping; movement is substepped below a
-body radius, so a sprint cannot jump a railing between frames; and colliders are
-bucketed into a uniform grid, so 1,114 boxes cost about a microsecond a call.
+closest-point-on-box so corners behave. Each axis is resolved separately, so a
+blocked X leaves Z free and you slide along a facade instead of stopping;
+movement is substepped below a body radius, so a sprint cannot jump a railing
+between frames; and colliders are bucketed into a uniform grid, so a thousand
+boxes cost under a microsecond a call.
 
-Anything at or below `STEP_HEIGHT` — kerbs, benches, low rails — is walked over
-rather than collided with. A body that somehow ends up inside geometry is pushed
-out, and failing that swept outward to the nearest free point, so nobody gets
-welded into a building.
+Anything at or below `STEP_HEIGHT` is walked over rather than collided with —
+kerbs, benches, low rails. Anything whose underside clears `BODY_HEIGHT` is
+walked under — the arcade soffit, the office overhangs.
+
+**Collision reads the terrain height itself, per substep.** It used to take the
+height from its caller, and the caller passed the damped value it uses to walk
+the avatar smoothly up a flight of stairs. That value lags the real ground by
+design, so during any level change every box was tested against a height the
+body was not at: walls and balustrades were skipped, and the depenetration
+sweep then hunted metres outward for somewhere "free", which is what walking
+through a building looked like from the inside.
+
+A body now only ever moves to a point it has tested clear at that point's own
+ground, which makes being inside geometry unreachable rather than recoverable.
+Depenetration survives for spawns and layout changes, and is deliberately
+short-range: a body that cannot free itself within a couple of metres stays put,
+because a teleport through a wall is worse than a snag.
+
+Every flight and ramp also carries cheek walls. A slope is a solid object
+standing proud of the ground beside it, and without them walking at the grand
+flight from the side handed you the tread height and teleported you three metres
+up onto it mid-stride.
 
 ## Verifying the world
 
@@ -205,7 +223,7 @@ checked without a browser — which matters, because a browser throttles
 look broken.
 
 `npm run verify:world` compiles the height field, the plan, the city layout and
-collision on their own and asserts seventeen things: that the spawn is clear,
+collision on their own and asserts twenty-one things: that the spawn is clear,
 that each of W/A/S/D moves the player the way the camera implies, that a body
 slides along a wall rather than sticking, that a sprint cannot tunnel a thin
 obstacle, that a trapped body is ejected, that steppable props never block, that
@@ -214,6 +232,12 @@ none straddles a level change, that every level and the street below are walkabl
 on foot from the spawn (a flood fill over the height field, so a stair that does
 not actually connect fails), that every marker can be stood in front of, and that
 none is buried inside its own building.
+
+It also drives the body the way the controller actually drives it — 240 sprints,
+96,000 frames, at the worst frame time the controller allows — and fails if the
+body ever ends up inside geometry or if its ground ever jumps more than a stair
+could account for. That is the check that was missing when collision could be
+handed the wrong height.
 
 Run it after moving a tenancy or adding a structure. Every one of those checks is
 there because that exact failure shipped once.

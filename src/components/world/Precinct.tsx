@@ -8,7 +8,6 @@ import {
   ARCADE_COLUMNS,
   BENCHES,
   CAFE_SETS,
-  LIFT_CORE,
   OFFICE_BLOCKS,
   OFFICE_LEVEL,
   PIAZZA,
@@ -407,50 +406,43 @@ function Flight({ slope }: { slope: Slope }) {
 }
 
 /**
- * The glass lift core beside the grand flight.
+ * The glazed lift shaft in the circulation block's face.
  *
- * You cannot ride it — the whole precinct is one walkable surface — but a
- * shopping centre without one reads as a model rather than a building, and it
- * is the piece that tells you at a glance that these are two separate levels.
+ * You cannot ride it — the precinct is one walkable surface — but a centre
+ * without one reads as a model rather than a building, and a car moving behind
+ * the glass is what tells you at a glance that these are two separate levels.
  */
-function LiftCore() {
+function LiftShaft({ height }: { height: number }) {
   const m = useMaterials();
   const car = useRef<THREE.Mesh>(null);
 
-  const { x, z } = LIFT_CORE;
-  const base = RETAIL;
-  const top = DECK + 3.2;
-
   useFrame(({ clock }) => {
     if (!car.current) return;
-    // A slow shuttle between the two levels, with a pause at each end.
-    const t = (clock.elapsedTime % 24) / 24;
-    const k = t < 0.5 ? Math.min(1, Math.max(0, (t - 0.08) * 2.4)) : Math.min(1, Math.max(0, (0.92 - t) * 2.4));
-    car.current.position.y = base + 1.4 + k * (DECK - base);
+    // A slow shuttle with a pause at each end.
+    const t = (clock.elapsedTime % 22) / 22;
+    const k = t < 0.5
+      ? Math.min(1, Math.max(0, (t - 0.08) * 2.6))
+      : Math.min(1, Math.max(0, (0.92 - t) * 2.6));
+    car.current.position.y = 1.5 + k * (height - 4.2);
   });
 
   return (
-    <group position={[x, 0, z]}>
-      {/* Shaft: four steel corner posts and glass between them */}
-      {[-1, 1].map((sx) =>
-        [-1, 1].map((sz) => (
-          <mesh key={`${sx}${sz}`} position={[sx * 1.5, (base + top) / 2, sz * 1.5]} material={m.metalDark} castShadow>
-            <boxGeometry args={[0.22, top - base, 0.22]} />
-          </mesh>
-        )),
-      )}
-      <mesh position={[0, (base + top) / 2, 0]} material={m.glass}>
-        <boxGeometry args={[3, top - base, 3]} />
+    <group position={[5.6, 0, 0]}>
+      <mesh position={[0, height / 2, 0.3]} material={m.glass}>
+        <boxGeometry args={[3.2, height - 0.6, 0.5]} />
       </mesh>
-      <mesh position={[0, top + 0.2, 0]} material={m.metalDark} castShadow>
-        <boxGeometry args={[3.8, 0.4, 3.8]} />
+      {[-1, 1].map((s) => (
+        <mesh key={s} position={[s * 1.7, height / 2, 0.36]} material={m.metalDark} castShadow>
+          <boxGeometry args={[0.22, height, 0.62]} />
+        </mesh>
+      ))}
+      <mesh ref={car} position={[0, 1.5, 0.34]} material={m.metalDark}>
+        <boxGeometry args={[2.5, 2.4, 0.5]} />
       </mesh>
-
-      {/* The car */}
-      <mesh ref={car} position={[0, base + 1.4, 0]} material={m.metalDark}>
-        <boxGeometry args={[2.3, 2.5, 2.3]} />
+      <mesh position={[0, 1.5, 0.52]}>
+        <boxGeometry args={[2.1, 1.9, 0.06]} />
+        <meshBasicMaterial color="#ffe8c4" toneMapped={false} transparent opacity={0.85} />
       </mesh>
-      <pointLight position={[0, base + 2.6, 0]} color="#ffe8c4" intensity={12} distance={12} decay={2} />
     </group>
   );
 }
@@ -673,9 +665,46 @@ function Tenancy({ unit }: { unit: Unit }) {
         <boxGeometry args={[unit.w + 0.5, 0.6, unit.d + 0.5]} />
       </mesh>
 
+      {unit.blank ? (
+        // Back-of-house: a banded concrete face with a roller shutter, which is
+        // what the service end of a centre actually presents.
+        <group position={[front.x - unit.x, 0, front.z - unit.z]} rotation={[0, front.rot, 0]}>
+          {[1.2, 2.6, 4.0].map((y) => (
+            <mesh key={y} position={[0, y, 0.09]} material={m.concreteDark}>
+              <boxGeometry args={[frontWidth * 0.99, 0.12, 0.18]} />
+            </mesh>
+          ))}
+          <mesh position={[0, 2.1, 0.12]} material={m.metalDark}>
+            <boxGeometry args={[Math.min(7, frontWidth * 0.4), 4.2, 0.2]} />
+          </mesh>
+          {unit.lift && <LiftShaft height={tall} />}
+        </group>
+      ) : (
       <group position={[front.x - unit.x, 0, front.z - unit.z]} rotation={[0, front.rot, 0]}>
+        {/* Lit interior behind the glass. A dark shopfront reads as a boarded
+            unit, and a whole run of them reads as a model of a centre rather
+            than a centre. */}
+        <mesh position={[0, 2.6, -1.6]}>
+          <planeGeometry args={[frontWidth * 0.94, 4.0]} />
+          <meshBasicMaterial color={unit.accent} toneMapped={false} transparent opacity={0.16} />
+        </mesh>
+        <mesh position={[0, 2.6, -1.55]}>
+          <planeGeometry args={[frontWidth * 0.8, 3.2]} />
+          <meshBasicMaterial color="#ffeccd" toneMapped={false} transparent opacity={0.1} />
+        </mesh>
+        {/* Ceiling wash inside the unit */}
+        <mesh position={[0, 4.35, -1.5]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[frontWidth * 0.9, 3.0]} />
+          <meshBasicMaterial color="#fff2da" toneMapped={false} transparent opacity={0.22} />
+        </mesh>
+
         <mesh position={[0, 2.3, 0.06]} material={m.glass}>
           <planeGeometry args={[frontWidth * 0.94, 4.2]} />
+        </mesh>
+
+        {/* Stallriser: shopfront glass stops short of the paving */}
+        <mesh position={[0, 0.3, 0.1]} material={m.shopfront}>
+          <boxGeometry args={[frontWidth * 0.96, 0.6, 0.18]} />
         </mesh>
 
         {Array.from({ length: Math.max(3, Math.round(frontWidth / 2.1)) }).map((_, i, arr) => (
@@ -702,8 +731,10 @@ function Tenancy({ unit }: { unit: Unit }) {
           <boxGeometry args={[frontWidth * 0.5, 0.12, 3.0]} />
         </mesh>
 
-        <pointLight position={[0, 3, 2.6]} color={unit.accent} intensity={9} distance={13} decay={2} />
+        <pointLight position={[0, 2.4, 2.2]} color="#ffdcae" intensity={16} distance={16} decay={2} />
+        <pointLight position={[0, 2.8, -1.2]} color={unit.accent} intensity={11} distance={12} decay={2} />
       </group>
+      )}
     </group>
   );
 }
@@ -963,7 +994,6 @@ export function Precinct() {
       {SLOPES.map((s, i) => (
         <Flight key={i} slope={s} />
       ))}
-      <LiftCore />
       <Balustrades />
       <Arcade />
       <PiazzaLights />

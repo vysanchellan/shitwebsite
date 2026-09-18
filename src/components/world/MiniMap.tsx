@@ -3,6 +3,7 @@
 import { NODES } from '@/data/content';
 import { ACCENT_HEX, BOUNDS, CITY } from './layout';
 import { ARCADE, PIAZZA, UNITS } from './parkSquare';
+import { SLOPES, TERRACES } from './terrain';
 import { useWorld } from './store';
 
 const W = BOUNDS.maxX - BOUNDS.minX;
@@ -53,6 +54,71 @@ function MapSvg({ full }: { full: boolean }) {
             fillOpacity={0.9}
           />
         ))}
+      </g>
+
+      {/* The levels, lightest at the top, so the section reads at a glance */}
+      <g>
+        {[...TERRACES].sort((a, b) => a.y - b.y).map((t, i) => (
+          <rect
+            key={i}
+            x={sx(t.minX)}
+            y={sy(t.minZ)}
+            width={t.maxX - t.minX}
+            height={t.maxZ - t.minZ}
+            fill="#4a4550"
+            fillOpacity={0.18 + (t.y / 12) * 0.22}
+          />
+        ))}
+      </g>
+
+      {/* Every stair and ramp, so you can see how to get between the levels */}
+      <g>
+        {SLOPES.map((sl, i) => {
+          const alongX = sl.axis === 'x';
+          const n = Math.max(3, Math.round((alongX ? sl.maxX - sl.minX : sl.maxZ - sl.minZ) / 2.6));
+          return (
+            <g key={i}>
+              <rect
+                x={sx(sl.minX)}
+                y={sy(sl.minZ)}
+                width={sl.maxX - sl.minX}
+                height={sl.maxZ - sl.minZ}
+                fill="#d9b876"
+                fillOpacity={0.2}
+                stroke="#d9b876"
+                strokeOpacity={0.5}
+                strokeWidth={0.6}
+              />
+              {sl.kind === 'stair' &&
+                Array.from({ length: n }).map((_, k) => {
+                  const t = (k + 0.5) / n;
+                  return alongX ? (
+                    <line
+                      key={k}
+                      x1={sx(sl.minX + t * (sl.maxX - sl.minX))}
+                      y1={sy(sl.minZ)}
+                      x2={sx(sl.minX + t * (sl.maxX - sl.minX))}
+                      y2={sy(sl.maxZ)}
+                      stroke="#d9b876"
+                      strokeOpacity={0.55}
+                      strokeWidth={0.5}
+                    />
+                  ) : (
+                    <line
+                      key={k}
+                      x1={sx(sl.minX)}
+                      y1={sy(sl.minZ + t * (sl.maxZ - sl.minZ))}
+                      x2={sx(sl.maxX)}
+                      y2={sy(sl.minZ + t * (sl.maxZ - sl.minZ))}
+                      stroke="#d9b876"
+                      strokeOpacity={0.55}
+                      strokeWidth={0.5}
+                    />
+                  );
+                })}
+            </g>
+          );
+        })}
       </g>
 
       {/* The piazza and the arcade, the two spaces you navigate by */}
