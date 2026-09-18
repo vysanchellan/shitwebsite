@@ -214,7 +214,7 @@ export const NODES: InfoNode[] = [
     title: 'Why earlier awareness matters',
     kicker: 'Awareness Park',
     accent: 'amber',
-    position: [81.2, 0, 1.6],
+    position: [81.6, 0, 1.6],
     body: [
       'Heart disease and diabetes are both conditions where risk accumulates quietly and where earlier awareness changes what can be done about it. The obelisks in this park each carry one published figure, with its source and year.',
       'RiskSense does not generate these numbers and does not estimate late-detection rates of its own. They are quoted, attributed and dated so that anyone reading them can go and check them.',
@@ -325,7 +325,7 @@ export const NODES: InfoNode[] = [
     title: 'Medical disclaimer',
     kicker: 'Read this one',
     accent: 'amber',
-    position: [67.7, 0, 1.6],
+    position: [69.2, 0, 1.6],
     body: [
       'RiskSense AI provides risk estimates for decision support and awareness. It does not provide a medical diagnosis and it does not replace professional medical advice.',
       'A risk estimate describes a probability across a population with similar characteristics. It does not tell a patient what will happen to them, and it must never be used to start, stop or change treatment without a clinician.',
@@ -341,7 +341,7 @@ export const NODES: InfoNode[] = [
     title: 'Use your supported insurance cover with RiskSense',
     kicker: 'Insurance Pavilion',
     accent: 'plum',
-    position: [21.6, 0, 1.6],
+    position: [26.6, 0, 1.6],
     body: [
       'Patients can activate RiskSense access through a supported insurance provider instead of a subscription. The kiosks around this pavilion show which providers can be selected during registration and access verification.',
       'The provider list is data-driven: providers can be added, disabled or reordered in the backend without redesigning anything. Selecting a provider explains how eligibility works. It never exposes member information.',
@@ -445,7 +445,7 @@ export const NODES: InfoNode[] = [
     title: 'Failure and recovery',
     kicker: 'Error handling',
     accent: 'amber',
-    position: [50.5, 0, 1.6],
+    position: [53.2, 0, 1.6],
     body: [
       'Activation can fail for ordinary reasons. Each one gets plain user-facing language and a way forward, Try Again or Return to App, never a raw API error.',
     ],

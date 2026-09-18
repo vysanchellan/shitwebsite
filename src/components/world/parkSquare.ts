@@ -126,19 +126,10 @@ function frontage(
 /* -------------------------------------------------------------------------- */
 
 /**
- * The arcade's northern frontage. The plans put Spar's back-of-house and its
- * delivery dock at the western end, against the level change, so that is what
- * closes the run rather than the blank paving that used to be there.
+ * The arcade's northern frontage, running east from the head of the grand
+ * flight.
  */
-const ARCADE_NORTH = frontage('x', -12, 86, -32, -4, [
-  {
-    tenant: 'Spar service dock',
-    label: '',
-    kind: 'shop',
-    span: 14,
-    blank: true,
-    accent: A.plum,
-  },
+const ARCADE_NORTH = frontage('x', 8, 86, -32, -4, [
   {
     node: 'insurance',
     tenant: 'Spar',
@@ -173,20 +164,8 @@ const ARCADE_NORTH = frontage('x', -12, 86, -32, -4, [
   },
 ]);
 
-/**
- * The arcade's southern frontage: the circulation core at the level change,
- * then the food court and the smaller line shops.
- */
-const ARCADE_SOUTH = frontage('x', -12, 86, 42, 18, [
-  {
-    tenant: 'Piazza circulation core',
-    label: '',
-    kind: 'shop',
-    span: 20,
-    blank: true,
-    lift: true,
-    accent: A.azure,
-  },
+/** The arcade's southern frontage: the food court and the smaller line shops. */
+const ARCADE_SOUTH = frontage('x', 8, 86, 42, 18, [
   {
     node: 'problem-fragmented',
     tenant: 'Pizza Hut',

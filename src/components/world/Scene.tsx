@@ -127,8 +127,15 @@ function Contents({ quality }: { quality: Quality }) {
 }
 
 export function Scene({ quality }: { quality: Quality }) {
+  // The world used to run from the moment the page mounted, behind the start
+  // card, so the first thing anyone met was a laggy backdrop for a screen they
+  // had not interacted with yet. It draws one frame for the backdrop and then
+  // idles until they go in.
+  const started = useWorld((s) => s.started);
+
   return (
     <Canvas
+      frameloop={started ? 'always' : 'never'}
       shadows={quality.shadows}
       dpr={quality.dpr}
       camera={{ fov: 62, near: 0.1, far: 1400, position: [0, 5, 82] }}

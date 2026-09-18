@@ -181,6 +181,20 @@ Quality is detected once at startup: shadows, pedestrian count, drone count,
 particle count and antialiasing all step down on touch devices, small viewports
 and low-core machines.
 
+Three things keep the frame honest, and all three were wrong once:
+
+- **The world does not run until you go in.** It used to render from the moment
+  the page mounted, behind the start card, so the first thing anyone met was a
+  laggy backdrop for a screen they had not touched yet. It draws one frame and
+  then idles.
+- **A lit shopfront is drawn, not lit.** Two point lights per tenancy meant
+  around fifty of them, and a forward renderer costs every one on every fragment
+  of every standard material in range. The pools on the paving are additive
+  quads; the interiors are emissive planes. Same look, no per-fragment cost.
+- **One set of materials for the precinct.** `useMaterials` was a `useMemo`, so
+  every tenancy built its own ten — two hundred odd programs where ten would do,
+  and nothing could batch.
+
 ---
 
 ## Collision

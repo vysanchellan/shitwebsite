@@ -181,7 +181,16 @@ export function InsurerBoards() {
               <meshBasicMaterial color={ins.hue} toneMapped={false} opacity={dim ? 0.25 : 1} transparent />
             </mesh>
             {!dim && (
-              <pointLight position={[0, 2.2, 1.4]} color={ins.hue} intensity={5} distance={9} decay={2} />
+              <mesh position={[0, 1.55, 0.26]}>
+                <planeGeometry args={[2.6, 1.5]} />
+                <meshBasicMaterial
+                  color={ins.hue}
+                  transparent
+                  opacity={0.12}
+                  depthWrite={false}
+                  toneMapped={false}
+                />
+              </mesh>
             )}
           </group>
         );

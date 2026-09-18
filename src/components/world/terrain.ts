@@ -60,10 +60,11 @@ export type Slope = {
 export const GRAND_STAIR: Slope = {
   minX: -14,
   maxX: 6,
-  // The mouth lines up with the arcade: you come down the flight and the
-  // arcade runs away east in front of you, between the same two frontages.
-  minZ: -3,
-  maxZ: 17,
+  // It spans the whole west end of the retail wing rather than a doorway's
+  // worth of it. This is the precinct's one big move between levels, and at
+  // twenty metres wide it read as a side stair with a blank wall either side.
+  minZ: -30,
+  maxZ: 44,
   from: DECK,
   to: RETAIL,
   axis: 'x',

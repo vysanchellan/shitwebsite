@@ -30,7 +30,7 @@ import {
   heightAt,
   type Slope,
 } from './terrain';
-import { signTexture } from './textures';
+import { glowTexture, signTexture } from './textures';
 
 /**
  * Park Square, built.
@@ -43,8 +43,18 @@ import { signTexture } from './textures';
 
 const O = new THREE.Object3D();
 
-function useMaterials() {
-  return useMemo(() => {
+/**
+ * One set of materials for the whole precinct.
+ *
+ * This was a `useMemo` inside the hook, which means per *component instance* —
+ * twenty-three tenancies each building their own ten materials, so two hundred
+ * odd programs where ten would do, and no chance of the renderer batching
+ * anything. Nothing here is mutated per instance, so they are shared.
+ */
+let MATERIALS: ReturnType<typeof buildMaterials> | null = null;
+
+function buildMaterials() {
+  {
     const concrete = new THREE.MeshStandardMaterial({ color: '#b9b4ab', roughness: 0.92, metalness: 0.02 });
     const concreteDark = new THREE.MeshStandardMaterial({ color: '#8d887f', roughness: 0.95, metalness: 0.02 });
     const soffit = new THREE.MeshStandardMaterial({
@@ -61,7 +71,20 @@ function useMaterials() {
     const paving2 = new THREE.MeshStandardMaterial({ color: '#7d766d', roughness: 0.94, metalness: 0.02 });
     const timber = new THREE.MeshStandardMaterial({ color: '#6b4c31', roughness: 0.88, metalness: 0.03 });
     return { concrete, concreteDark, soffit, glass, shopfront, metal, metalDark, paving, paving2, timber };
-  }, []);
+  }
+}
+
+function useMaterials() {
+  if (!MATERIALS) MATERIALS = buildMaterials();
+  return MATERIALS;
+}
+
+/** One glow sprite, shared by every light pool in the precinct. */
+let GLOW: THREE.Texture | null = null;
+
+function useGlow() {
+  if (!GLOW) GLOW = glowTexture();
+  return GLOW;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -237,16 +260,7 @@ function Undercroft() {
       ))}
 
       {/* Sodium light spilling out from under the deck */}
-      {[-1, 0, 1].map((s) => (
-        <pointLight
-          key={s}
-          position={[cx + s * (w / 3), OPEN - 0.8, cz + s * (depth / 4)]}
-          color="#ffcf8a"
-          intensity={26}
-          distance={38}
-          decay={2}
-        />
-      ))}
+      <pointLight position={[cx, OPEN - 0.8, cz]} color="#ffcf8a" intensity={30} distance={70} decay={2} />
     </group>
   );
 }
@@ -272,6 +286,7 @@ function Flight({ slope }: { slope: Slope }) {
   const cx = (slope.minX + slope.maxX) / 2;
   const cy = (slope.from + slope.to) / 2;
   const cz = (slope.minZ + slope.maxZ) / 2;
+  const low = Math.min(slope.from, slope.to);
 
   /** The rake, and the two rotations that lay something along it. */
   const angle = Math.atan2(rise, run);
@@ -283,6 +298,20 @@ function Flight({ slope }: { slope: Slope }) {
     ? [0, 0, Math.PI / 2 + angle]
     : [Math.PI / 2 - angle, 0, 0];
 
+  /**
+   * Down the slope's own normal.
+   *
+   * Everything structural under a flight has to hang off the raked surface,
+   * not off the world axes. A plain axis-aligned box under a flight has its
+   * top at the flight's *highest* point along its whole length, which is three
+   * metres of solid concrete standing through the treads at the bottom — and
+   * wading through that is exactly what it looks like from inside.
+   */
+  const under = (d: number): [number, number, number] =>
+    alongX
+      ? [cx + Math.sin(angle) * d, cy - Math.cos(angle) * d, cz]
+      : [cx, cy - Math.cos(angle) * d, cz - Math.sin(angle) * d];
+
   /** A point `t` of the way up the flight, offset sideways by `s` half-widths. */
   const at = (t: number, s = 0, lift = 0): [number, number, number] =>
     alongX
@@ -291,6 +320,20 @@ function Flight({ slope }: { slope: Slope }) {
 
   const side = (s: number, lift = 0): [number, number, number] =>
     alongX ? [cx, cy + lift, cz + s * (width / 2)] : [cx + s * (width / 2), cy + lift, cz];
+
+  /** Handrail on its posts, `s` half-widths across the flight. */
+  const Handrail = ({ s, posts = 6 }: { s: number; posts?: number }) => (
+    <group>
+      <mesh position={side(s, 1.05)} rotation={rail} material={m.metal}>
+        <cylinderGeometry args={[0.05, 0.05, slant, 8]} />
+      </mesh>
+      {Array.from({ length: posts }).map((_, i) => (
+        <mesh key={i} position={at((i + 0.5) / posts, s, 0.55)} material={m.metal}>
+          <cylinderGeometry args={[0.035, 0.035, 1.1, 6]} />
+        </mesh>
+      ))}
+    </group>
+  );
 
   if (slope.kind === 'ramp') {
     return (
@@ -304,14 +347,7 @@ function Flight({ slope }: { slope: Slope }) {
             <mesh position={side(s * 0.96, 0.22)} rotation={tilt} material={m.concrete} castShadow>
               <boxGeometry args={alongX ? [slant, 0.32, 0.5] : [0.5, 0.32, slant]} />
             </mesh>
-            <mesh position={side(s * 0.9, 1.0)} rotation={rail} material={m.metal}>
-              <cylinderGeometry args={[0.05, 0.05, slant, 8]} />
-            </mesh>
-            {Array.from({ length: 6 }).map((_, i) => (
-              <mesh key={i} position={at((i + 0.5) / 6, s * 0.9, 0.5)} material={m.metal}>
-                <cylinderGeometry args={[0.035, 0.035, 1.0, 6]} />
-              </mesh>
-            ))}
+            <Handrail s={s * 0.9} />
           </group>
         ))}
       </group>
@@ -319,14 +355,18 @@ function Flight({ slope }: { slope: Slope }) {
   }
 
   const treads = Math.max(3, Math.round(Math.abs(rise) / 0.19));
+  const TREAD = 0.16;
+
+  /** A balustrade every so often across a wide flight, plus one down the middle. */
+  const rails: number[] = width > 26 ? [-1, -0.5, 0, 0.5, 1] : width > 12 ? [-1, 0, 1] : [-1, 1];
 
   return (
     <group>
-      {/* Treads */}
+      {/* Treads. Their tops sit on the walking surface, not their centres. */}
       {Array.from({ length: treads }).map((_, i) => (
         <mesh
           key={i}
-          position={at((i + 0.5) / treads)}
+          position={at((i + 0.5) / treads, 0, -TREAD / 2)}
           material={slope.steel ? m.metal : m.paving}
           receiveShadow
           castShadow
@@ -334,8 +374,8 @@ function Flight({ slope }: { slope: Slope }) {
           <boxGeometry
             args={
               alongX
-                ? [run / treads + 0.04, 0.14, width]
-                : [width, 0.14, run / treads + 0.04]
+                ? [run / treads + 0.04, TREAD, width]
+                : [width, TREAD, run / treads + 0.04]
             }
           />
         </mesh>
@@ -347,7 +387,7 @@ function Flight({ slope }: { slope: Slope }) {
           {[-1, 1].map((s) => (
             <mesh
               key={s}
-              position={side(s * 1.02, -0.3)}
+              position={side(s * 1.02, -0.38)}
               rotation={tilt}
               material={m.metalDark}
               castShadow
@@ -356,48 +396,55 @@ function Flight({ slope }: { slope: Slope }) {
             </mesh>
           ))}
 
-          {/* Tubular handrails on their posts */}
           {[-1, 1].map((s) => (
-            <group key={s}>
-              <mesh position={side(s * 1.0, 1.05)} rotation={rail} material={m.metal}>
-                <cylinderGeometry args={[0.05, 0.05, slant, 8]} />
-              </mesh>
-              {Array.from({ length: 6 }).map((_, i) => (
-                <mesh key={i} position={at((i + 0.5) / 6, s, 0.55)} material={m.metal}>
-                  <cylinderGeometry args={[0.035, 0.035, 1.1, 6]} />
-                </mesh>
-              ))}
-            </group>
+            <Handrail key={s} s={s} />
           ))}
 
-          {/* Landings top and bottom, which is where the flight meets the paving */}
+          {/* Landings top and bottom, where the flight meets the paving */}
           {[0, 1].map((e) => (
-            <mesh key={e} position={at(e, 0, -0.12)} material={m.metalDark}>
+            <mesh key={e} position={at(e, 0, -0.2)} material={m.metalDark}>
               <boxGeometry args={alongX ? [1.6, 0.24, width + 0.5] : [width + 0.5, 0.24, 1.6]} />
             </mesh>
           ))}
         </>
       ) : (
         <>
-          {/* Concrete flights sit on a solid skirt */}
-          <mesh position={[cx, cy - 0.5, cz]} material={m.concreteDark} receiveShadow>
-            <boxGeometry
-              args={alongX ? [run, Math.abs(rise), width] : [width, Math.abs(rise), run]}
-            />
+          {/* The raking soffit: a slab that follows the flight rather than
+              boxing it, so nothing stands proud of the treads. */}
+          <mesh position={under(0.55)} rotation={tilt} material={m.concreteDark} receiveShadow>
+            <boxGeometry args={alongX ? [slant, 0.9, width] : [width, 0.9, slant]} />
           </mesh>
-          {/* Cheek walls, and a handrail down the middle of the flight */}
+          {/* and the wall closing it off at the foot */}
+          <mesh
+            position={
+              alongX
+                ? [rise < 0 ? slope.maxX - 0.5 : slope.minX + 0.5, low / 2, cz]
+                : [cx, low / 2, rise < 0 ? slope.maxZ - 0.5 : slope.minZ + 0.5]
+            }
+            material={m.concreteDark}
+          >
+            <boxGeometry args={alongX ? [1, low, width] : [width, low, 1]} />
+          </mesh>
+
+          {/* Cheek walls */}
           {[-1, 1].map((s) => (
             <mesh key={s} position={side(s * 1.02, -0.1)} rotation={tilt} material={m.concrete} castShadow>
               <boxGeometry args={alongX ? [slant, 0.9, 0.7] : [0.7, 0.9, slant]} />
             </mesh>
           ))}
-          <mesh position={side(0, 1.0)} rotation={rail} material={m.metal}>
-            <cylinderGeometry args={[0.05, 0.05, slant, 8]} />
-          </mesh>
-          {Array.from({ length: 7 }).map((_, i) => (
-            <mesh key={i} position={at((i + 0.5) / 7, 0, 0.5)} material={m.metal}>
-              <cylinderGeometry args={[0.035, 0.035, 1.0, 6]} />
-            </mesh>
+
+          {/* Balustrades. A flight this wide reads as a cliff without them, and
+              the one down the centre is what makes it a staircase rather than
+              a ramp with lines on it. */}
+          {rails.map((s) => (
+            <group key={s}>
+              {s !== 0 || (
+                <mesh position={side(0, -0.25)} rotation={tilt} material={m.concrete} castShadow>
+                  <boxGeometry args={alongX ? [slant, 0.5, 1.1] : [1.1, 0.5, slant]} />
+                </mesh>
+              )}
+              <Handrail s={s} posts={Math.max(6, Math.round(run / 3))} />
+            </group>
           ))}
         </>
       )}
@@ -645,6 +692,7 @@ function frontOf(u: Unit): { x: number; z: number; rot: number } {
 
 function Tenancy({ unit }: { unit: Unit }) {
   const m = useMaterials();
+  const spill = useGlow();
   const front = frontOf(unit);
   const tall = shellHeight(unit.kind);
   const frontWidth = unit.facing === 'n' || unit.facing === 's' ? unit.w : unit.d;
@@ -731,8 +779,23 @@ function Tenancy({ unit }: { unit: Unit }) {
           <boxGeometry args={[frontWidth * 0.5, 0.12, 3.0]} />
         </mesh>
 
-        <pointLight position={[0, 2.4, 2.2]} color="#ffdcae" intensity={16} distance={16} decay={2} />
-        <pointLight position={[0, 2.8, -1.2]} color={unit.accent} intensity={11} distance={12} decay={2} />
+        {/* The pool of light a lit shopfront throws onto the paving.
+            This used to be two point lights per unit, which meant fifty of
+            them in the precinct — and a forward renderer costs every one of
+            those on every fragment of every standard material in range. The
+            look is the same; the frame is not. */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.04, 2.6]}>
+          <planeGeometry args={[frontWidth * 0.98, 5.4]} />
+          <meshBasicMaterial
+            map={spill}
+            color="#ffdcae"
+            transparent
+            opacity={0.5}
+            depthWrite={false}
+            blending={THREE.AdditiveBlending}
+            toneMapped={false}
+          />
+        </mesh>
       </group>
       )}
     </group>
@@ -889,6 +952,7 @@ function Planters() {
 
 function PiazzaLights() {
   const m = useMaterials();
+  const pool = useGlow();
 
   return (
     <group>
@@ -908,7 +972,19 @@ function PiazzaLights() {
               </mesh>
             </group>
           ))}
-          <pointLight position={[0, 6.4, 0]} color="#ffdfb0" intensity={30} distance={28} decay={2} />
+          {/* The lamp's own pool, drawn rather than lit. */}
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.04, 0]}>
+            <planeGeometry args={[13, 13]} />
+            <meshBasicMaterial
+              map={pool}
+              color="#ffdfb0"
+              transparent
+              opacity={0.42}
+              depthWrite={false}
+              blending={THREE.AdditiveBlending}
+              toneMapped={false}
+            />
+          </mesh>
         </group>
       ))}
     </group>
